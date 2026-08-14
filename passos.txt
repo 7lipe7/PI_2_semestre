@@ -3,4 +3,8 @@ abri com o vs code e executar na ordem
 docker compose build
 docker compose up -d
 
+
+se tudo der certo abra http://localhost:8080/
+
 para parar o docker =  docker compose down
+
