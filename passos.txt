@@ -1,0 +1,6 @@
+abri com o vs code e executar na ordem 
+
+docker compose build
+docker compose up -d
+
+para parar o docker =  docker compose down
