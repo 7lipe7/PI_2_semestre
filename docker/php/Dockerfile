@@ -9,8 +9,9 @@ RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
-COPY ./public /var/www/html
+COPY public/ /var/www/html/
+COPY src/ /var/www/src/
 
-RUN chown -R www-data:www-data /var/www/html
+RUN chown -R www-data:www-data /var/www/html /var/www/src
 
-
+EXPOSE 80
