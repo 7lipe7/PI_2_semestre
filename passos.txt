@@ -1,10 +1,18 @@
-abri com o vs code e executar na ordem 
+abri com o vs code e executar na ordem
 
+1. criar o arquivo .env a partir do exemplo
+cp .env.example .env
+
+2. construir e iniciar os containers
 docker compose build
 docker compose up -d
 
-
 se tudo der certo abra http://localhost:8080/
+(deve aparecer a mensagem de conexão com o MySQL)
 
-para parar o docker =  docker compose down
+para acessar o MySQL por fora (ex.: HeidiSQL, DBeaver, mysql client) = host localhost, porta 3307
+
+para ver os logs = docker compose logs -f
+
+para parar o docker = docker compose down
 
