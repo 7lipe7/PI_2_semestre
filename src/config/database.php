@@ -36,7 +36,7 @@ function getConnection(): PDO
 
         die(json_encode([
             'error'   => 'Falha na conexão com o banco de dados',
-              
+            'message' => $e->getMessage(), // remover esta linha em produção
         ], JSON_UNESCAPED_UNICODE));
     }
 
