@@ -2,8 +2,6 @@
 
 require_once __DIR__ . '/../src/config/database.php';
 
-echo "<h1>Pet Shop</h1>";
-echo "<p>PHP " . PHP_VERSION . " funcionando dentro do Docker!</p>";
 
 try {
     $pdo = getConnection();
@@ -24,6 +22,9 @@ try {
     <title>Document</title>
 </head>
 <body>
-    <img src="/assets/img/fallout-the-series_3jej.jpg" alt="">
+   <nav>
+    <h2>Dashboard</h2>
+     <p>Visão geral do pet shop</p>
+   </nav>
 </body>
 </html>
