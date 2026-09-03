@@ -38,8 +38,11 @@ services:
 
     volumes:
       - db_data:/var/lib/mysql
+      # Script executado automaticamente na primeira criação do banco
+      - ./docker/php/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
     restart: unless-stopped
+
 
 volumes:
   db_data:
