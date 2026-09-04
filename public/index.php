@@ -10,7 +10,7 @@ use core\router;
 
 $router = new router();
 
-$router->get('/teste', function(){ return 'Olá, router funcionando perfeitamente!';});
+$router->get('/', function(){ return 'Olá, router funcionando perfeitamente!';});
 
 
 

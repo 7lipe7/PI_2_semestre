@@ -3,11 +3,11 @@
 
 declare(strict_types=1);
 
-namespace core;
+namespace Core;
 
 use Closure;
 
-class router
+class Router
 {
 
   private array $routes = [];
@@ -68,6 +68,14 @@ class router
           echo "Erro de configuração de rota: action '{$action}' não encontrada em '{$fullClass}'.";
           return;
         }
+
+        if (!str_contains($handler, '@')) {
+          http_response_code(500);
+          echo "Erro de configuração de rota: formato nao esperado'{$handler}'.";
+          return;
+        }
+        [$class, $action] = explode('@', $handler);
+
 
         (new $fullClass())->$action($params);
 
