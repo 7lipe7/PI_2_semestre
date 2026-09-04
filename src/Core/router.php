@@ -5,51 +5,77 @@ declare(strict_types=1);
 
 namespace core;
 
+use Closure;
 
 class router
 {
 
   private array $routes = [];
 
-  public function get(string $path, string $handler): void
+  public function get(string $path, Closure|string $handler): void
   {
     $this->add('GET', $path, $handler);
   }
 
-  public function post(string $path, string $handler): void
+  public function post(string $path, Closure|string $handler): void
   {
     $this->add('POST', $path, $handler);
   }
 
-  private function add(string $method, string $path, string $handler): void
+  private function add(string $method, string $path, Closure|string $handler): void
   {
     $pattern = '#^' . preg_replace('#\{(\w+)\}#', '(?P<$1>[^/]+)', $path) . '$#';
 
     $this->routes[$method][] = [$pattern, $handler];
   }
-  public function dispatch(string $method , string $uri):void{
+
+  public function dispatch(string $method, string $uri): void
+  {
     $path = rtrim(parse_url($uri, PHP_URL_PATH) ?: '/', '/');
-        if ($path === '') {
-            $path = '/';
+    if ($path === '') {
+      $path = '/';
+    }
+
+    foreach ($this->routes[$method] ?? [] as [$pattern, $handler]) {
+      if (preg_match($pattern, $path, $matches)) {
+        // Mantém apenas os parâmetros nomeados ({id}, etc.)
+        $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+
+        // Rota registrada como closure: executa e imprime o retorno
+        if ($handler instanceof Closure) {
+          $result = $handler($params);
+
+          if ($result !== null) {
+            echo $result;
+          }
+
+          return;
         }
 
-         foreach ($this->routes[$method] ?? [] as [$pattern, $handler]) {
-            if (preg_match($pattern, $path, $matches)) {
-                // Mantém apenas os parâmetros nomeados ({id}, etc.)
-                $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
+        // Rota registrada como 'Controller@acao' (definida pelo desenvolvedor)
+        [$class, $action] = explode('@', $handler);
+        $fullClass = "Controllers\\{$class}";
 
-                [$class, $action] = explode('@', $handler);
-                $fullClass = "Controllers\\{$class}";
+        // Hardening: só instancia classes que realmente existem
+        if (!class_exists($fullClass)) {
+          http_response_code(500);
+          echo "Erro de configuração de rota: classe '{$fullClass}' não encontrada.";
+          return;
+        }
 
-                (new $fullClass())->$action($params);
+        if (!is_callable([$fullClass, $action])) {
+          http_response_code(500);
+          echo "Erro de configuração de rota: action '{$action}' não encontrada em '{$fullClass}'.";
+          return;
+        }
 
-                return;
-            }
-             }
+        (new $fullClass())->$action($params);
 
-        http_response_code(404);
-        echo '<h1>404 — Página não encontrada</h1><p><a href="/">Voltar para a agenda</a></p>';
-  
+        return;
+      }
+    }
 
+    http_response_code(404);
+    echo '<h1>404 — Página não encontrada</h1><p><a href="/">Voltar para a agenda</a></p>';
   }
 }

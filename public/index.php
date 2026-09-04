@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 require_once __DIR__ . '/../src/config/database.php';
+require_once __DIR__ . '/../src/Core/router.php';
+require_once __DIR__ . '/../src/Core/Controller.php';
+
+use core\router;
+
+$router = new router();
+
+$router->get('/teste', function(){ return 'Olá, router funcionando perfeitamente!';});
 
 
-try {
-    $pdo = getConnection();
-    $versao = $pdo->query('SELECT VERSION()')->fetchColumn();
 
-    echo "<p style='color:green'>&#9989; MySQL conectado com sucesso! Versão: <strong>{$versao}</strong></p>";
-} catch (Exception $e) {
-    echo "<p style='color:red'>&#10060; Falha na conexão com o MySQL: " . htmlspecialchars($e->getMessage()) . "</p>";
-}
-
+$router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 ?>
 
 <!DOCTYPE html>
