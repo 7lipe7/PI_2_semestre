@@ -5,8 +5,14 @@ declare(strict_types=1);
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/router.php';
 require_once __DIR__ . '/../src/Core/Controller.php';
+require_once __DIR__ . '/../src/Models/Agendamento.php';
+require_once __DIR__ . '/../src/Models/Cachorro.php';
+require_once __DIR__ . '/../src/Models/Proprietario.php';
+
 
 use core\router;
+use Proprietario;
+
 
 $router = new router();
 
