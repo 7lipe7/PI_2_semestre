@@ -1,7 +1,19 @@
 <?php
-/**
- * Placeholder — pasta src/Views/home
- * Aqui ficará a página inicial (home/index.php).
- */
+
+require_once __DIR__ . '/../layout/header.php';
+
 ?>
-<h1>Home — página inicial</h1>
+
+<main>
+
+    <h1>Dashboard</h1>
+
+    <p>Visão geral do pet shop</p>
+
+</main>
+
+<?php
+
+require_once __DIR__ . '/../layout/footer.php';
+
+?>
