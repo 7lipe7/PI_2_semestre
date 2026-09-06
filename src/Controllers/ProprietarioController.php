@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controllers;
 
 use core\Controller;
+use Proprietario;
 
 class ProprietarioController extends Controller{
     public function index(array $params = []): void

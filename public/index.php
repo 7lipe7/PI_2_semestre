@@ -11,7 +11,6 @@ require_once __DIR__ . '/../src/Models/Proprietario.php';
 
 
 use core\router;
-use Proprietario;
 
 
 $router = new router();
