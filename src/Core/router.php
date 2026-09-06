@@ -63,7 +63,9 @@ class Router
           return;
         }
 
-        if (!is_callable([$fullClass, $action])) {
+        // method_exists (e não is_callable): is_callable exige método estático no PHP 8,
+        // e nossas actions são métodos de instância
+        if (!method_exists($fullClass, $action)) {
           http_response_code(500);
           echo "Erro de configuração de rota: action '{$action}' não encontrada em '{$fullClass}'.";
           return;
