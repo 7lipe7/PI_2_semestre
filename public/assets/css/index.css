@@ -166,3 +166,146 @@ main {
     }
 
 }
+/* ============================================================
+   Formulários e combobox (views)
+   ============================================================ */
+
+main h1 {
+    margin: 18px 0 16px;
+    font-size: 20px;
+}
+
+main a,
+main button {
+    accent-color: var(--pink);
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 420px;
+    margin-bottom: 14px;
+}
+
+.campo label,
+.combobox > label {
+    color: #5c4550;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #eec4d6;
+    border-radius: 10px;
+    background: #fff;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+    border-color: var(--pink);
+    outline: none;
+}
+
+.botao {
+    padding: 11px 22px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--pink);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.botao:hover {
+    filter: brightness(.94);
+}
+
+.form-erro {
+    max-width: 420px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #ffe3e3;
+    color: #b02a37;
+}
+
+/* --- Combobox de busca de pet + dono --- */
+
+.combobox {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 420px;
+    margin-bottom: 14px;
+}
+
+.combobox-busca {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #eec4d6;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.combobox-busca:focus {
+    border-color: var(--pink);
+    outline: none;
+}
+
+.combobox-lista {
+    position: absolute;
+    top: calc(100% - 24px);
+    left: 0;
+    right: 0;
+    max-height: 240px;
+    margin: 4px 0 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #eec4d6;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(43, 24, 35, .12);
+    z-index: 1050;
+}
+
+.combobox-item {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.combobox-item:hover {
+    background: #fde8f0;
+}
+
+.combobox-pet {
+    display: block;
+    color: var(--pink);
+    font-weight: 600;
+}
+
+.combobox-dono {
+    display: block;
+    color: #777;
+    font-size: 13px;
+}
+
+.combobox-selecionado {
+    min-height: 1.2em;
+    color: #198754;
+    font-size: 13px;
+}
+
+.combobox-vazio {
+    padding: 10px 12px;
+    color: #999;
+}

@@ -10,7 +10,7 @@ class Cachorro
     {
         return getConnection()
             ->query(
-                'SELECT c.*, p.nome AS proprietario_nome
+                'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
                  FROM cachorros c
                  INNER JOIN proprietarios p
                     ON p.id = c.proprietario_id
@@ -22,7 +22,7 @@ class Cachorro
     public static function find(int $id): ?array
     {
         $stmt = getConnection()->prepare(
-            'SELECT c.*, p.nome AS proprietario_nome
+            'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
              FROM cachorros c
              INNER JOIN proprietarios p
                 ON p.id = c.proprietario_id
