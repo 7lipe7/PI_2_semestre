@@ -1,77 +1,121 @@
 <?php
-/** Form de agendamento. Variáveis: $agendamento, $cachorros (para o select), $erro */
-$editando = $agendamento !== null;
+/** Form de agendamento. Variáveis: $agendamento, $cachorros, $erro */
+
+// Editar só quando há id (evita "modo edição" falso na validação do create)
+$editando = !empty($agendamento['id']);
+
+// Valor pré-preenchido de um campo (agendamento em edição ou re-enviado com erro)
+$valor = fn(string $campo, string $padrao = '') => \Core\e((string) ($agendamento[$campo] ?? $padrao));
+
+// Pet já selecionado (modo edição ou erro de horário ocupado)
+$cachorroSelecionado = null;
+if (!empty($agendamento['cachorro_id'])) {
+    foreach ($cachorros as $c) {
+        if ((int) $c['id'] === (int) $agendamento['cachorro_id']) {
+            $cachorroSelecionado = $c;
+            break;
+        }
+    }
+}
+
+$statusAtual = $valor('status', 'agendado');
 ?>
 <h1><?= $editando ? 'Remarcar agendamento' : 'Marcar banho e tosa' ?></h1>
 
 <?php if ($erro !== null): ?>
-    <p><strong><?= \Core\e($erro) ?></strong></p>
+    <p class="form-erro"><strong><?= \Core\e($erro) ?></strong></p>
 <?php endif; ?>
 
-<form method="post" action="<?= $editando ? '/agendamentos/' . $agendamento['id'] : '/agendamentos' ?>">
+<form method="post" action="<?= $editando ? '/agendamentos/' . (int) $agendamento['id'] : '/agendamentos' ?>">
 
-    <p>
-        <label>Pet *<br>
-            <select name="cachorro_id" required>
-                <option value="">— escolha o cachorro —</option>
-                <?php foreach ($cachorros as $c): ?>
-                    <option value="<?= $c['id'] ?>"
-                        <?= ($agendamento['cachorro_id'] ?? null) == $c['id'] ? 'selected' : '' ?>>
-                        <?= \Core\e($c['nome']) ?> — <?= \Core\e($c['proprietario_nome']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </label>
-    </p>
+<!-- Busca de pet + dono (combobox customizado) -->
+<div class="combobox">
+    <label for="pet-busca">Pet  (busca pelo nome do pet ou do dono)</label>
 
-    <p>
-        <label>Serviço *<br>
-            <select name="servico" required>
-                <option value="">— escolha —</option>
-                <?php foreach (['banho', 'tosa', 'banho_e_tosa'] as $s): ?>
-                    <option value="<?= $s ?>"
-                        <?= ($agendamento['servico'] ?? null) === $s ? 'selected' : '' ?>>
-                        <?= $s ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </label>
-    </p>
+    <input
+        type="text"
+        id="pet-busca"
+        class="combobox-busca"
+        placeholder="Ex.: Thor, ou o nome do dono..."
+        autocomplete="off"
+        value="<?= $cachorroSelecionado !== null
+            ? \Core\e($cachorroSelecionado['nome'] . ' (dono: ' . $cachorroSelecionado['proprietario_nome'] . ')')
+            : '' ?>"
+    >
 
-    <p>
-        <label>Data *<br>
-            <input type="date" name="data" value="<?= \Core\e($agendamento['data'] ?? '') ?>" required>
-        </label>
-    </p>
+    <!-- Guarda o cachorro_id escolhido — é o que o POST envia -->
+    <input
+        type="hidden"
+        name="cachorro_id"
+        id="cachorro_id"
+        value="<?= $cachorroSelecionado !== null ? (int) $cachorroSelecionado['id'] : '' ?>"
+    >
 
-    <p>
-        <label>Hora *<br>
-            <input type="time" name="hora" value="<?= \Core\e(substr((string) ($agendamento['hora'] ?? ''), 0, 5)) ?>" required>
-        </label>
-    </p>
+   
+    <div id="pet-selecionado" class="combobox-selecionado">
+        <?= $cachorroSelecionado !== null
+            ? \Core\e('✔ ' . $cachorroSelecionado['nome'] . ' — ' . $cachorroSelecionado['proprietario_nome'])
+            : '' ?>
+    </div>
 
-    <?php if ($editando): ?>
-        <p>
-            <label>Status<br>
-                <select name="status">
-                    <?php foreach (['agendado', 'concluido', 'cancelado'] as $st): ?>
-                        <option value="<?= $st ?>"
-                            <?= ($agendamento['status'] ?? null) === $st ? 'selected' : '' ?>>
-                            <?= $st ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </label>
-        </p>
-    <?php endif; ?>
 
-    <p>
-        <label>Observações<br>
-            <textarea name="observacoes" rows="2"><?= \Core\e($agendamento['observacoes'] ?? '') ?></textarea>
-        </label>
-    </p>
+    <ul id="pet-lista" class="combobox-lista" hidden></ul>
+</div>
 
-    <button>Salvar</button>
-    <a href="/agendamentos">Cancelar</a>
+<div class="campo">
+    <label for="servico">Serviço</label>
+    <select name="servico" id="servico" required>
+        <option value="banho"         <?= $valor('servico') === 'banho' ? 'selected' : '' ?>>Banho</option>
+        <option value="tosa"          <?= $valor('servico') === 'tosa' ? 'selected' : '' ?>>Tosa</option>
+        <option value="banho_e_tosa"  <?= $valor('servico') === 'banho_e_tosa' ? 'selected' : '' ?>>Banho e Tosa</option>
+    </select>
+</div>
+
+<div class="campo">
+    <label for="data">Data</label>
+    <input type="date" name="data" id="data" required value="<?= $valor('data') ?>">
+</div>
+
+<div class="campo">
+    <label for="hora">Horário</label>
+    <input type="time" name="hora" id="hora" required value="<?= substr($valor('hora'), 0, 5) ?>">
+</div>
+
+<?php if ($editando): ?>
+<div class="campo">
+    <label for="status">Status</label>
+    <select name="status" id="status">
+        <option value="agendado"  <?= $statusAtual === 'agendado'  ? 'selected' : '' ?>>Agendado</option>
+        <option value="concluido" <?= $statusAtual === 'concluido' ? 'selected' : '' ?>>Concluído</option>
+        <option value="cancelado" <?= $statusAtual === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+    </select>
+</div>
+<?php endif; ?>
+
+<div class="campo">
+    <label for="observacoes">Observações</label>
+    <textarea name="observacoes" id="observacoes" rows="2"><?= $valor('observacoes') ?></textarea>
+</div>
+
+<button type="submit" class="botao"><?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?></button>
+
 </form>
+
+<?php
+// Dados dos pets (pet + dono) para o combobox, em JSON
+$petsJson = json_encode(
+    array_map(fn(array $c): array => [
+        'id'                   => (int) $c['id'],
+        'nome'                 => $c['nome'],
+        'raca'                 => $c['raca'],
+        'proprietario_nome'    => $c['proprietario_nome'],
+        'proprietario_celular' => $c['proprietario_celular'] ?? null,
+    ], $cachorros),
+    JSON_UNESCAPED_UNICODE
+);
+?>
+<script>
+    window.CACHORROS = <?= $petsJson ?>;
+</script>
+<script src="/assets/js/combobox.js"></script>
 
