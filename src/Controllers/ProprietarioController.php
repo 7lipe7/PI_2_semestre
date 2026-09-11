@@ -20,10 +20,14 @@ class ProprietarioController extends Controller{
     }
     public function create(array $params = []): void
     {
-        $this->render('proprietarios/form', [
-            'cliente'  => null,     
-            'erro'     => null,
-            'navAtivo' => 'clientes',
+        $this->render('proprietarios/index', [
+            'clientes'    => Proprietario::allWithVisitas(),
+            'busca'       => '',
+            'cliente'     => null,
+            'formCliente' => null,
+            'erro'        => null,
+            'modalAberto' => true,
+            'navAtivo'    => 'clientes',
         ]);
     }
 
@@ -34,12 +38,16 @@ class ProprietarioController extends Controller{
         $obs     = trim((string) ($_POST['observacoes'] ?? ''));
 
         if ($nome === '' || $celular === '') {
-            $this->render('proprietarios/form', [
-                'cliente'  => null,
-                'erro'     => 'Nome e celular são obrigatórios.',
-                'navAtivo' => 'clientes',
+            $this->render('proprietarios/index', [
+                'clientes'    => Proprietario::allWithVisitas(),
+                'busca'       => '',
+                'cliente'     => null,
+                'formCliente' => null,
+                'erro'        => 'Nome e celular são obrigatórios.',
+                'modalAberto' => true,
+                'navAtivo'    => 'clientes',
             ]);
-            return;                
+            return;
         }
 
         Proprietario::create($nome, $celular, $obs !== '' ? $obs : null);
@@ -57,10 +65,14 @@ class ProprietarioController extends Controller{
             return;
         }
 
-        $this->render('proprietarios/form', [
-            'cliente'  => $cliente,    // preenchido = modo "editar"
-            'erro'     => null,
-            'navAtivo' => 'clientes',
+        $this->render('proprietarios/index', [
+            'clientes'    => Proprietario::allWithVisitas(),
+            'busca'       => '',
+            'cliente'     => $cliente,
+            'formCliente' => $cliente,
+            'erro'        => null,
+            'modalAberto' => true,
+            'navAtivo'    => 'clientes',
         ]);
     }
 
@@ -72,10 +84,14 @@ class ProprietarioController extends Controller{
         $obs     = trim((string) ($_POST['observacoes'] ?? ''));
 
         if ($nome === '' || $celular === '') {
-            $this->render('proprietarios/form', [
-                'cliente'  => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs],
-                'erro'     => 'Nome e celular são obrigatórios.',
-                'navAtivo' => 'clientes',
+            $this->render('proprietarios/index', [
+                'clientes'    => Proprietario::allWithVisitas(),
+                'busca'       => '',
+                'cliente'     => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs],
+                'formCliente' => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs],
+                'erro'        => 'Nome e celular são obrigatórios.',
+                'modalAberto' => true,
+                'navAtivo'    => 'clientes',
             ]);
             return;
         }
