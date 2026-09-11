@@ -185,16 +185,19 @@ main button {
 .cliente-modal-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 1200;
+    z-index: 1040;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(27, 20, 23, 0.14);
-    backdrop-filter: blur(1.5px);
+    background: rgba(31, 23, 26, 0.22);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
 }
 
 .cliente-modal {
+    position: relative;
+    z-index: 1060;
     width: min(520px, 100%);
     padding: 18px 20px 20px;
     border: 1px solid #efe2e7;
@@ -748,12 +751,14 @@ main button {
 .cliente-detalhes-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 2000;
+    z-index: 1040;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: rgba(25, 20, 23, 0.42);
+    background: rgba(31, 23, 26, 0.22);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
 }
 
 .cliente-detalhes-backdrop.hidden {
@@ -762,6 +767,7 @@ main button {
 
 .cliente-detalhes-modal {
     position: relative;
+    z-index: 1060;
     width: min(520px, 100%);
     border: 1px solid #efe7ea;
     border-radius: 20px;

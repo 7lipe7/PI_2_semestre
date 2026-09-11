@@ -3,6 +3,8 @@
 $busca = trim((string) ($busca ?? ''));
 $totalClientes = count($clientes ?? []);
 $labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
+$editando = !empty($formCliente) && !empty($formCliente['id']);
+$clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'observacoes' => ''];
 ?>
 <div class="clientes-page">
     <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
@@ -138,6 +140,66 @@ $labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
     <?php endif; ?>
 </div>
 
+<?php if (!empty($modalAberto)): ?>
+    <div class="cliente-modal-backdrop" aria-hidden="false">
+        <div class="cliente-modal" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
+            <div class="cliente-modal__header">
+                <h2 id="clienteModalTitulo"><?= $editando ? 'Editar cliente' : 'Novo cliente' ?></h2>
+                <a href="/clientes" class="cliente-modal__close" aria-label="Fechar">&times;</a>
+            </div>
+
+            <?php if (!empty($erro)): ?>
+                <div class="cliente-modal__erro">
+                    <strong><?= \Core\e($erro) ?></strong>
+                </div>
+            <?php endif; ?>
+
+            <form method="post" action="<?= $editando ? '/clientes/' . $clienteForm['id'] : '/clientes' ?>" class="cliente-modal__form">
+                <div class="campo campo--full">
+                    <label for="nome">Nome <span class="campo-required">*</span></label>
+                    <input
+                        id="nome"
+                        type="text"
+                        name="nome"
+                        value="<?= \Core\e($clienteForm['nome'] ?? '') ?>"
+                        placeholder="Ex: Mariana Souza"
+                        required
+                    >
+                </div>
+
+                <div class="campo campo--full">
+                    <label for="celular">Telefone / WhatsApp <span class="campo-required">*</span></label>
+                    <input
+                        id="celular"
+                        type="tel"
+                        name="celular"
+                        value="<?= \Core\e($clienteForm['celular'] ?? '') ?>"
+                        placeholder="(11) 99999-9999"
+                        required
+                    >
+                </div>
+
+                <div class="campo campo--full">
+                    <label for="observacoes">Descrição</label>
+                    <textarea
+                        id="observacoes"
+                        name="observacoes"
+                        rows="4"
+                        placeholder="Algumas observações sobre o cliente..."
+                    ><?= \Core\e($clienteForm['observacoes'] ?? '') ?></textarea>
+                </div>
+
+                <div class="cliente-modal__actions">
+                    <button type="submit" class="cliente-modal__submit" disabled>
+                        <?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?>
+                    </button>
+                    <a href="/clientes" class="cliente-modal__cancel">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+<?php endif; ?>
+
 <div class="cliente-detalhes-backdrop hidden" id="clienteDetalhesBackdrop" aria-hidden="true">
     <div class="cliente-detalhes-modal" role="dialog" aria-modal="true" aria-labelledby="clienteDetalhesTitulo">
         <button type="button" class="cliente-detalhes-close" id="clienteDetalhesClose" aria-label="Fechar modal">&times;</button>
@@ -181,6 +243,46 @@ $labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.cliente-modal__form');
+        const submitBtn = document.querySelector('.cliente-modal__submit');
+
+        if (form && submitBtn) {
+            const nomeInput = document.getElementById('nome');
+            const celularInput = document.getElementById('celular');
+
+            const formatarTelefone = (valor) => {
+                const apenasDigitos = valor.replace(/\D/g, '').slice(0, 11);
+
+                if (apenasDigitos.length <= 2) {
+                    return apenasDigitos;
+                }
+
+                if (apenasDigitos.length <= 6) {
+                    return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2)}`;
+                }
+
+                if (apenasDigitos.length <= 10) {
+                    return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2, 6)}-${apenasDigitos.slice(6)}`;
+                }
+
+                return `(${apenasDigitos.slice(0, 2)}) ${apenasDigitos.slice(2, 7)}-${apenasDigitos.slice(7)}`;
+            };
+
+            const validarFormulario = () => {
+                const nomeOk = nomeInput.value.trim() !== '';
+                const celularOk = celularInput.value.trim() !== '';
+                submitBtn.disabled = !(nomeOk && celularOk);
+            };
+
+            celularInput.addEventListener('input', function () {
+                this.value = formatarTelefone(this.value);
+                validarFormulario();
+            });
+
+            nomeInput.addEventListener('input', validarFormulario);
+            validarFormulario();
+        }
+
         const searchInput = document.querySelector('.clientes-search-input');
         const cards = document.querySelectorAll('.cliente-card');
         const emptyFilter = document.getElementById('clientesEmptyFilter');
