@@ -1,34 +1,261 @@
 <?php
-/** Lista de clientes. Variável: $clientes (id, nome, celular, observacoes) */
+/** Lista de clientes com contagem de visitas. */
+$busca = trim((string) ($busca ?? ''));
+$totalClientes = count($clientes ?? []);
+$labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
 ?>
-<h1>Clientes</h1>
+<div class="clientes-page">
+    <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
+        <div class="clientes-search-wrap flex-grow-1">
+            <form method="get" action="/clientes" class="clientes-search-form d-flex align-items-center">
+                <span class="clientes-search-icon" aria-hidden="true">
+                    <i data-lucide="search"></i>
+                </span>
+                <input
+                    type="search"
+                    name="busca"
+                    value="<?= \Core\e($busca) ?>"
+                    class="clientes-search-input"
+                    placeholder="Buscar o tutor..."
+                >
+            </form>
+        </div>
 
-<a href="/clientes/novo">Novo cliente</a>
+        <div class="clientes-quantidade" aria-live="polite">
+            <span class="clientes-quantidade-icon" aria-hidden="true">
+                <i data-lucide="users"></i>
+            </span>
+            <span><?= $totalClientes ?></span>
+            <span><?= $labelClientes ?></span>
+        </div>
 
-<?php if (empty($clientes)): ?>
-    <p>Nenhum cliente cadastrado.</p>
-<?php else: ?>
-    <table>
-        <thead>
-            <tr><th>Nome</th><th>Celular</th><th></th></tr>
-        </thead>
-        <tbody>
+        <a href="/clientes/novo" class="btn clientes-new-btn">
+            <i data-lucide="plus"></i>
+            <span>Novo cliente</span>
+        </a>
+    </div>
+
+    <?php if (empty($clientes)): ?>
+        <div class="clientes-empty">
+            <p>Nenhum cliente encontrado.</p>
+        </div>
+    <?php else: ?>
+        <div class="clientes-grid" id="clientesGrid">
             <?php foreach ($clientes as $c): ?>
-                <tr>
-                    <td><?= \Core\e($c['nome']) ?></td>
-                    <td><?= \Core\e($c['celular']) ?></td>
-                    <td>
-                        <a href="/clientes/<?= $c['id'] ?>/editar">Editar</a>
+                <?php
+                $visitas = (int) ($c['visitas'] ?? 0);
+                $labelVisitas = $visitas === 1 ? 'visita' : 'visitas';
+                $totalGasto = (float) ($c['total_gasto'] ?? 0);
+                $telefone = preg_replace('/\D/', '', (string) ($c['celular'] ?? ''));
 
-                        <!-- excluir é POST (com confirm avisando do CASCADE) -->
-                        <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
-                              onsubmit="return confirm('Excluir <?= \Core\e($c['nome']) ?>? Os cachorros e agendamentos dele também serão apagados!')">
-                            <button>Excluir</button>
-                        </form>
-                    </td>
-                </tr>
+                if (strlen($telefone) === 11) {
+                    $telefoneFormatado = '(' . substr($telefone, 0, 2) . ') ' . substr($telefone, 2, 5) . '-' . substr($telefone, 7, 4);
+                } elseif (strlen($telefone) === 10) {
+                    $telefoneFormatado = '(' . substr($telefone, 0, 2) . ') ' . substr($telefone, 2, 4) . '-' . substr($telefone, 6, 4);
+                } else {
+                    $telefoneFormatado = (string) ($c['celular'] ?? '');
+                }
+                ?>
+                <article class="cliente-card" data-nome="<?= \Core\e(strtolower((string) $c['nome'])) ?>">
+                    <div class="cliente-card__header">
+                        <div class="cliente-card__avatar" aria-hidden="true">
+                            <i data-lucide="user-round"></i>
+                        </div>
+
+                        <div class="cliente-card__title-wrap">
+                            <h2><?= \Core\e($c['nome']) ?></h2>
+                        </div>
+
+                        <div class="cliente-card__actions" aria-label="Ações do cliente">
+                            <a href="/clientes/<?= $c['id'] ?>/editar" class="cliente-card__action cliente-card__action--edit" aria-label="Editar cliente">
+                                <i data-lucide="pencil"></i>
+                            </a>
+
+                            <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
+                                  class="cliente-card__delete-form"
+                                  onsubmit="return confirm('Excluir <?= \Core\e($c['nome']) ?>?')">
+                                <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir cliente">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="cliente-card__info">
+                        <div class="cliente-card__line">
+                            <span class="cliente-card__icon" aria-hidden="true">
+                                <i data-lucide="phone"></i>
+                            </span>
+                            <span><?= \Core\e($telefoneFormatado) ?></span>
+                        </div>
+
+                        <?php
+                        $descricao = trim((string) ($c['observacoes'] ?? ''));
+                        $textoDescricao = $descricao !== '' ? $descricao : 'Nenhuma descrição informada';
+                        $pets = trim((string) ($c['pets'] ?? ''));
+                        $textoPets = $pets !== '' ? $pets : 'Nenhum pet cadastrado';
+                        ?>
+                        <div class="cliente-card__description">
+                            <span class="cliente-card__description-icon" aria-hidden="true">
+                                <i data-lucide="message-square-text"></i>
+                            </span>
+                            <span><?= \Core\e($textoDescricao) ?></span>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="cliente-card__details-btn"
+                            data-id="<?= (int) ($c['id'] ?? 0) ?>"
+                            data-nome="<?= \Core\e($c['nome'] ?? '') ?>"
+                            data-celular="<?= \Core\e($telefoneFormatado) ?>"
+                            data-descricao="<?= \Core\e($descricao !== '' ? $descricao : 'Nenhuma descrição informada.') ?>"
+                            data-visitas="<?= (int) ($c['visitas'] ?? 0) ?>"
+                        >
+                            <span>Ver detalhes</span>
+                            <i data-lucide="chevron-right" aria-hidden="true"></i>
+                        </button>
+
+                        <div class="cliente-card__pets">
+                            <span class="cliente-card__pets-icon" aria-hidden="true">
+                                <i data-lucide="dog"></i>
+                            </span>
+                            <span><?= \Core\e($textoPets) ?></span>
+                        </div>
+                    </div>
+
+                    <div class="cliente-card__footer">
+                        <span><?= $visitas ?> <?= $labelVisitas ?></span>
+                        <span class="cliente-card__total">R$ <?= number_format($totalGasto, 2, ',', '.') ?> total</span>
+                    </div>
+
+                </article>
             <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
+        </div>
+
+        <div class="clientes-empty clientes-empty--filter hidden" id="clientesEmptyFilter">
+            <p>Nenhum cliente encontrado para essa busca.</p>
+        </div>
+    <?php endif; ?>
+</div>
+
+<div class="cliente-detalhes-backdrop hidden" id="clienteDetalhesBackdrop" aria-hidden="true">
+    <div class="cliente-detalhes-modal" role="dialog" aria-modal="true" aria-labelledby="clienteDetalhesTitulo">
+        <button type="button" class="cliente-detalhes-close" id="clienteDetalhesClose" aria-label="Fechar modal">&times;</button>
+
+        <div class="cliente-detalhes-header">
+            <h3 id="clienteDetalhesTitulo">Detalhes do cliente</h3>
+        </div>
+
+        <div class="cliente-detalhes-body">
+            <div class="cliente-detalhes-user">
+                <div class="cliente-detalhes-avatar" aria-hidden="true">
+                    <i data-lucide="user-round"></i>
+                </div>
+                <div class="cliente-detalhes-identity">
+                    <h4 id="clienteDetalhesNome">Nome do cliente</h4>
+                    <p id="clienteDetalhesTelefone">(00) 00000-0000</p>
+                </div>
+            </div>
+
+            <div class="cliente-detalhes-separator"></div>
+
+            <div class="cliente-detalhes-section">
+                <h5>Descrição</h5>
+                <div class="cliente-detalhes-texto" id="clienteDetalhesDescricao">
+                    Sem descrição cadastrada.
+                </div>
+            </div>
+
+            <div class="cliente-detalhes-separator"></div>
+
+            <div class="cliente-detalhes-visitas" id="clienteDetalhesVisitas">
+                0 visita ao banho e tosa<span>0 visita ao banho e tosa</span>
+            </div>
+
+            <div class="cliente-detalhes-actions">
+                <button type="button" class="cliente-detalhes-fechar" id="clienteDetalhesFechar">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.querySelector('.clientes-search-input');
+        const cards = document.querySelectorAll('.cliente-card');
+        const emptyFilter = document.getElementById('clientesEmptyFilter');
+        const detailsBackdrop = document.getElementById('clienteDetalhesBackdrop');
+        const detailsCloseBtn = document.getElementById('clienteDetalhesClose');
+        const detailsCloseAction = document.getElementById('clienteDetalhesFechar');
+
+        const detailsNome = document.getElementById('clienteDetalhesNome');
+        const detailsTelefone = document.getElementById('clienteDetalhesTelefone');
+        const detailsDescricao = document.getElementById('clienteDetalhesDescricao');
+        const detailsVisitas = document.getElementById('clienteDetalhesVisitas');
+
+        const closeDetailsModal = () => {
+            if (!detailsBackdrop) return;
+            detailsBackdrop.classList.add('hidden');
+            detailsBackdrop.setAttribute('aria-hidden', 'true');
+        };
+
+        const openDetailsModal = (button) => {
+            if (!detailsBackdrop || !detailsNome || !detailsTelefone || !detailsDescricao || !detailsVisitas) return;
+
+            detailsNome.textContent = button.dataset.nome || 'Nome do cliente';
+            detailsTelefone.textContent = button.dataset.celular || '(00) 00000-0000';
+            detailsDescricao.textContent = button.dataset.descricao || 'Sem descrição cadastrada.';
+
+            const visitas = Number(button.dataset.visitas || 0);
+            detailsVisitas.textContent = `${visitas} ${visitas === 1 ? 'visita ao banho e tosa' : 'visitas ao banho e tosa'}`;
+
+            detailsBackdrop.classList.remove('hidden');
+            detailsBackdrop.setAttribute('aria-hidden', 'false');
+        };
+
+        document.querySelectorAll('.cliente-card__details-btn').forEach((button) => {
+            button.addEventListener('click', () => openDetailsModal(button));
+        });
+
+        if (detailsCloseBtn) {
+            detailsCloseBtn.addEventListener('click', closeDetailsModal);
+        }
+
+        if (detailsCloseAction) {
+            detailsCloseAction.addEventListener('click', closeDetailsModal);
+        }
+
+        if (detailsBackdrop) {
+            detailsBackdrop.addEventListener('click', (event) => {
+                if (event.target === detailsBackdrop) {
+                    closeDetailsModal();
+                }
+            });
+        }
+
+        if (!searchInput || cards.length === 0) {
+            return;
+        }
+
+        const applyFilter = () => {
+            const termo = searchInput.value.trim().toLowerCase();
+            let totalVisivel = 0;
+
+            cards.forEach((card) => {
+                const nome = (card.dataset.nome || '').toLowerCase();
+                const match = termo === '' || nome.includes(termo);
+
+                card.style.display = match ? '' : 'none';
+                if (match) totalVisivel++;
+            });
+
+            if (emptyFilter) {
+                emptyFilter.classList.toggle('hidden', totalVisivel !== 0);
+            }
+        };
+
+        searchInput.addEventListener('input', applyFilter);
+        applyFilter();
+    });
+</script>
 
