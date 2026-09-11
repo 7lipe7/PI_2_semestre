@@ -19,6 +19,40 @@ class Proprietario
             ->fetchAll();
     }
 
+    public static function allWithVisitas(?string $busca = null): array
+    {
+        $busca = trim((string) $busca);
+
+        $sql = 'SELECT p.id, p.nome, p.celular, p.observacoes,
+                       GROUP_CONCAT(DISTINCT c.nome ORDER BY c.nome SEPARATOR ", ") AS pets,
+                       COUNT(a.id) AS visitas,
+                       COALESCE(SUM(
+                           CASE a.servico
+                               WHEN "banho" THEN 40
+                               WHEN "tosa" THEN 60
+                               WHEN "banho_e_tosa" THEN 100
+                               ELSE 0
+                           END
+                       ), 0) AS total_gasto
+                FROM proprietarios p
+                LEFT JOIN cachorros c ON c.proprietario_id = p.id
+                LEFT JOIN agendamentos a ON a.cachorro_id = c.id';
+
+        $params = [];
+
+        if ($busca !== '') {
+            $sql .= ' WHERE p.nome LIKE :busca';
+            $params[':busca'] = '%' . $busca . '%';
+        }
+
+        $sql .= ' GROUP BY p.id, p.nome, p.celular, p.observacoes ORDER BY p.nome';
+
+        $stmt = getConnection()->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
+    }
+
     public static function find(int $id): ?array
     {
         $stmt = getConnection()->prepare('SELECT * FROM proprietarios WHERE id = :id');

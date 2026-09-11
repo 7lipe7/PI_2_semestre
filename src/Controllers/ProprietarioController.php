@@ -10,8 +10,11 @@ use Proprietario;
 class ProprietarioController extends Controller{
     public function index(array $params = []): void
     {
+        $busca = trim((string) ($_GET['busca'] ?? ''));
+
         $this->render('proprietarios/index', [
-            'clientes' => Proprietario::all(),
+            'clientes' => Proprietario::allWithVisitas($busca),
+            'busca'    => $busca,
             'navAtivo' => 'clientes',
         ]);
     }
