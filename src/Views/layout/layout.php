@@ -27,8 +27,8 @@ $paginas = [
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- CSS do projeto -->
-    <link rel="stylesheet" href="/assets/css/index.css">
+    <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
+    <link rel="stylesheet" href="/assets/css/index.css?v=2">
 </head>
 <body class="admin-body">
 

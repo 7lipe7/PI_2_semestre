@@ -764,16 +764,16 @@ main button {
 .cliente-card {
     display: flex;
     flex-direction: column;
-    width: 380px;
-    min-width: 380px;
-    max-width: 380px;
-    min-height: 180px;
+    width: 370px;
+    min-width: 370px;
+    max-width: 370px;
+    min-height: 270px;
     padding: 16px 16px 14px;
     border: 1px solid #eadfe3;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 8px 20px rgba(86, 59, 66, 0.04);
-    flex: 0 0 380px;
+    flex: 0 0 370px;
 }
 
 .cliente-card__header {
@@ -851,10 +851,12 @@ main button {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
     text-overflow: ellipsis;
     word-break: break-word;
     max-width: 100%;
+    max-height: 2.8em;
 }
 
 .cliente-card__details-btn {
