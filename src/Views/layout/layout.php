@@ -78,6 +78,10 @@ $paginas = [
 </aside>
 
 <header class="page-header d-flex align-items-center">
+    <button type="button" class="sidebar-toggle" aria-label="Abrir menu" aria-expanded="false">
+        <i data-lucide="menu"></i>
+    </button>
+
     <div class="page-header__text container-fluid px-0">
         <h1 class="page-header__title"><?= \Core\e($titulo) ?></h1>
         <p class="page-header__subtitle"><?= \Core\e($subtitulo) ?></p>
@@ -95,6 +99,50 @@ $paginas = [
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
+
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.querySelector('.sidebar-toggle');
+    const body = document.body;
+
+    if (sidebar && sidebarToggle) {
+        const syncSidebarState = (isOpen) => {
+            body.classList.toggle('sidebar-open', isOpen);
+            sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            sidebarToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+        };
+
+        sidebarToggle.addEventListener('click', () => {
+            const willOpen = !body.classList.contains('sidebar-open');
+            syncSidebarState(willOpen);
+        });
+
+        document.querySelectorAll('.nav-item').forEach((item) => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 991) {
+                    syncSidebarState(false);
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 991) {
+                syncSidebarState(false);
+            }
+        });
+
+        document.addEventListener('click', (event) => {
+            if (window.innerWidth > 991) {
+                return;
+            }
+
+            const clickedInsideSidebar = sidebar.contains(event.target);
+            const clickedToggle = sidebarToggle.contains(event.target);
+
+            if (!clickedInsideSidebar && !clickedToggle && body.classList.contains('sidebar-open')) {
+                syncSidebarState(false);
+            }
+        });
+    }
 </script>
 
 </body>

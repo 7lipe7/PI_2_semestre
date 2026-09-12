@@ -6,17 +6,26 @@ require_once __DIR__ . '/../config/database.php';
 
 class Cachorro
 {
-    public static function all(): array
+    public static function all(?string $busca = null): array
     {
-        return getConnection()
-            ->query(
-                'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
-                 FROM cachorros c
-                 INNER JOIN proprietarios p
-                    ON p.id = c.proprietario_id
-                 ORDER BY c.nome'
-            )
-            ->fetchAll();
+        $sql = 'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
+                FROM cachorros c
+                INNER JOIN proprietarios p
+                    ON p.id = c.proprietario_id';
+
+        $params = [];
+
+        if ($busca !== null && trim($busca) !== '') {
+            $sql .= ' WHERE LOWER(c.nome) LIKE :busca OR LOWER(p.nome) LIKE :busca';
+            $params[':busca'] = '%' . mb_strtolower(trim($busca), 'UTF-8') . '%';
+        }
+
+        $sql .= ' ORDER BY c.nome';
+
+        $stmt = getConnection()->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
     }
 
     public static function find(int $id): ?array

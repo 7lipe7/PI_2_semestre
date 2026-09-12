@@ -13,20 +13,23 @@ class CachorroController extends Controller
 
     public function index(array $params = []): void
     {
+        $busca = trim((string) ($_GET['busca'] ?? ''));
 
         $this->render('pets/index', [
-            'pets'     => Cachorro::all(),
-            'navAtivo' => 'pets',
+            'pets'          => Cachorro::all($busca),
+            'proprietarios' => Proprietario::all(),
+            'busca'         => $busca,
+            'navAtivo'      => 'pets',
         ]);
-
     }
 
     public function create(array $params = []): void
     {
-        $this->render('pets/form', [
-            'pet'           => null,
+        $this->render('pets/index', [
+            'pets'          => Cachorro::all(),
             'proprietarios' => Proprietario::all(),
-            'erro'          => null,
+            'busca'         => '',
+            'petModalAberto' => true,
             'navAtivo'      => 'pets',
         ]);
     }
@@ -40,13 +43,14 @@ class CachorroController extends Controller
         $pelagem        = trim((string) ($_POST['pelagem'] ?? ''));
         $observacoes    = trim((string) ($_POST['observacoes'] ?? ''));
 
-        if ($nome === '' || $proprietarioId <= 0) {
-            $this->render('pets/form', [
-                'pet'           => null,
-                'proprietarios' => Proprietario::all(),
-                'erro'          => 'Nome e proprietário são obrigatórios.',
-                'navAtivo'      => 'pets',
-
+        if ($nome === '' || $proprietarioId <= 0 || $porte === '') {
+            $this->render('pets/index', [
+                'pets'            => Cachorro::all(),
+                'proprietarios'  => Proprietario::all(),
+                'busca'          => '',
+                'petModalAberto' => true,
+                'erro'           => 'Tutor, nome do pet e porte são obrigatórios.',
+                'navAtivo'       => 'pets',
             ]);
             return;
         }
@@ -93,20 +97,14 @@ class CachorroController extends Controller
         $pelagem        = trim((string) ($_POST['pelagem'] ?? ''));
         $observacoes    = trim((string) ($_POST['observacoes'] ?? ''));
 
-        if ($nome === '' || $proprietarioId <= 0) {
-            $this->render('pets/form', [
-                'pet'           => [
-                    'id'              => $id,
-                    'nome'            => $nome,
-                    'proprietario_id' => $proprietarioId,
-                    'raca'            => $raca,
-                    'porte'           => $porte,
-                    'pelagem'         => $pelagem,
-                    'observacoes'     => $observacoes,
-                ],
-                'proprietarios' => Proprietario::all(),
-                'erro'          => 'Nome e proprietário são obrigatórios.',
-                'navAtivo'      => 'pets',
+        if ($nome === '' || $proprietarioId <= 0 || $porte === '') {
+            $this->render('pets/index', [
+                'pets'            => Cachorro::all(),
+                'proprietarios'  => Proprietario::all(),
+                'busca'          => '',
+                'petModalAberto' => true,
+                'erro'           => 'Tutor, nome do pet e porte são obrigatórios.',
+                'navAtivo'       => 'pets',
             ]);
             return;
         }
