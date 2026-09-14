@@ -40,6 +40,15 @@ CREATE TABLE agendamentos (
     CONSTRAINT uq_agenda_horario UNIQUE (data, hora)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE precos_servicos (
+    id      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    servico ENUM('banho', 'tosa', 'banho_e_tosa') NOT NULL,
+    porte   ENUM('pequeno', 'medio', 'grande') NOT NULL,
+    valor   DECIMAL(10,2) NOT NULL,
+    UNIQUE KEY uq_servico_porte (servico, porte)
+);
+
+
 -- caso login de usuario futuro
 
 CREATE TABLE usuarios (
