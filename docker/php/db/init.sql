@@ -1,3 +1,7 @@
+-- Garante que o cliente MySQL leia este arquivo como UTF-8
+-- (sem isso, "João" é salvo como "JoÃ£o" — double encoding)
+SET NAMES utf8mb4;
+
 CREATE TABLE proprietarios (
     id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome          VARCHAR(120) NOT NULL,
@@ -40,14 +44,21 @@ CREATE TABLE agendamentos (
     CONSTRAINT uq_agenda_horario UNIQUE (data, hora)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE precos_servicos (
-    id      INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    servico ENUM('banho', 'tosa', 'banho_e_tosa') NOT NULL,
-    porte   ENUM('pequeno', 'medio', 'grande') NOT NULL,
-    valor   DECIMAL(10,2) NOT NULL,
-    UNIQUE KEY uq_servico_porte (servico, porte)
-);
 
+CREATE TABLE IF NOT EXISTS servicos (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nome        VARCHAR(80) NOT NULL,
+    descricao   VARCHAR(255) NULL,
+    preco       DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    ativo       TINYINT(1) NOT NULL DEFAULT 1,
+    criado_em   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO servicos (id, nome, descricao, preco) VALUES
+    (1, 'Banho',         'Banho completo com hidratação', 40.00),
+    (2, 'Tosa',          'Tosa higiênica ou da raça', 60.00),
+    (3, 'Banho e Tosa',  'Banho + tosa completa', 100.00);
 
 -- caso login de usuario futuro
 

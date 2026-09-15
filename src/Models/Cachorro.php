@@ -8,15 +8,28 @@ class Cachorro
 {
     public static function all(?string $busca = null): array
     {
-        return getConnection()
-            ->query(
-                'SELECT c.*, p.nome AS proprietario_nome
-                 FROM cachorros c
-                 INNER JOIN proprietarios p
-                    ON p.id = c.proprietario_id
-                 ORDER BY c.nome'
-            )
-            ->fetchAll();
+        $sql = 'SELECT c.*, p.nome AS proprietario_nome
+                FROM cachorros c
+                INNER JOIN proprietarios p
+                    ON p.id = c.proprietario_id';
+
+        $params = [];
+        $busca  = trim((string) $busca);
+
+        // Busca pelo nome do pet OU do tutor
+        //  não aceita o mesmo parâmetro nomeado usado duas vezes)
+        if ($busca !== '') {
+            $sql .= ' WHERE c.nome LIKE :busca_pet OR p.nome LIKE :busca_tutor';
+            $params[':busca_pet']   = '%' . $busca . '%';
+            $params[':busca_tutor'] = '%' . $busca . '%';
+        }
+
+        $sql .= ' ORDER BY c.nome';
+
+        $stmt = getConnection()->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
     }
 
     public static function find(int $id): ?array

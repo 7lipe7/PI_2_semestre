@@ -104,8 +104,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             <span><?= \Core\e($textoDescricao) ?></span>
                         </div>
 
-<<<<<<< HEAD
-=======
                         <div class="cliente-card__pets">
                             <span class="cliente-card__pets-icon" aria-hidden="true">
                                 <i data-lucide="dog"></i>
@@ -113,7 +111,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             <span><?= \Core\e($textoPets) ?></span>
                         </div>
 
->>>>>>> main
                         <button
                             type="button"
                             class="cliente-card__details-btn"
@@ -127,15 +124,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             <i data-lucide="chevron-right" aria-hidden="true"></i>
                         </button>
 
-<<<<<<< HEAD
-                        <div class="cliente-card__pets">
-                            <span class="cliente-card__pets-icon" aria-hidden="true">
-                                <i data-lucide="dog"></i>
-                            </span>
-                            <span><?= \Core\e($textoPets) ?></span>
-                        </div>
-=======
->>>>>>> main
                     </div>
 
                     <div class="cliente-card__footer">
@@ -158,13 +146,9 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
         <div class="cliente-modal" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
             <div class="cliente-modal__header">
                 <h2 id="clienteModalTitulo"><?= $editando ? 'Editar cliente' : 'Novo cliente' ?></h2>
-<<<<<<< HEAD
-                <a href="/clientes" class="cliente-modal__close" aria-label="Fechar">&times;</a>
-=======
                 <button type="button" class="cliente-modal__close" id="clienteModalClose" aria-label="Fechar modal">
                     <i data-lucide="x"></i>
                 </button>
->>>>>>> main
             </div>
 
             <?php if (!empty($erro)): ?>
@@ -174,30 +158,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             <?php endif; ?>
 
             <form method="post" action="<?= $editando ? '/clientes/' . $clienteForm['id'] : '/clientes' ?>" class="cliente-modal__form">
-<<<<<<< HEAD
-                <div class="campo campo--full">
-                    <label for="nome">Nome <span class="campo-required">*</span></label>
-                    <input
-                        id="nome"
-                        type="text"
-                        name="nome"
-                        value="<?= \Core\e($clienteForm['nome'] ?? '') ?>"
-                        placeholder="Ex: Mariana Souza"
-                        required
-                    >
-                </div>
-
-                <div class="campo campo--full">
-                    <label for="celular">Telefone / WhatsApp <span class="campo-required">*</span></label>
-                    <input
-                        id="celular"
-                        type="tel"
-                        name="celular"
-                        value="<?= \Core\e($clienteForm['celular'] ?? '') ?>"
-                        placeholder="(11) 99999-9999"
-                        required
-                    >
-=======
                 <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="nome">Nome <span class="campo-required">*</span></label>
@@ -222,7 +182,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             required
                         >
                     </div>
->>>>>>> main
                 </div>
 
                 <div class="campo campo--full">
@@ -237,16 +196,10 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
                 <div class="cliente-modal__actions">
                     <button type="submit" class="cliente-modal__submit" disabled>
-<<<<<<< HEAD
-                        <?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?>
-                    </button>
-                    <a href="/clientes" class="cliente-modal__cancel">Cancelar</a>
-=======
                         <i data-lucide="save" aria-hidden="true"></i>
                         <span><?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?></span>
                     </button>
                     <button type="button" class="cliente-modal__cancel" id="clienteModalCancel">Cancelar</button>
->>>>>>> main
                 </div>
             </form>
         </div>
@@ -296,8 +249,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
-=======
         const modalBackdrop = document.querySelector('.cliente-modal-backdrop');
         const modalCloseBtn = document.getElementById('clienteModalClose');
         const modalCancelBtn = document.getElementById('clienteModalCancel');
@@ -324,7 +275,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             });
         }
 
->>>>>>> main
         const form = document.querySelector('.cliente-modal__form');
         const submitBtn = document.querySelector('.cliente-modal__submit');
 
