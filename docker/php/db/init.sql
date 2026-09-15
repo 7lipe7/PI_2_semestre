@@ -45,7 +45,7 @@ CREATE TABLE agendamentos (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-CREATE TABLE IF NOT EXISTS servicos (
+CREATE TABLE servicos (
     id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome        VARCHAR(80) NOT NULL,
     descricao   VARCHAR(255) NULL,

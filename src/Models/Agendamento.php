@@ -10,15 +10,20 @@ class Agendamento
     {
         return getConnection()
             ->query(
-                'SELECT 
+                'SELECT
                     a.*,
                     c.nome AS cachorro_nome,
-                    p.nome AS proprietario_nome
+                    p.nome AS proprietario_nome,
+                    s.nome AS servico_nome,
+                    s.descricao AS servico_descricao,
+                    s.preco AS servico_preco
                 FROM agendamentos a
                 INNER JOIN cachorros c
                     ON c.id = a.cachorro_id
                 INNER JOIN proprietarios p
                     ON p.id = c.proprietario_id
+                INNER JOIN servicos s
+                    ON s.id = a.servico_id
                 ORDER BY a.data, a.hora;'
             )
             ->fetchAll();
@@ -30,28 +35,33 @@ class Agendamento
             'SELECT
                 a.*,
                 c.nome AS cachorro_nome,
-                p.nome AS proprietario_nome
+                p.nome AS proprietario_nome,
+                s.nome AS servico_nome,
+                s.descricao AS servico_descricao,
+                s.preco AS servico_preco
             FROM agendamentos a
             INNER JOIN cachorros c
                 ON c.id = a.cachorro_id
             INNER JOIN proprietarios p
                 ON p.id = c.proprietario_id
+            INNER JOIN servicos s
+                ON s.id = a.servico_id
             WHERE a.id = :id
             LIMIT 1;'
         );
 
         $stmt->execute([
-            'id' => $id
+            ':id' => $id
         ]);
 
         $agendamento = $stmt->fetch();
 
-        return $agendamento  ? $agendamento : null;
+        return $agendamento ? $agendamento : null;
     }
 
     /**
-     * Agenda de um dia específico (usado pelo dashboard da home).
-     * Mesmos joins do all(), mas filtrando pela data.
+     * Agenda de um dia específico.
+     * Usado pelo dashboard da home.
      */
     public static function byData(string $data): array
     {
@@ -59,30 +69,34 @@ class Agendamento
             'SELECT
                 a.*,
                 c.nome AS cachorro_nome,
-                p.nome AS proprietario_nome
+                p.nome AS proprietario_nome,
+                s.nome AS servico_nome,
+                s.descricao AS servico_descricao,
+                s.preco AS servico_preco
             FROM agendamentos a
             INNER JOIN cachorros c
                 ON c.id = a.cachorro_id
             INNER JOIN proprietarios p
                 ON p.id = c.proprietario_id
+            INNER JOIN servicos s
+                ON s.id = a.servico_id
             WHERE a.data = :data
             ORDER BY a.hora'
         );
 
-        $stmt->execute([':data' => $data]);
+        $stmt->execute([
+            ':data' => $data
+        ]);
 
         return $stmt->fetchAll();
     }
 
     /**
-     * Marca um novo horário.
-     * ATENÇÃO: se a data+hora já estiverem ocupadas, o MySQL recusa
-     * (constraint UNIQUE de data+hora) e o PDO lança PDOException —
-     * quem trata esse caso é o controller.
+     * Cria um novo agendamento.
      */
     public static function create(
         int $cachorroId,
-        string $servico,
+        int $servicoId,
         string $data,
         string $hora,
         ?string $observacoes = null,
@@ -90,14 +104,28 @@ class Agendamento
     ): int {
         $stmt = getConnection()->prepare(
             'INSERT INTO agendamentos
-                (cachorro_id, servico, data, hora, status, observacoes)
+                (
+                    cachorro_id,
+                    servico_id,
+                    data,
+                    hora,
+                    status,
+                    observacoes
+                )
              VALUES
-                (:cachorro_id, :servico, :data, :hora, :status, :observacoes)'
+                (
+                    :cachorro_id,
+                    :servico_id,
+                    :data,
+                    :hora,
+                    :status,
+                    :observacoes
+                )'
         );
 
         $stmt->execute([
             ':cachorro_id' => $cachorroId,
-            ':servico'     => $servico,
+            ':servico_id'  => $servicoId,
             ':data'        => $data,
             ':hora'        => $hora,
             ':status'      => $status,
@@ -107,10 +135,13 @@ class Agendamento
         return (int) getConnection()->lastInsertId();
     }
 
+    /**
+     * Atualiza um agendamento.
+     */
     public static function update(
         int $id,
         int $cachorroId,
-        string $servico,
+        int $servicoId,
         string $data,
         string $hora,
         ?string $observacoes,
@@ -119,7 +150,7 @@ class Agendamento
         $stmt = getConnection()->prepare(
             'UPDATE agendamentos
              SET cachorro_id = :cachorro_id,
-                 servico     = :servico,
+                 servico_id  = :servico_id,
                  data        = :data,
                  hora        = :hora,
                  status      = :status,
@@ -130,7 +161,7 @@ class Agendamento
         $stmt->execute([
             ':id'          => $id,
             ':cachorro_id' => $cachorroId,
-            ':servico'     => $servico,
+            ':servico_id'  => $servicoId,
             ':data'        => $data,
             ':hora'        => $hora,
             ':status'      => $status,
@@ -141,9 +172,12 @@ class Agendamento
     public static function delete(int $id): void
     {
         $stmt = getConnection()->prepare(
-            'DELETE FROM agendamentos WHERE id = :id'
+            'DELETE FROM agendamentos
+             WHERE id = :id'
         );
 
-        $stmt->execute([':id' => $id]);
+        $stmt->execute([
+            ':id' => $id
+        ]);
     }
 }
