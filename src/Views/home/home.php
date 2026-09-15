@@ -15,7 +15,7 @@
                 <?= date('H:i', strtotime($a['hora'])) ?> —
                 <?= \Core\e($a['cachorro_nome']) ?>
                 (<?= \Core\e($a['proprietario_nome']) ?>) —
-                <?= \Core\e($a['servico']) ?>
+                <?= \Core\e($a['servico_nome']) ?>
             </li>
         <?php endforeach; ?>
     </ul>

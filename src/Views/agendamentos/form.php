@@ -54,7 +54,7 @@ $statusAtual = $valor('status', 'agendado');
    
     <div id="pet-selecionado" class="combobox-selecionado">
         <?= $cachorroSelecionado !== null
-            ? \Core\e('✔ ' . $cachorroSelecionado['nome'] . ' — ' . $cachorroSelecionado['proprietario_nome'])
+            ? \Core\e($cachorroSelecionado['nome'] . ' — ' . $cachorroSelecionado['proprietario_nome'])
             : '' ?>
     </div>
 
@@ -62,14 +62,24 @@ $statusAtual = $valor('status', 'agendado');
     <ul id="pet-lista" class="combobox-lista" hidden></ul>
 </div>
 
+<?php if (!empty($servicos)): ?>
 <div class="campo">
     <label for="servico">Serviço</label>
-    <select name="servico" id="servico" required>
-        <option value="banho"         <?= $valor('servico') === 'banho' ? 'selected' : '' ?>>Banho</option>
-        <option value="tosa"          <?= $valor('servico') === 'tosa' ? 'selected' : '' ?>>Tosa</option>
-        <option value="banho_e_tosa"  <?= $valor('servico') === 'banho_e_tosa' ? 'selected' : '' ?>>Banho e Tosa</option>
+    <select name="servico_id" id="servico" required>
+        <option value="">— escolha o serviço —</option>
+        <?php foreach ($servicos as $s): ?>
+            <option
+                value="<?= (int) $s['id'] ?>"
+                <?= (int) ($agendamento['servico_id'] ?? 0) === (int) $s['id'] ? 'selected' : '' ?>
+            >
+                <?= \Core\e($s['nome']) ?> — R$ <?= number_format((float) $s['preco'], 2, ',', '.') ?>
+            </option>
+        <?php endforeach; ?>
     </select>
 </div>
+<?php else: ?>
+<p class="form-erro">Nenhum serviço ativo no catálogo. <a href="/servicos/novo">Cadastrar serviço</a></p>
+<?php endif; ?>
 
 <div class="campo">
     <label for="data">Data</label>

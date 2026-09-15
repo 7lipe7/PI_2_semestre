@@ -22,7 +22,7 @@
                     <td><?= date('H:i', strtotime($a['hora'])) ?></td>
                     <td><?= \Core\e($a['cachorro_nome']) ?></td>
                     <td><?= \Core\e($a['proprietario_nome']) ?></td>
-                    <td><?= \Core\e($a['servico']) ?></td>
+                    <td><?= \Core\e($a['servico_nome']) ?></td>
                     <td><?= \Core\e($a['status']) ?></td>
                     <td>
                         <a href="/agendamentos/<?= $a['id'] ?>/editar">Editar</a>
