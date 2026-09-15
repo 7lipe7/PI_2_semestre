@@ -27,16 +27,12 @@ class Proprietario
                        GROUP_CONCAT(DISTINCT c.nome ORDER BY c.nome SEPARATOR ", ") AS pets,
                        COUNT(a.id) AS visitas,
                        COALESCE(SUM(
-                           CASE a.servico
-                               WHEN "banho" THEN 40
-                               WHEN "tosa" THEN 60
-                               WHEN "banho_e_tosa" THEN 100
-                               ELSE 0
-                           END
+                           COALESCE(s.preco, 0)
                        ), 0) AS total_gasto
                 FROM proprietarios p
                 LEFT JOIN cachorros c ON c.proprietario_id = p.id
-                LEFT JOIN agendamentos a ON a.cachorro_id = c.id';
+                LEFT JOIN agendamentos a ON a.cachorro_id = c.id
+                LEFT JOIN servicos s ON s.id = a.servico_id';
 
         $params = [];
 

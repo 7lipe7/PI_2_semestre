@@ -64,10 +64,13 @@ $statusAtual = $valor('status', 'agendado');
 
 <div class="campo">
     <label for="servico">Serviço</label>
-    <select name="servico" id="servico" required>
-        <option value="banho"         <?= $valor('servico') === 'banho' ? 'selected' : '' ?>>Banho</option>
-        <option value="tosa"          <?= $valor('servico') === 'tosa' ? 'selected' : '' ?>>Tosa</option>
-        <option value="banho_e_tosa"  <?= $valor('servico') === 'banho_e_tosa' ? 'selected' : '' ?>>Banho e Tosa</option>
+    <select name="servico_id" id="servico" required>
+        <option value="">Selecione um serviço</option>
+        <?php foreach ($servicos as $servico): ?>
+            <option value="<?= (int) $servico['id'] ?>"
+                <?= (int) ($agendamento['servico_id'] ?? 0) === (int) $servico['id'] ? 'selected' : '' ?>
+            ><?= \Core\e($servico['nome']) ?></option>
+        <?php endforeach; ?>
     </select>
 </div>
 
