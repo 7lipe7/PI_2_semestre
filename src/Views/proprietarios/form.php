@@ -1,6 +1,14 @@
 <?php
 /** Form de cliente. Variáveis: $cliente (null=cadastrar), $erro */
-$editando = $cliente !== null;
+$cliente = $cliente ?? [
+    'id' => null,
+    'nome' => '',
+    'celular' => '',
+    'observacoes' => '',
+];
+
+$erro = $erro ?? null;
+$editando = $cliente !== null && !empty($cliente['id']);
 ?>
 <div class="cliente-modal-backdrop">
     <div class="cliente-modal" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">

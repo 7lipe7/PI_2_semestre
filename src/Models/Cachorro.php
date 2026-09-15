@@ -6,11 +6,11 @@ require_once __DIR__ . '/../config/database.php';
 
 class Cachorro
 {
-    public static function all(): array
+    public static function all(?string $busca = null): array
     {
         return getConnection()
             ->query(
-                'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
+                'SELECT c.*, p.nome AS proprietario_nome
                  FROM cachorros c
                  INNER JOIN proprietarios p
                     ON p.id = c.proprietario_id
