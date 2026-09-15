@@ -37,8 +37,8 @@ $editando = $pet !== null;
     </p>
 
     <p>
-        <label>Porte<br>
-            <select name="porte">
+        <label>Porte *<br>
+            <select name="porte" required>
                 <option value="">—</option>
                 <?php foreach (['pequeno', 'medio', 'grande'] as $porte): ?>
                     <option value="<?= $porte ?>"

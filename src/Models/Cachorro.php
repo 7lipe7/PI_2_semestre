@@ -8,16 +8,20 @@ class Cachorro
 {
     public static function all(?string $busca = null): array
     {
-        $sql = 'SELECT c.*, p.nome AS proprietario_nome, p.celular AS proprietario_celular
+        $sql = 'SELECT c.*, p.nome AS proprietario_nome
                 FROM cachorros c
                 INNER JOIN proprietarios p
                     ON p.id = c.proprietario_id';
 
         $params = [];
+        $busca  = trim((string) $busca);
 
-        if ($busca !== null && trim($busca) !== '') {
-            $sql .= ' WHERE LOWER(c.nome) LIKE :busca OR LOWER(p.nome) LIKE :busca';
-            $params[':busca'] = '%' . mb_strtolower(trim($busca), 'UTF-8') . '%';
+        // Busca pelo nome do pet OU do tutor
+        //  não aceita o mesmo parâmetro nomeado usado duas vezes)
+        if ($busca !== '') {
+            $sql .= ' WHERE c.nome LIKE :busca_pet OR p.nome LIKE :busca_tutor';
+            $params[':busca_pet']   = '%' . $busca . '%';
+            $params[':busca_tutor'] = '%' . $busca . '%';
         }
 
         $sql .= ' ORDER BY c.nome';

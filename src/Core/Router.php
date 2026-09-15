@@ -53,6 +53,12 @@ class Router
         }
 
         // Rota registrada como 'Controller@acao' (definida pelo desenvolvedor)
+        if (!str_contains($handler, '@')) {
+          http_response_code(500);
+          echo "Erro de configuração de rota: formato esperado é 'Controller@acao', recebido '{$handler}'.";
+          return;
+        }
+
         [$class, $action] = explode('@', $handler);
         $fullClass = "Controllers\\{$class}";
 
@@ -70,14 +76,6 @@ class Router
           echo "Erro de configuração de rota: action '{$action}' não encontrada em '{$fullClass}'.";
           return;
         }
-
-        if (!str_contains($handler, '@')) {
-          http_response_code(500);
-          echo "Erro de configuração de rota: formato nao esperado'{$handler}'.";
-          return;
-        }
-        [$class, $action] = explode('@', $handler);
-
 
         (new $fullClass())->$action($params);
 

@@ -1,17 +1,17 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Controllers;
 
 use core\Controller;
 use Agendamento;
 use Cachorro;
+use Servico;
 use PDOException;
 
 class AgendamentoController extends Controller
 {
-
     public function index(array $params = []): void
     {
         $this->render('agendamentos/index', [
@@ -25,6 +25,7 @@ class AgendamentoController extends Controller
         $this->render('agendamentos/form', [
             'agendamento' => null,
             'cachorros'   => Cachorro::all(),
+            'servicos'    => Servico::all(),
             'erro'        => null,
             'navAtivo'    => 'agendamentos',
         ]);
@@ -33,36 +34,59 @@ class AgendamentoController extends Controller
     public function store(array $params = []): void
     {
         $cachorroId  = (int) ($_POST['cachorro_id'] ?? 0);
-        $servico     = trim((string) ($_POST['servico'] ?? ''));
+        $servicoId   = (int) ($_POST['servico_id'] ?? 0);
         $data        = trim((string) ($_POST['data'] ?? ''));
         $hora        = trim((string) ($_POST['hora'] ?? ''));
         $observacoes = trim((string) ($_POST['observacoes'] ?? ''));
 
-        if ($cachorroId <= 0 || $servico === '' || $data === '' || $hora === '') {
+        if (
+            $cachorroId <= 0 ||
+            $servicoId <= 0 ||
+            $data === '' ||
+            $hora === ''
+        ) {
             $this->render('agendamentos/form', [
-                'agendamento' => null,
-                'cachorros'   => Cachorro::all(),
-                'erro'        => 'Cachorro, serviço, data e hora são obrigatórios.',
-                'navAtivo'    => 'agendamentos',
+                'agendamento' => [
+                    'cachorro_id' => $cachorroId,
+                    'servico_id'  => $servicoId,
+                    'data'        => $data,
+                    'hora'        => $hora,
+                    'observacoes' => $observacoes,
+                ],
+                'cachorros' => Cachorro::all(),
+                'servicos'  => Servico::all(),
+                'erro'      => 'Cachorro, serviço, data e hora são obrigatórios.',
+                'navAtivo'  => 'agendamentos',
             ]);
+
             return;
         }
 
-        // ENUM do banco: só aceita esses valores qualquer va
-        if (! in_array($servico, ['banho', 'tosa', 'banho_e_tosa'], true)) {
-            $servico = 'banho';
-        }
-
         try {
-            Agendamento::create($cachorroId, $servico, $data, $hora, $observacoes !== '' ? $observacoes : null);
+            Agendamento::create(
+                $cachorroId,
+                $servicoId,
+                $data,
+                $hora,
+                $observacoes !== '' ? $observacoes : null
+            );
+
             $this->redirect('/agendamentos');
+
         } catch (PDOException) {
-            // UNIQUE (data, hora) estourou ==  horário já ocupado
+            // UNIQUE (data, hora) = horário já ocupado
             $this->render('agendamentos/form', [
-                'agendamento' => ['cachorro_id' => $cachorroId, 'servico' => $servico, 'data' => $data, 'hora' => $hora],
-                'cachorros'   => Cachorro::all(),
-                'erro'        => 'Este horário já está ocupado. Escolha outro.',
-                'navAtivo'    => 'agendamentos',
+                'agendamento' => [
+                    'cachorro_id' => $cachorroId,
+                    'servico_id'  => $servicoId,
+                    'data'        => $data,
+                    'hora'        => $hora,
+                    'observacoes' => $observacoes,
+                ],
+                'cachorros' => Cachorro::all(),
+                'servicos'  => Servico::all(),
+                'erro'      => 'Este horário já está ocupado. Escolha outro.',
+                'navAtivo'  => 'agendamentos',
             ]);
         }
     }
@@ -80,6 +104,7 @@ class AgendamentoController extends Controller
         $this->render('agendamentos/form', [
             'agendamento' => $agendamento,
             'cachorros'   => Cachorro::all(),
+            'servicos'    => Servico::all(),
             'erro'        => null,
             'navAtivo'    => 'agendamentos',
         ]);
@@ -89,65 +114,75 @@ class AgendamentoController extends Controller
     {
         $id          = (int) $params['id'];
         $cachorroId  = (int) ($_POST['cachorro_id'] ?? 0);
-        $servico     = trim((string) ($_POST['servico'] ?? ''));
+        $servicoId   = (int) ($_POST['servico_id'] ?? 0);
         $data        = trim((string) ($_POST['data'] ?? ''));
         $hora        = trim((string) ($_POST['hora'] ?? ''));
         $observacoes = trim((string) ($_POST['observacoes'] ?? ''));
+
         $statusPost = (string) ($_POST['status'] ?? '');
-        $status     = in_array($statusPost, ['agendado', 'concluido', 'cancelado'], true)
+
+        $status = in_array(
+            $statusPost,
+            ['agendado', 'concluido', 'cancelado'],
+            true
+        )
             ? $statusPost
             : 'agendado';
 
-        if ($cachorroId <= 0 || $servico === '' || $data === '' || $hora === '') {
+        if (
+            $cachorroId <= 0 ||
+            $servicoId <= 0 ||
+            $data === '' ||
+            $hora === ''
+        ) {
             $this->render('agendamentos/form', [
-                // repõe os dados digitados pra não apagar o que o usuário escreveu
                 'agendamento' => [
                     'id'          => $id,
                     'cachorro_id' => $cachorroId,
-                    'servico'     => $servico,
+                    'servico_id'  => $servicoId,
                     'data'        => $data,
                     'hora'        => $hora,
                     'status'      => $status,
                     'observacoes' => $observacoes,
                 ],
-                'cachorros'   => Cachorro::all(),
-                'erro'        => 'Cachorro, serviço, data e hora são obrigatórios.',
-                'navAtivo'    => 'agendamentos',
+                'cachorros' => Cachorro::all(),
+                'servicos'  => Servico::all(),
+                'erro'      => 'Cachorro, serviço, data e hora são obrigatórios.',
+                'navAtivo'  => 'agendamentos',
             ]);
-            return;
-        }
 
-        // ENUM do banco: só aceita esses valores
-        if (! in_array($servico, ['banho', 'tosa', 'banho_e_tosa'], true)) {
-            $servico = 'banho';
+            return;
         }
 
         try {
             Agendamento::update(
                 $id,
                 $cachorroId,
-                $servico,
+                $servicoId,
                 $data,
                 $hora,
                 $observacoes !== '' ? $observacoes : null,
                 $status
             );
+
             $this->redirect('/agendamentos');
+
         } catch (PDOException) {
-            // UNIQUE (data, hora) estourou == horário já ocupado
+            // UNIQUE (data, hora) = horário já ocupado
             $this->render('agendamentos/form', [
                 'agendamento' => [
                     'id'          => $id,
                     'cachorro_id' => $cachorroId,
-                    'servico'     => $servico,
+                    'servico_id'  => $servicoId,
                     'data'        => $data,
                     'hora'        => $hora,
                     'status'      => $status,
                     'observacoes' => $observacoes,
                 ],
-                'cachorros'   => Cachorro::all(),
-                'erro'        => 'Este horário já está ocupado. Escolha outro.',
-                'navAtivo'    => 'agendamentos',
+                'cachorros' => Cachorro::all(),
+                'servicos'  => Servico::all(),
+                'erro'      => 'Este horário já está ocupado. Escolha outro.',
+                'navAtivo'  => 'agendamentos',
             ]);
         }
     }
@@ -159,3 +194,4 @@ class AgendamentoController extends Controller
         $this->redirect('/agendamentos');
     }
 }
+

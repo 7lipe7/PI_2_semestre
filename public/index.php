@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../src/config/database.php';
-require_once __DIR__ . '/../src/Core/router.php';
+require_once __DIR__ . '/../src/Core/Router.php';
 require_once __DIR__ . '/../src/Core/Controller.php';
 require_once __DIR__ . '/../src/Models/Agendamento.php';
 require_once __DIR__ . '/../src/Models/Cachorro.php';
@@ -12,12 +12,15 @@ require_once __DIR__ . '/../src/Controllers/HomeController.php';
 require_once __DIR__ . '/../src/Controllers/ProprietarioController.php';
 require_once __DIR__ . '/../src/Controllers/CachorroController.php';
 require_once __DIR__ . '/../src/Controllers/AgendamentoController.php';
+require_once __DIR__ . '/../src/Models/Servico.php';
+require_once __DIR__ . '/../src/Controllers/ServicoController.php';
 
 
-use core\router;
+
+use Core\Router;
 
 
-$router = new router();
+$router = new Router();
 
 // home
 $router->get('/', 'HomeController@index');
@@ -45,6 +48,15 @@ $router->post('/agendamentos', 'AgendamentoController@store');
 $router->get('/agendamentos/{id}/editar', 'AgendamentoController@edit');
 $router->post('/agendamentos/{id}', 'AgendamentoController@update');
 $router->post('/agendamentos/{id}/excluir', 'AgendamentoController@destroy');
+
+// servicos
+$router->get('/servicos', 'ServicoController@index');
+$router->get('/servicos/novo', 'ServicoController@create');
+$router->post('/servicos', 'ServicoController@store');
+$router->get('/servicos/{id}/editar', 'ServicoController@edit');
+$router->post('/servicos/{id}', 'ServicoController@update');
+$router->post('/servicos/{id}/excluir', 'ServicoController@destroy');
+
 
 
 
