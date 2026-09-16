@@ -191,6 +191,7 @@ body.sidebar-open::before {
 main {
     min-height: calc(100vh - 64px);
     margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
 }
 
 @media (max-width: 991.98px) {
@@ -206,6 +207,7 @@ main {
 
     main {
         margin-left: 0;
+        width: 100%;
     }
 
     .sidebar {
@@ -626,6 +628,8 @@ main button {
 
 /* Area de clientes */
 .clientes-page {
+    width: 100%;
+    max-width: 1440px;
     padding: 24px 30px 36px;
 }
 
@@ -1061,8 +1065,8 @@ main button {
 .cliente-card {
     display: flex;
     flex-direction: column;
-    width: 370px;
-    min-width: 370px;
+    width: min(370px, 100%);
+    min-width: 0;
     max-width: 370px;
     min-height: 270px;
     padding: 16px 16px 14px;
@@ -1070,7 +1074,7 @@ main button {
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 8px 20px rgba(86, 59, 66, 0.04);
-    flex: 0 0 370px;
+    flex: 1 1 320px;
 }
 
 .cliente-card__header {
@@ -1579,6 +1583,16 @@ main button {
 @media (max-width: 767.98px) {
     .clientes-page {
         padding: 18px 16px 28px;
+    }
+
+    .clientes-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cliente-card {
+        width: 100%;
+        max-width: none;
     }
 
     .clientes-toolbar {
