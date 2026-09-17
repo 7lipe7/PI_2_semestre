@@ -74,6 +74,58 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(255) NOT NULL,
     criado_em  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Usando triggers para registrar histórico de alterações de status dos agendamentos
+
+CREATE TABLE historico_agendamentos (
+    id        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    agendamento_id INT UNSIGNED NOT NULL,
+    status_anterior ENUM('agendado', 'concluido', 'cancelado') NOT NULL,
+    status_novo ENUM('agendado', 'concluido', 'cancelado') NOT NULL,
+    alterado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_historico_agendamento
+        FOREIGN KEY (agendamento_id) REFERENCES agendamentos (id)
+        ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- TRIGGER PARA REGISTRAR O HISTÓRICO DE ALTERAÇÕES DE STATUS DOS AGENDAMENTOS
+DELIMITER //
+
+CREATE TRIGGER trg_historico_status_agendamento
+AFTER UPDATE ON agendamentos
+FOR EACH ROW
+BEGIN
+    IF OLD.status <> NEW.status THEN
+        INSERT INTO historico_agendamentos
+            (agendamento_id, status_anterior, status_novo)
+        VALUES
+            (NEW.id, OLD.status, NEW.status);
+    END IF;
+END//
+
+DELIMITER ;
+
+-- VIEW PARA CONSULTAR O HISTÓRICO DE AGENDAMENTOS
+CREATE VIEW vw_historico_agendamentos AS
+SELECT
+    h.id AS historico_id,
+    a.id AS agendamento_id,
+    c.nome AS cachorro,
+    p.nome AS proprietario,
+    s.nome AS servico,
+    h.status_anterior,
+    h.status_novo,
+    h.alterado_em
+FROM historico_agendamentos h
+INNER JOIN agendamentos a
+    ON h.agendamento_id = a.id
+INNER JOIN cachorros c
+    ON a.cachorro_id = c.id
+INNER JOIN proprietarios p
+    ON c.proprietario_id = p.id
+INNER JOIN servicos s
+    ON a.servico_id = s.id;
+
  
 INSERT INTO proprietarios (nome, celular) VALUES
     ('João Silva', '(19) 99999-9999'),
