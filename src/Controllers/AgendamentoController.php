@@ -20,6 +20,14 @@ class AgendamentoController extends Controller
         ]);
     }
 
+    public function historico(array $params = []): void
+{
+    $this->render('agendamentos/historico', [
+        'historico' => Agendamento::historico(),
+        'navAtivo'  => 'agendamentos',
+    ]);
+}
+
     public function create(array $params = []): void
     {
         $this->render('agendamentos/form', [
