@@ -27,6 +27,11 @@ $receitaTotal = array_sum(array_map(
             <span class="agendamentos-resumo__label">Receita total</span>
             <strong>R$ <?= number_format($receitaTotal, 2, ',', '.') ?></strong>
         </div>
+
+        <a href="/agendamentos/novo" class="btn clientes-new-btn">
+            <i data-lucide="plus"></i>
+            <span>Marcar banho</span>
+        </a>
     </div>
 
     <?php if (empty($agendamentos)): ?>
