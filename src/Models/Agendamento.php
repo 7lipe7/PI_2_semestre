@@ -152,6 +152,17 @@ class Agendamento
         ]);
     }
 
+    // uso da view vw_historico_agendamentos, que traz os dados de cachorro, proprietário e serviço
+    public static function historico(): array
+{
+    return getConnection()
+        ->query(
+            'SELECT *
+             FROM vw_historico_agendamentos
+             ORDER BY alterado_em DESC'
+        )
+        ->fetchAll();
+}
     public static function delete(int $id): void
     {
         $stmt = getConnection()->prepare(

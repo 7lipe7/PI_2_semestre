@@ -43,6 +43,7 @@ $router->post('/pets/{id}/excluir', 'CachorroController@destroy');
 
 // agendamentos
 $router->get('/agendamentos', 'AgendamentoController@index');
+$router->get('/agendamentos/historico', 'AgendamentoController@historico');
 $router->get('/agendamentos/novo', 'AgendamentoController@create');
 $router->post('/agendamentos', 'AgendamentoController@store');
 $router->get('/agendamentos/{id}/editar', 'AgendamentoController@edit');
