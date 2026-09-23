@@ -96,6 +96,19 @@ $paginas = [
             <h1 class="page-header__title"><?= \Core\e($titulo) ?></h1>
             <p class="page-header__subtitle"><?= \Core\e($subtitulo) ?></p>
         </div>
+
+        <?php if ($navAtivo === 'agendamentos'): ?>
+            <div class="page-header__actions">
+                <a href="/agendamentos/historico" class="btn clientes-new-btn page-header__action">
+                    <i data-lucide="history"></i>
+                    <span>Histórico</span>
+                </a>
+                <a href="#agendamentoModal" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
+                    <i data-lucide="plus"></i>
+                    <span>Marcar banho</span>
+                </a>
+            </div>
+        <?php endif; ?>
     </header>
 
     <main>

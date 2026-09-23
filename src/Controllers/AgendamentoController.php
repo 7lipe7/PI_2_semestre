@@ -16,6 +16,8 @@ class AgendamentoController extends Controller
     {
         $this->render('agendamentos/index', [
             'agendamentos' => Agendamento::all(),
+            'cachorros'    => Cachorro::all(),
+            'servicos'     => Servico::all(),
             'navAtivo'     => 'agendamentos',
         ]);
     }
