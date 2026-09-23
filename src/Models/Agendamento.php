@@ -14,7 +14,8 @@ class Agendamento
                     a.*,
                     c.nome AS cachorro_nome,
                     p.nome AS proprietario_nome,
-                    s.nome AS servico_nome
+                    s.nome AS servico_nome,
+                    s.preco AS servico_preco
                 FROM agendamentos a
                 INNER JOIN cachorros c
                     ON c.id = a.cachorro_id

@@ -143,7 +143,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
 <?php if (!empty($modalAberto)): ?>
     <div class="cliente-modal-backdrop" aria-hidden="false">
-        <div class="cliente-modal" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
+        <div class="cliente-modal " role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
             <div class="cliente-modal__header">
                 <h2 id="clienteModalTitulo"><?= $editando ? 'Editar cliente' : 'Novo cliente' ?></h2>
                 <button type="button" class="cliente-modal__close" id="clienteModalClose" aria-label="Fechar modal">
@@ -158,7 +158,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             <?php endif; ?>
 
             <form method="post" action="<?= $editando ? '/clientes/' . $clienteForm['id'] : '/clientes' ?>" class="cliente-modal__form">
-                <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="nome">Nome <span class="campo-required">*</span></label>
                         <input
@@ -182,7 +181,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             required
                         >
                     </div>
-                </div>
 
                 <div class="campo campo--full">
                     <label for="observacoes">Descrição</label>

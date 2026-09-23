@@ -131,7 +131,7 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
             <button type="button" class="cliente-modal__close" id="petModalClose" aria-label="Fechar modal">&times;</button>
         </div>
 
-        <form method="post" action="/pets" class="cliente-modal__form" id="petForm">
+        <form method="post" action="/pets" class="pet-modal__form" id="petForm">
             <div class="cliente-modal__row">
                 <div class="campo">
                     <label for="petProprietarioId">Tutor <span class="campo-required">*</span></label>
