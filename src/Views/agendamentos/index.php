@@ -28,6 +28,11 @@ $receitaTotal = array_sum(array_map(
             <strong>R$ <?= number_format($receitaTotal, 2, ',', '.') ?></strong>
         </div>
 
+        <a href="/agendamentos/historico" class="btn clientes-new-btn">
+            <i data-lucide="history"></i>
+            <span>Histórico</span>
+        </a>
+        
         <a href="/agendamentos/novo" class="btn clientes-new-btn">
             <i data-lucide="plus"></i>
             <span>Marcar banho</span>
