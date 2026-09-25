@@ -1,7 +1,11 @@
 FROM php:8.4-apache
 
+ENV TZ=America/Sao_Paulo
+
 # Extensões PHP para conexão com MySQL
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
 
 RUN a2enmod rewrite
 
