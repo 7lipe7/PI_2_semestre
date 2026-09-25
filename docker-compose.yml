@@ -16,6 +16,9 @@ services:
 
     env_file:
       - .env
+    environment:
+      APP_TIMEZONE: America/Sao_Paulo
+      TZ: America/Sao_Paulo
 
     depends_on:
       - db
@@ -35,13 +38,12 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: America/Sao_Paulo
 
     volumes:
       - db_data:/var/lib/mysql
       # Script executado automaticamente na primeira criação do banco
-      - ./docker/php/db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-
-    restart: unless-stopped
+      - ./docker/php/db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
 
 volumes:

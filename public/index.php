@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+// Define o fuso antes que qualquer controller ou view utilize date().
+// O PHP dos containers pode iniciar em UTC por padrão.
+date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo');
+
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/Router.php';
 require_once __DIR__ . '/../src/Core/Controller.php';
