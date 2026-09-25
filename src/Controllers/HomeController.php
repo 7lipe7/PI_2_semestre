@@ -12,11 +12,33 @@ class HomeController extends Controller
     public function index(array $params = []): void
     {
         $hoje = date('Y-m-d');
+        $data = $this->dataSelecionada($_GET['data'] ?? null) ?? $hoje;
 
         $this->render('home/home', [
-            'agendamentos' => Agendamento::byData($hoje),
-            'dataHoje'     => $hoje,
-            'navAtivo'     => 'home',
+            'agendamentos'    => Agendamento::byData($data),
+            'dataSelecionada' => $data,
+            'dataHoje'        => $hoje,
+            'dataAnterior'    => date('Y-m-d', strtotime($data . ' -1 day')),
+            'dataProxima'     => date('Y-m-d', strtotime($data . ' +1 day')),
+            'ehHoje'          => $data === $hoje,
+            'navAtivo'        => 'home',
         ]);
+    }
+
+    /**
+     * Valida o ?data=Y-m-d vindo da URL (navegação ontem/amanhã do dashboard).
+     * Retorna null quando ausente ou inválida — a agenda volta a mostrar hoje.
+     */
+    private function dataSelecionada(?string $data): ?string
+    {
+        $data = trim((string) $data);
+
+        if ($data === '') {
+            return null;
+        }
+
+        $valida = \DateTime::createFromFormat('Y-m-d', $data);
+
+        return ($valida && $valida->format('Y-m-d') === $data) ? $data : null;
     }
 }
