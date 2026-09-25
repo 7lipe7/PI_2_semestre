@@ -12,6 +12,7 @@ class HomeController extends Controller
     public function index(array $params = []): void
     {
         $hoje = date('Y-m-d');
+        $data = $this->dataSelecionada($_GET['data'] ?? null) ?? $hoje;
 
         // $_GET pode chegar como array (ex.: ?data[]=...): só aceita string
         $dataInformada = $_GET['data'] ?? null;
