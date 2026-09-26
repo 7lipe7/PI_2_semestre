@@ -4,15 +4,18 @@ $historico = $historico ?? [];
 
 $statusLabels = [
     'agendado'  => 'Agendado',
+    'andamento' => 'Em andamento',
     'concluido' => 'Concluído',
     'cancelado' => 'Cancelado',
 ];
 
 $statusClasses = [
     'agendado'  => 'bg-warning text-dark',
+    'andamento' => 'bg-info text-dark',
     'concluido' => 'bg-success',
     'cancelado' => 'bg-danger',
 ];
+
 
 ?>
 

@@ -83,12 +83,25 @@ $receitaTotal = array_sum(array_map(
                             <p><?= \Core\e($a['proprietario_nome']) ?></p>
                         </div>
 
-                        <select class="agendamento-card__status-select <?= $statusClass ?>" aria-label="Status do agendamento" data-status-atual="<?= \Core\e($status) ?>">
-                            <option value="agendado" <?= $status === 'agendado' ? 'selected' : '' ?>>Agendado</option>
-                            <option value="andamento" <?= $status === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
-                            <option value="concluido" <?= $status === 'concluido' ? 'selected' : '' ?>>Concluído</option>
-                            <option value="cancelado" <?= $status === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
-                        </select>
+                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status" class="agendamento-card__status-form">
+                            <label class="visually-hidden" for="status-<?= (int) $a['id'] ?>">Status do agendamento</label>
+                            <select
+                                id="status-<?= (int) $a['id'] ?>"
+                                name="status"
+                                class="agendamento-card__status-select <?= $statusClass ?>"
+                                data-status-atual="<?= \Core\e($status) ?>"
+                                onchange="this.form.submit()"
+                            >
+                                <option value="agendado" <?= $status === 'agendado' ? 'selected' : '' ?>>Agendado</option>
+                                <option value="andamento" <?= $status === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
+                                <option value="concluido" <?= $status === 'concluido' ? 'selected' : '' ?>>Concluído</option>
+                                <option value="cancelado" <?= $status === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+                            </select>
+                            <noscript>
+                                <button type="submit" class="botao">Salvar status</button>
+                            </noscript>
+                        </form>
+
                     </div>
 
                     <div class="agendamento-card__info">
