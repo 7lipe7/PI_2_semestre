@@ -1,7 +1,16 @@
 <?php
 /** Catálogo de serviços. Variável: $servicos */
 ?>
+<?php
+/** Catálogo de serviços. Variáveis: $servicos, $aviso (opcional) */
+$aviso = $aviso ?? null;
+?>
 <h1>Serviços</h1>
+
+<?php if ($aviso !== null): ?>
+    <p class="form-erro"><strong><?= \Core\e($aviso) ?></strong></p>
+<?php endif; ?>
+
 
 <a href="/servicos/novo">Novo serviço</a>
 

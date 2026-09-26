@@ -66,11 +66,39 @@ class Servico
         ]);
     }
 
-    public static function delete(int $id): void
+        public static function delete(int $id): void
     {
         $stmt = getConnection()->prepare('DELETE FROM servicos WHERE id = :id');
         $stmt->execute([':id' => $id]);
     }
+
+     /**
+     * Verifica se o serviço já foi usado em algum agendamento.
+     * Serviço em uso não pode ser excluído (FK RESTRICT): ele é inativado.
+     */
+    public static function emUso(int $id): bool
+    {
+        $stmt = getConnection()->prepare(
+            'SELECT COUNT(*) FROM agendamentos WHERE servico_id = :id'
+        );
+
+        $stmt->execute([':id' => $id]);
+
+        return (int) $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Inativa o serviço sem apagá-lo, preservando os agendamentos antigos.
+     */
+    public static function inativar(int $id): void
+    {
+        $stmt = getConnection()->prepare(
+            'UPDATE servicos SET ativo = 0 WHERE id = :id'
+        );
+
+        $stmt->execute([':id' => $id]);
+    }
+
 
     /**
      * Converte o valor digitado ("45,00", "R$ 45,00", "45.00") em float.

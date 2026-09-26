@@ -237,4 +237,32 @@ class AgendamentoController extends Controller
         $this->redirect('/agendamentos');
     }
 
+        /**
+     * Serviços oferecidos na marcação (apenas ativos), mantendo visível
+     * o serviço atual quando ele já foi inativado.
+     */
+    private function servicosDisponiveis(?array $agendamento = null): array
+    {
+        $servicos = Servico::all(true);
+
+        $idAtual = (int) ($agendamento['servico_id'] ?? 0);
+
+        if ($idAtual <= 0) {
+            return $servicos;
+        }
+
+        $ids = array_map(fn(array $s): int => (int) $s['id'], $servicos);
+
+        if (!in_array($idAtual, $ids, true)) {
+            $atual = Servico::find($idAtual);
+
+            if ($atual !== null) {
+                $servicos[] = $atual;
+            }
+        }
+
+        return $servicos;
+    }
+
+
 }
