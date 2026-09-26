@@ -34,13 +34,15 @@ function getConnection(): PDO
             PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '{$timezone}'",
         ]);
     } catch (PDOException $e) {
+        // Detalhe técnico vai para o log do container; o usuário recebe só o aviso genérico
+        error_log('Falha na conexão com o banco de dados: ' . $e->getMessage());
+
         http_response_code(500);
 
         header('Content-Type: application/json; charset=utf-8');
 
         die(json_encode([
-            'error'   => 'Falha na conexão com o banco de dados',
-            'message' => $e->getMessage(), // remover esta linha qaudo estiver finalisado 
+            'error' => 'Falha na conexão com o banco de dados',
         ], JSON_UNESCAPED_UNICODE));
     }
 

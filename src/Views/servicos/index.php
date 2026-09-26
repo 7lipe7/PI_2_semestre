@@ -1,45 +1,73 @@
 <?php
-/** Catálogo de serviços. Variável: $servicos */
-?>
-<?php
 /** Catálogo de serviços. Variáveis: $servicos, $aviso (opcional) */
 $aviso = $aviso ?? null;
+$totalServicos = count($servicos ?? []);
+$labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
 ?>
-<h1>Serviços</h1>
+<div class="clientes-page servicos-page">
+    <div class="clientes-toolbar d-flex align-items-center justify-content-between gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
+        <div class="clientes-quantidade" aria-live="polite">
+            <span class="clientes-quantidade-icon" aria-hidden="true">
+                <i data-lucide="scissors"></i>
+            </span>
+            <span><?= $totalServicos ?></span>
+            <span><?= $labelServicos ?></span>
+        </div>
 
-<?php if ($aviso !== null): ?>
-    <p class="form-erro"><strong><?= \Core\e($aviso) ?></strong></p>
-<?php endif; ?>
+        <a href="/servicos/novo" class="btn clientes-new-btn">
+            <i data-lucide="plus"></i>
+            <span>Novo serviço</span>
+        </a>
+    </div>
 
+    <?php if ($aviso !== null): ?>
+        <p class="form-erro"><strong><?= \Core\e($aviso) ?></strong></p>
+    <?php endif; ?>
 
-<a href="/servicos/novo">Novo serviço</a>
-
-<?php if (empty($servicos)): ?>
-    <p>Nenhum serviço cadastrado.</p>
-<?php else: ?>
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th><th>Descrição</th><th>Valor</th><th>Situação</th><th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($servicos as $s): ?>
+    <?php if (empty($servicos)): ?>
+        <div class="clientes-empty">
+            <p>Nenhum serviço cadastrado.</p>
+        </div>
+    <?php else: ?>
+        <table class="table table-hover align-middle mb-0">
+            <thead>
                 <tr>
-                    <td><?= \Core\e($s['nome']) ?></td>
-                    <td><?= \Core\e(trim((string) ($s['descricao'] ?? '')) !== '' ? $s['descricao'] : 'Sem descrição') ?></td>
-                    <td>R$ <?= number_format((float) $s['preco'], 2, ',', '.') ?></td>
-                    <td><?= (int) $s['ativo'] === 1 ? 'Ativo' : 'Inativo' ?></td>
-                    <td>
-                        <a href="/servicos/<?= (int) $s['id'] ?>/editar">Editar</a>
-
-                        <form method="post" action="/servicos/<?= (int) $s['id'] ?>/excluir"
-                              onsubmit="return confirm('Excluir o serviço <?= \Core\e($s['nome']) ?>?')">
-                            <button>Excluir</button>
-                        </form>
-                    </td>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Valor</th>
+                    <th scope="col">Situação</th>
+                    <th scope="col" class="text-end">Ações</th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-<?php endif; ?>
+            </thead>
+        <tbody>
+                <?php foreach ($servicos as $s): ?>
+                    <tr>
+                        <td><?= \Core\e($s['nome']) ?></td>
+                        <td class="text-secondary"><?= \Core\e(trim((string) ($s['descricao'] ?? '')) !== '' ? (string) $s['descricao'] : 'Sem descrição') ?></td>
+                        <td><strong>R$ <?= number_format((float) $s['preco'], 2, ',', '.') ?></strong></td>
+                        <td>
+                            <?php if ((int) $s['ativo'] === 1): ?>
+                                <span class="badge text-bg-success">Ativo</span>
+                            <?php else: ?>
+                                <span class="badge text-bg-secondary">Inativo</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-end">
+                            <a href="/servicos/<?= (int) $s['id'] ?>/editar" class="btn btn-sm btn-outline-primary">Editar</a>
+
+                            <form method="post"
+                                  action="/servicos/<?= (int) $s['id'] ?>/excluir"
+                                  class="d-inline"
+                                  onsubmit="return confirm(<?= json_encode(
+                                      'Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.',
+                                      JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+                                  ) ?>)">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+</div>

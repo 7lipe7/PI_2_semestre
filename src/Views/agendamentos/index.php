@@ -5,8 +5,9 @@ $agendamentos = $agendamentos ?? [];
 $quantidadeAgendados = count(array_filter($agendamentos, fn(array $a): bool => ($a['status'] ?? 'agendado') === 'agendado'));
 $quantidadeAndamento = count(array_filter($agendamentos, fn(array $a): bool => ($a['status'] ?? '') === 'andamento'));
 $quantidadeConcluidos = count(array_filter($agendamentos, fn(array $a): bool => ($a['status'] ?? '') === 'concluido'));
-$receitaTotal = array_sum(array_map(
-    fn(array $a): float => (float) ($a['servico_preco'] ?? 0),
+// Receita = apenas serviços já concluídos (o card deve refletir o que já foi faturado)
+$receitaConcluida = array_sum(array_map(
+    fn(array $a): float => ($a['status'] ?? '') === 'concluido' ? (float) ($a['servico_preco'] ?? 0) : 0.0,
     $agendamentos
 ));
 ?>
@@ -25,8 +26,8 @@ $receitaTotal = array_sum(array_map(
             <strong data-status-count="concluido"><?= $quantidadeConcluidos ?></strong>
         </div>
         <div class="agendamentos-resumo__card agendamentos-resumo__card--receita">
-            <span class="agendamentos-resumo__label">Receita total</span>
-            <strong>R$ <?= number_format($receitaTotal, 2, ',', '.') ?></strong>
+            <span class="agendamentos-resumo__label">Receita (concluídos)</span>
+            <strong>R$ <?= number_format($receitaConcluida, 2, ',', '.') ?></strong>
         </div>
     </div>
 

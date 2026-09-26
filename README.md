@@ -158,6 +158,50 @@ docker compose exec db mysql -u root -p
 
 A conexão do PHP com o banco é feita por **PDO** (extensões `pdo_mysql`), configurada em `src/config/database.php`.
 
+### Fluxo de status dos agendamentos
+
+```text
+agendado ──► andamento ──► concluido
+    │             │
+    └─────────────┴──────► cancelado
+```
+
+* **agendado** — marcado, ainda não iniciado;
+* **andamento** — o pet está em atendimento;
+* **concluido** — serviço finalizado (é o único que conta na receita);
+* **cancelado** — desmarcado.
+
+O status pode ser alterado pelo seletor no card da listagem ou pela tela de edição.
+
+### Migrations
+
+O schema "oficial" é o `docker/php/db/init.sql` (usado apenas na primeira subida do container, com volume limpo). Mudou o schema? Faça **as duas** coisas:
+
+1. Atualize o `init.sql` (quem clonar o projeto de novo recebe o schema certo);
+2. Crie o arquivo em `docker/php/db/migrations/` para quem já tem o banco populado:
+
+```text
+docker/php/db/migrations/003_minha_mudanca.sql
+```
+
+Aplicar manualmente em um banco que já existe:
+
+```bash
+docker compose exec -T db sh -c 'exec mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < docker/php/db/migrations/003_minha_mudanca.sql
+```
+
+> ⚠️ Não use `docker compose down -v` para "consertar" o banco: o `-v` apaga o volume `db_data` e todos os dados. Migrations são o caminho seguro.
+
+## Limitações e próximos passos
+
+Pontos conscientes do escopo atual, registrados para evolução do projeto:
+
+* **Fuso horário** — datas e horas são gravadas como estão no formulário (sem conversão de fuso);
+* **Índices** — as buscas (nome do pet/dono, data) usam `LIKE` e filtros sem índice dedicado; suficiente para a base atual, precisa de índice quando a base crescer;
+* **Usuários e permissões** — o sistema não tem login: qualquer pessoa com a URL acessa as telas;
+* **Validação de negócio** — a validação é feita no servidor (campos, formato de data/hora, horário ocupado), sem as mensagens inline do front-end;
+* **Migrations** — ainda são aplicadas manualmente (não há ferramenta de versionamento de schema, como Phinx ou Doctrine Migrations).
+
 ## Docker
 
 O ambiente é composto por dois containers:

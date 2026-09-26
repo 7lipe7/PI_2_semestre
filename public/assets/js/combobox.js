@@ -36,18 +36,34 @@ function mostrarLista(filtro) {
     );
 
     if (resultados.length === 0) {
-        lista.innerHTML = '<li class="combobox-vazio">Nenhum pet encontrado </li>';
+        const vazio = document.createElement('li');
+        vazio.className = 'combobox-vazio';
+        vazio.textContent = 'Nenhum pet encontrado';
+        lista.replaceChildren(vazio);
         lista.hidden = false;
         return;
     }
 
-    lista.innerHTML = resultados.map(c => `
-        <li class="combobox-item" data-id="${c.id}">
-            <span class="combobox-pet"> ${c.nome}</span>
-            <span class="combobox-dono">${c.proprietario_nome} · ${c.raca ?? 'raça não informada'}</span>
-        </li>
-    `).join('');
+    // DOM API em vez de innerHTML: nomes de pet/dono com < > & não quebram (nem injetam) o HTML
+    const itens = resultados.map(c => {
+        const item = document.createElement('li');
+        item.className = 'combobox-item';
+        item.dataset.id = String(c.id);
 
+        const pet = document.createElement('span');
+        pet.className = 'combobox-pet';
+        pet.textContent = ` ${c.nome}`;
+
+        const dono = document.createElement('span');
+        dono.className = 'combobox-dono';
+        dono.textContent = `${c.proprietario_nome} · ${c.raca ?? 'raça não informada'}`;
+
+        item.append(pet, dono);
+
+        return item;
+    });
+
+    lista.replaceChildren(...itens);
     lista.hidden = false;
 }
 
