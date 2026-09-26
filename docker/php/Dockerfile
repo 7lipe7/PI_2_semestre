@@ -7,6 +7,10 @@ RUN docker-php-ext-install pdo pdo_mysql \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone
 
+# Erros vão para o log do container (docker compose logs), nunca para a tela do usuário
+RUN printf 'display_errors=Off\nlog_errors=On\nerror_log=/dev/stderr\n' \
+      > /usr/local/etc/php/conf.d/zz-app.ini
+
 RUN a2enmod rewrite
 
 # Permite o uso do .htaccess (front controller em public/index.php)

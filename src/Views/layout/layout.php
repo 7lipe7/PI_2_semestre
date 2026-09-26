@@ -103,7 +103,7 @@ $paginas = [
                     <i data-lucide="history"></i>
                     <span>Histórico</span>
                 </a>
-                <a href="#agendamentoModal" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
+                <a href="/agendamentos/novo" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
                     <i data-lucide="plus"></i>
                     <span>Marcar banho</span>
                 </a>
@@ -119,7 +119,7 @@ $paginas = [
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js"></script>
     <script>
         lucide.createIcons();
 

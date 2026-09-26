@@ -956,6 +956,19 @@ main button {
     color: #b33a45;
 }
 
+.agendamento-card__status-form {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+    margin: 0;
+}
+
+.agendamento-card__status-form .botao {
+    padding: 7px 14px;
+    font-size: 13px;
+}
+
 .agendamento-card__action svg,
 .agendamento-card__action--delete svg,
 .agendamento-card__action--edit svg {

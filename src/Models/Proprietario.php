@@ -32,6 +32,7 @@ class Proprietario
                 FROM proprietarios p
                 LEFT JOIN cachorros c ON c.proprietario_id = p.id
                 LEFT JOIN agendamentos a ON a.cachorro_id = c.id
+                    AND a.status = "concluido"
                 LEFT JOIN servicos s ON s.id = a.servico_id';
 
         $params = [];

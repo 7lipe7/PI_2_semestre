@@ -8,6 +8,7 @@ use core\Controller;
 use Agendamento;
 use Cachorro;
 use Servico;
+use DateTimeImmutable;
 use PDOException;
 
 class AgendamentoController extends Controller
@@ -17,7 +18,7 @@ class AgendamentoController extends Controller
         $this->render('agendamentos/index', [
             'agendamentos' => Agendamento::all(),
             'cachorros'    => Cachorro::all(),
-            'servicos'     => Servico::all(),
+            'servicos'     => $this->servicosDisponiveis(),
             'navAtivo'     => 'agendamentos',
         ]);
     }
@@ -35,7 +36,7 @@ class AgendamentoController extends Controller
         $this->render('agendamentos/form', [
             'agendamento' => null,
             'cachorros'   => Cachorro::all(),
-            'servicos'    => Servico::all(),
+            'servicos'    => $this->servicosDisponiveis(),
             'erro'        => null,
             'navAtivo'    => 'agendamentos',
         ]);
@@ -49,12 +50,13 @@ class AgendamentoController extends Controller
         $hora        = trim((string) ($_POST['hora'] ?? ''));
         $observacoes = trim((string) ($_POST['observacoes'] ?? ''));
 
-        if (
-            $cachorroId <= 0 ||
-            $servicoId <= 0 ||
-            $data === '' ||
-            $hora === ''
-        ) {
+        $erro = $this->validarCampos($cachorroId, $servicoId, $data, $hora);
+
+        if ($erro === null && Agendamento::horarioOcupado($data, $hora)) {
+            $erro = 'Este horário já está ocupado. Escolha outro.';
+        }
+
+        if ($erro !== null) {
             $this->render('agendamentos/form', [
                 'agendamento' => [
                     'cachorro_id' => $cachorroId,
@@ -64,8 +66,8 @@ class AgendamentoController extends Controller
                     'observacoes' => $observacoes,
                 ],
                 'cachorros' => Cachorro::all(),
-                'servicos'  => Servico::all(),
-                'erro'      => 'Cachorro, serviço, data e hora são obrigatórios.',
+                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
+                'erro'      => $erro,
                 'navAtivo'  => 'agendamentos',
             ]);
 
@@ -82,8 +84,7 @@ class AgendamentoController extends Controller
             );
 
             $this->redirect('/agendamentos');
-        } catch (PDOException) {
-            // UNIQUE (data, hora) = horário já ocupado
+        } catch (PDOException $e) {
             $this->render('agendamentos/form', [
                 'agendamento' => [
                     'cachorro_id' => $cachorroId,
@@ -93,8 +94,8 @@ class AgendamentoController extends Controller
                     'observacoes' => $observacoes,
                 ],
                 'cachorros' => Cachorro::all(),
-                'servicos'  => Servico::all(),
-                'erro'      => 'Este horário já está ocupado. Escolha outro.',
+                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
+                'erro'      => $this->mensagemErroBanco($e),
                 'navAtivo'  => 'agendamentos',
             ]);
         }
@@ -113,7 +114,7 @@ class AgendamentoController extends Controller
         $this->render('agendamentos/form', [
             'agendamento' => $agendamento,
             'cachorros'   => Cachorro::all(),
-            'servicos'    => Servico::all(),
+            'servicos'    => $this->servicosDisponiveis($agendamento),
             'erro'        => null,
             'navAtivo'    => 'agendamentos',
         ]);
@@ -137,12 +138,13 @@ class AgendamentoController extends Controller
             : 'agendado';
 
 
-        if (
-            $cachorroId <= 0 ||
-            $servicoId <= 0 ||
-            $data === '' ||
-            $hora === ''
-        ) {
+        $erro = $this->validarCampos($cachorroId, $servicoId, $data, $hora);
+
+        if ($erro === null && Agendamento::horarioOcupado($data, $hora, $id)) {
+            $erro = 'Este horário já está ocupado. Escolha outro.';
+        }
+
+        if ($erro !== null) {
             $this->render('agendamentos/form', [
                 'agendamento' => [
                     'id'          => $id,
@@ -154,8 +156,8 @@ class AgendamentoController extends Controller
                     'observacoes' => $observacoes,
                 ],
                 'cachorros' => Cachorro::all(),
-                'servicos'  => Servico::all(),
-                'erro'      => 'Cachorro, serviço, data e hora são obrigatórios.',
+                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
+                'erro'      => $erro,
                 'navAtivo'  => 'agendamentos',
             ]);
 
@@ -174,8 +176,7 @@ class AgendamentoController extends Controller
             );
 
             $this->redirect('/agendamentos');
-        } catch (PDOException) {
-            // UNIQUE (data, hora) = horário já ocupado
+        } catch (PDOException $e) {
             $this->render('agendamentos/form', [
                 'agendamento' => [
                     'id'          => $id,
@@ -187,15 +188,14 @@ class AgendamentoController extends Controller
                     'observacoes' => $observacoes,
                 ],
                 'cachorros' => Cachorro::all(),
-                'servicos'  => Servico::all(),
-                'erro'      => 'Este horário já está ocupado. Escolha outro.',
+                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
+                'erro'      => $this->mensagemErroBanco($e),
                 'navAtivo'  => 'agendamentos',
             ]);
         }
     }
 
-
-        public function updateStatus(array $params): void
+    public function updateStatus(array $params): void
     {
         $id     = (int) $params['id'];
         $status = (string) ($_POST['status'] ?? '');
@@ -217,27 +217,102 @@ class AgendamentoController extends Controller
         $this->redirect('/agendamentos');
     }
 
-     public function destroy(array $params): void
+    public function destroy(array $params): void
     {
         $id = (int) $params['id'];
 
         try {
             Agendamento::delete($id);
-        } catch (PDOException) {
+        } catch (PDOException $e) {
+            error_log('Falha ao excluir agendamento #' . $id . ': ' . $e->getMessage());
+
             $this->render('agendamentos/form', [
                 'agendamento' => Agendamento::find($id) ?? [],
                 'cachorros'   => Cachorro::all(),
-                'servicos'    => Servico::all(),
+                'servicos'    => $this->servicosDisponiveis(Agendamento::find($id)),
                 'erro'        => 'Não foi possível excluir este agendamento. Tente novamente.',
                 'navAtivo'    => 'agendamentos',
             ]);
+
             return;
         }
 
         $this->redirect('/agendamentos');
     }
 
-        /**
+    /**
+     * Valida os campos básicos do formulário de agendamento.
+     * Retorna a mensagem de erro ou null quando tudo estiver válido.
+     */
+    private function validarCampos(int $cachorroId, int $servicoId, string $data, string $hora): ?string
+    {
+        if ($cachorroId <= 0 || $servicoId <= 0) {
+            return 'Cachorro e serviço são obrigatórios.';
+        }
+
+        if (!$this->dataValida($data) || !$this->horaValida($hora)) {
+            return 'Informe uma data e uma hora válidas.';
+        }
+
+        return null;
+    }
+
+    /** Formato AAAA-MM-DD com data real (ex.: 2026-02-30 é inválida). */
+    private function dataValida(string $data): bool
+    {
+        $dt = DateTimeImmutable::createFromFormat('!Y-m-d', $data);
+
+        return $dt !== false && $dt->format('Y-m-d') === $data;
+    }
+
+    /** Formato HH:MM de 00:00 a 23:59. */
+    private function horaValida(string $hora): bool
+    {
+        $h = DateTimeImmutable::createFromFormat('!H:i', $hora);
+
+        return $h !== false && $h->format('H:i') === $hora;
+    }
+
+    /**
+     * Mensagem amigável para o usuário a partir do erro do banco.
+     * O detalhe técnico (SQL) vai apenas para o log do container.
+     */
+    private function mensagemErroBanco(PDOException $e): string
+    {
+        $codigo   = (string) ($e->errorInfo[0] ?? '');
+        $driver   = (string) ($e->errorInfo[1] ?? 0);
+        $mensagem = strtolower($e->getMessage());
+
+        error_log('Erro de banco em agendamento: ' . $e->getMessage());
+
+        if ($codigo === '23000' && $driver === '1062') {
+            if (str_contains($mensagem, 'uq_agendamentos_data_hora')) {
+                return 'Este horário já está ocupado. Escolha outro.';
+            }
+
+            if (str_contains($mensagem, 'fk_')) {
+                return 'Registro vinculado a outro dado e não pode ser alterado.';
+            }
+
+            return 'Este registro já existe.';
+        }
+
+        if ($codigo === '23000' && $driver === '1451') {
+            return 'Este registro está vinculado a outros dados e não pode ser excluído.';
+        }
+
+        if ($codigo === '40001') {
+            return 'A operação conflitou com outra execução. Tente novamente.';
+        }
+
+        if ($codigo === 'HY000' || $e->getCode() === 'HY000') {
+            return 'Falha na conexão com o banco de dados. Tente novamente.';
+        }
+
+        return 'Não foi possível concluir a operação. Tente novamente.';
+    }
+
+    /**
      * Serviços oferecidos na marcação (apenas ativos), mantendo visível
      * o serviço atual quando ele já foi inativado.
      */
@@ -263,6 +338,4 @@ class AgendamentoController extends Controller
 
         return $servicos;
     }
-
-
 }

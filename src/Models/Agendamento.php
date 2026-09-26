@@ -6,10 +6,10 @@ require_once __DIR__ . '/../config/database.php';
 
 class Agendamento
 {
-        /** Lista canônica dos status aceitos (usada também pelo controller). */
+    /** Lista canônica dos status aceitos (usada também pelo controller). */
     public const STATUS = ['agendado', 'andamento', 'concluido', 'cancelado'];
 
-        /**
+    /**
      * Atualiza apenas o status (ação rápida do card).
      */
     public static function updateStatus(int $id, string $status): void
@@ -26,6 +26,25 @@ class Agendamento
         ]);
     }
 
+    /**
+     * Verifica se a data + hora já estão ocupadas.
+     * Na edição, passe o id do próprio agendamento para ignorá-lo na checagem.
+     */
+    public static function horarioOcupado(string $data, string $hora, ?int $ignorarId = null): bool
+    {
+        $sql    = 'SELECT COUNT(*) FROM agendamentos WHERE data = :data AND hora = :hora';
+        $params = [':data' => $data, ':hora' => $hora];
+
+        if ($ignorarId !== null) {
+            $sql .= ' AND id <> :id';
+            $params[':id'] = $ignorarId;
+        }
+
+        $stmt = getConnection()->prepare($sql);
+        $stmt->execute($params);
+
+        return (int) $stmt->fetchColumn() > 0;
+    }
 
     public static function all(): array
     {
