@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Controllers;
 
+use PDOException;
 use core\Controller;
 use Servico;
 
@@ -104,10 +105,30 @@ class ServicoController extends Controller
 
     public function destroy(array $params): void
     {
-        Servico::delete((int) $params['id']);
+        $id    = (int) $params['id'];
+        $aviso = null;
 
-        $this->redirect('/servicos');
+        if (Servico::emUso($id)) {
+            // Já usado em agendamentos: preserva o histórico e só inativa
+            Servico::inativar($id);
+            $aviso = 'Este serviço já foi usado em agendamentos e foi apenas inativado (não aparece mais na marcação).';
+        } else {
+            try {
+                Servico::delete($id);
+            } catch (PDOException) {
+                // Rede de segurança: nunca deixar a tela de Fatal error aparecer
+                Servico::inativar($id);
+                $aviso = 'Não foi possível excluir este serviço; ele foi inativado.';
+            }
+        }
+
+        $this->render('servicos/index', [
+            'servicos' => Servico::all(),
+            'aviso'    => $aviso,
+            'navAtivo' => 'servicos',
+        ]);
     }
+
 
     /**
      * Lê e valida o POST do formulário.
