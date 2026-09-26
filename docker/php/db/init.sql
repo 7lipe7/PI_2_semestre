@@ -33,7 +33,7 @@ CREATE TABLE agendamentos (
     servico_id  INT UNSIGNED NOT NULL,
     data        DATE NOT NULL,
     hora        TIME NOT NULL,
-    status      ENUM('agendado', 'concluido', 'cancelado') NOT NULL DEFAULT 'agendado',
+    status      ENUM('agendado', 'andamento', 'concluido', 'cancelado') NOT NULL DEFAULT 'agendado',
     observacoes TEXT NULL,
     criado_em   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -80,8 +80,8 @@ CREATE TABLE usuarios (
 CREATE TABLE historico_agendamentos (
     id        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     agendamento_id INT UNSIGNED NOT NULL,
-    status_anterior ENUM('agendado', 'concluido', 'cancelado') NOT NULL,
-    status_novo ENUM('agendado', 'concluido', 'cancelado') NOT NULL,
+    status_anterior ENUM('agendado', 'andamento', 'concluido', 'cancelado') NOT NULL,
+    status_novo ENUM('agendado', 'andamento', 'concluido', 'cancelado') NOT NULL,
     alterado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_historico_agendamento
         FOREIGN KEY (agendamento_id) REFERENCES agendamentos (id)
