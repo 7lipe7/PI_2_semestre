@@ -94,9 +94,8 @@ $statusAtual = $valor('status', 'agendado');
                 <div class="campo">
                     <label for="status">Status</label>
                     <select name="status" id="status">
-                        
+
                         <option value="agendado" <?= $statusAtual === 'agendado' ? 'selected' : '' ?>>Agendado</option>
-                        <option value="andamento" <?= $statusAtual === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
                         <option value="andamento" <?= $statusAtual === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
                         <option value="concluido" <?= $statusAtual === 'concluido' ? 'selected' : '' ?>>Concluído</option>
                         <option value="cancelado" <?= $statusAtual === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
@@ -109,11 +108,23 @@ $statusAtual = $valor('status', 'agendado');
                 <label for="observacoes">Observações</label>
                 <textarea name="observacoes" id="observacoes" rows="3"><?= $valor('observacoes') ?></textarea>
             </div>
-
-            <div class="agendamento-form__actions">
+                        <div class="agendamento-form__actions">
                 <button type="submit" class="botao"><?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?></button>
+
+                <?php if ($editando): ?>
+                    <button type="submit"
+                            class="btn btn-outline-danger"
+                            formaction="/agendamentos/<?= (int) $agendamento['id'] ?>/excluir"
+                            onclick="return confirm('Excluir DEFINITIVAMENTE este agendamento? O histórico dele também será apagado.')">
+                        Excluir do banco
+                    </button>
+                <?php endif; ?>
+
                 <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">Cancelar</a>
             </div>
+
+
+       
         </form>
     </div>
 </div>
