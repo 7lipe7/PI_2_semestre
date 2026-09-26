@@ -1,4 +1,5 @@
 <?php
+
 /** Form de agendamento. Variáveis: $agendamento, $cachorros, $erro */
 
 $editando = !empty($agendamento['id']);
@@ -43,16 +44,14 @@ $statusAtual = $valor('status', 'agendado');
                     placeholder="Ex.: Thor, ou o nome do dono..."
                     autocomplete="off"
                     value="<?= $cachorroSelecionado !== null
-                        ? \Core\e($cachorroSelecionado['nome'] . ' (dono: ' . $cachorroSelecionado['proprietario_nome'] . ')')
-                        : '' ?>"
-                >
+                                ? \Core\e($cachorroSelecionado['nome'] . ' (dono: ' . $cachorroSelecionado['proprietario_nome'] . ')')
+                                : '' ?>">
 
                 <input
                     type="hidden"
                     name="cachorro_id"
                     id="cachorro_id"
-                    value="<?= $cachorroSelecionado !== null ? (int) $cachorroSelecionado['id'] : '' ?>"
-                >
+                    value="<?= $cachorroSelecionado !== null ? (int) $cachorroSelecionado['id'] : '' ?>">
 
                 <div id="pet-selecionado" class="combobox-selecionado">
                     <?= $cachorroSelecionado !== null
@@ -71,8 +70,7 @@ $statusAtual = $valor('status', 'agendado');
                         <?php foreach ($servicos as $servico): ?>
                             <option
                                 value="<?= (int) $servico['id'] ?>"
-                                <?= (int) ($agendamento['servico_id'] ?? 0) === (int) $servico['id'] ? 'selected' : '' ?>
-                            >
+                                <?= (int) ($agendamento['servico_id'] ?? 0) === (int) $servico['id'] ? 'selected' : '' ?>>
                                 <?= \Core\e($servico['nome']) ?> — R$ <?= number_format((float) $servico['preco'], 2, ',', '.') ?>
                             </option>
                         <?php endforeach; ?>
@@ -96,9 +94,13 @@ $statusAtual = $valor('status', 'agendado');
                 <div class="campo">
                     <label for="status">Status</label>
                     <select name="status" id="status">
+                        
                         <option value="agendado" <?= $statusAtual === 'agendado' ? 'selected' : '' ?>>Agendado</option>
+                        <option value="andamento" <?= $statusAtual === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
+                        <option value="andamento" <?= $statusAtual === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
                         <option value="concluido" <?= $statusAtual === 'concluido' ? 'selected' : '' ?>>Concluído</option>
                         <option value="cancelado" <?= $statusAtual === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+
                     </select>
                 </div>
             <?php endif; ?>
@@ -132,4 +134,3 @@ $petsJson = json_encode(
     window.CACHORROS = <?= $petsJson ?>;
 </script>
 <script src="/assets/js/combobox.js"></script>
-
