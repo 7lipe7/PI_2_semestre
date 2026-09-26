@@ -17,10 +17,6 @@ class HomeController extends Controller
         $dataInformada = $_GET['data'] ?? null;
         $data = $this->dataSelecionada(is_string($dataInformada) ? $dataInformada : null) ?? $hoje;
 
-        // $_GET pode chegar como array (ex.: ?data[]=...): só aceita string
-        $dataInformada = $_GET['data'] ?? null;
-        $data = $this->dataSelecionada(is_string($dataInformada) ? $dataInformada : null) ?? $hoje;
-
         $this->render('home/home', [
             'agendamentos'    => Agendamento::byData($data),
             'dataSelecionada' => $data,
