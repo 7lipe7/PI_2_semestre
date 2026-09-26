@@ -23,12 +23,12 @@ class AgendamentoController extends Controller
     }
 
     public function historico(array $params = []): void
-{
-    $this->render('agendamentos/historico', [
-        'historico' => Agendamento::historico(),
-        'navAtivo'  => 'agendamentos',
-    ]);
-}
+    {
+        $this->render('agendamentos/historico', [
+            'historico' => Agendamento::historico(),
+            'navAtivo'  => 'agendamentos',
+        ]);
+    }
 
     public function create(array $params = []): void
     {
@@ -82,7 +82,6 @@ class AgendamentoController extends Controller
             );
 
             $this->redirect('/agendamentos');
-
         } catch (PDOException) {
             // UNIQUE (data, hora) = horário já ocupado
             $this->render('agendamentos/form', [
@@ -131,13 +130,12 @@ class AgendamentoController extends Controller
 
         $statusPost = (string) ($_POST['status'] ?? '');
 
-        $status = in_array(
-            $statusPost,
-            ['agendado', 'concluido', 'cancelado'],
-            true
-        )
+        $statusPost = (string) ($_POST['status'] ?? '');
+
+        $status = in_array($statusPost, Agendamento::STATUS, true)
             ? $statusPost
             : 'agendado';
+
 
         if (
             $cachorroId <= 0 ||
@@ -176,7 +174,6 @@ class AgendamentoController extends Controller
             );
 
             $this->redirect('/agendamentos');
-
         } catch (PDOException) {
             // UNIQUE (data, hora) = horário já ocupado
             $this->render('agendamentos/form', [
@@ -197,6 +194,29 @@ class AgendamentoController extends Controller
         }
     }
 
+
+        public function updateStatus(array $params): void
+    {
+        $id     = (int) $params['id'];
+        $status = (string) ($_POST['status'] ?? '');
+
+        if (!in_array($status, Agendamento::STATUS, true)) {
+            http_response_code(422);
+            echo 'Status inválido.';
+            return;
+        }
+
+        if (Agendamento::find($id) === null) {
+            http_response_code(404);
+            echo 'Agendamento não encontrado.';
+            return;
+        }
+
+        Agendamento::updateStatus($id, $status);
+
+        $this->redirect('/agendamentos');
+    }
+
     public function destroy(array $params): void
     {
         Agendamento::delete((int) $params['id']);
@@ -204,4 +224,3 @@ class AgendamentoController extends Controller
         $this->redirect('/agendamentos');
     }
 }
-

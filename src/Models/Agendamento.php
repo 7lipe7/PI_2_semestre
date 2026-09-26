@@ -6,6 +6,27 @@ require_once __DIR__ . '/../config/database.php';
 
 class Agendamento
 {
+        /** Lista canônica dos status aceitos (usada também pelo controller). */
+    public const STATUS = ['agendado', 'andamento', 'concluido', 'cancelado'];
+
+        /**
+     * Atualiza apenas o status (ação rápida do card).
+     */
+    public static function updateStatus(int $id, string $status): void
+    {
+        $stmt = getConnection()->prepare(
+            'UPDATE agendamentos
+             SET status = :status
+             WHERE id = :id'
+        );
+
+        $stmt->execute([
+            ':id'     => $id,
+            ':status' => $status,
+        ]);
+    }
+
+
     public static function all(): array
     {
         return getConnection()
