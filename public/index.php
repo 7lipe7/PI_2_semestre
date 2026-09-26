@@ -53,6 +53,8 @@ $router->post('/agendamentos', 'AgendamentoController@store');
 $router->get('/agendamentos/{id}/editar', 'AgendamentoController@edit');
 $router->post('/agendamentos/{id}', 'AgendamentoController@update');
 $router->post('/agendamentos/{id}/excluir', 'AgendamentoController@destroy');
+$router->post('/agendamentos/{id}/status', 'AgendamentoController@updateStatus');
+
 
 // servicos
 $router->get('/servicos', 'ServicoController@index');
