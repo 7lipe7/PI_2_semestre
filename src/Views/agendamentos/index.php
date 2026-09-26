@@ -1,4 +1,5 @@
 <?php
+
 /** Lista de agendamentos. Variável: $agendamentos (com data, hora, status, cachorro_nome...) */
 $agendamentos = $agendamentos ?? [];
 $quantidadeAgendados = count(array_filter($agendamentos, fn(array $a): bool => ($a['status'] ?? 'agendado') === 'agendado'));
@@ -73,15 +74,14 @@ $receitaTotal = array_sum(array_map(
                             <p><?= \Core\e($a['proprietario_nome']) ?></p>
                         </div>
 
-                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status" class="agendamento-card__status-form">
+                        <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status" class="agendamento-card__status-form">
                             <label class="visually-hidden" for="status-<?= (int) $a['id'] ?>">Status do agendamento</label>
                             <select
                                 id="status-<?= (int) $a['id'] ?>"
                                 name="status"
                                 class="agendamento-card__status-select <?= $statusClass ?>"
                                 data-status-atual="<?= \Core\e($status) ?>"
-                                onchange="this.form.submit()"
-                            >
+                                onchange="this.form.submit()">
                                 <option value="agendado" <?= $status === 'agendado' ? 'selected' : '' ?>>Agendado</option>
                                 <option value="andamento" <?= $status === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
                                 <option value="concluido" <?= $status === 'concluido' ? 'selected' : '' ?>>Concluído</option>
@@ -124,8 +124,8 @@ $receitaTotal = array_sum(array_map(
                                 <i data-lucide="message-square-text"></i>
                             </span>
                             <span><?= !empty($a['observacoes'])
-                                ? \Core\e($a['observacoes'])
-                                : 'Nenhuma descrição informada' ?></span>
+                                        ? \Core\e($a['observacoes'])
+                                        : 'Nenhuma descrição informada' ?></span>
                         </div>
                     </div>
 
@@ -135,14 +135,16 @@ $receitaTotal = array_sum(array_map(
                             <span>Editar</span>
                         </a>
 
-                        <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/excluir"
-                              class="agendamento-card__delete-form"
-                              onsubmit="return confirm('Cancelar este agendamento?')">
+                        <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status"
+                            class="agendamento-card__delete-form"
+                            onsubmit="return confirm('Cancelar este agendamento? O horário continua reservado — para liberar, edite a data/hora.')">
+                            <input type="hidden" name="status" value="cancelado">
                             <button type="submit" class="agendamento-card__action agendamento-card__action--delete">
-                                <i data-lucide="trash-2"></i>
+                                <i data-lucide="circle-x"></i>
                                 <span>Cancelar</span>
                             </button>
                         </form>
+                        
                     </div>
                 </article>
             <?php endforeach; ?>
@@ -278,4 +280,3 @@ $receitaTotal = array_sum(array_map(
         });
     });
 </script>
-

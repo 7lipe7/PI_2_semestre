@@ -130,7 +130,7 @@ class AgendamentoController extends Controller
 
         $statusPost = (string) ($_POST['status'] ?? '');
 
-        $statusPost = (string) ($_POST['status'] ?? '');
+      
 
         $status = in_array($statusPost, Agendamento::STATUS, true)
             ? $statusPost
@@ -217,10 +217,24 @@ class AgendamentoController extends Controller
         $this->redirect('/agendamentos');
     }
 
-    public function destroy(array $params): void
+     public function destroy(array $params): void
     {
-        Agendamento::delete((int) $params['id']);
+        $id = (int) $params['id'];
+
+        try {
+            Agendamento::delete($id);
+        } catch (PDOException) {
+            $this->render('agendamentos/form', [
+                'agendamento' => Agendamento::find($id) ?? [],
+                'cachorros'   => Cachorro::all(),
+                'servicos'    => Servico::all(),
+                'erro'        => 'Não foi possível excluir este agendamento. Tente novamente.',
+                'navAtivo'    => 'agendamentos',
+            ]);
+            return;
+        }
 
         $this->redirect('/agendamentos');
     }
+
 }
