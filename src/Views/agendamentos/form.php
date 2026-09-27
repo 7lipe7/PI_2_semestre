@@ -34,33 +34,24 @@ $statusAtual = $valor('status', 'agendado');
 
         <form method="post" action="<?= $editando ? '/agendamentos/' . (int) $agendamento['id'] : '/agendamentos' ?>" class="agendamento-form">
             <div class="combobox">
-                <label for="pet-busca">Pet (busca pelo nome do pet ou do dono)</label>
+                <label for="pet-busca">Pet</label>
 
-                <input
-                    type="text"
+                <select
                     id="pet-busca"
                     class="combobox-busca"
-                    placeholder="Ex.: Thor, ou o nome do dono..."
-                    autocomplete="off"
-                    value="<?= $cachorroSelecionado !== null
-                        ? \Core\e($cachorroSelecionado['nome'] . ' (dono: ' . $cachorroSelecionado['proprietario_nome'] . ')')
-                        : '' ?>"
-                >
-
-                <input
-                    type="hidden"
                     name="cachorro_id"
-                    id="cachorro_id"
-                    value="<?= $cachorroSelecionado !== null ? (int) $cachorroSelecionado['id'] : '' ?>"
+                    required
                 >
-
-                <div id="pet-selecionado" class="combobox-selecionado">
-                    <?= $cachorroSelecionado !== null
-                        ? \Core\e($cachorroSelecionado['nome'] . ' — ' . $cachorroSelecionado['proprietario_nome'])
-                        : '' ?>
-                </div>
-
-                <ul id="pet-lista" class="combobox-lista" hidden></ul>
+                    <option value="">Selecione um pet</option>
+                    <?php foreach ($cachorros as $c): ?>
+                        <option
+                            value="<?= (int) $c['id'] ?>"
+                            <?= $cachorroSelecionado !== null && (int) $c['id'] === (int) $cachorroSelecionado['id'] ? 'selected' : '' ?>
+                        >
+                            <?= \Core\e($c['nome'] . ' (dono: ' . $c['proprietario_nome'] . ')') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <?php if (!empty($servicos)): ?>

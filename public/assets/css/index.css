@@ -1016,12 +1016,21 @@ main button {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px 18px;
+    align-items: start;
 }
 
-.agendamento-form .combobox,
-.agendamento-form .campo--full,
-.agendamento-form .campo {
+.agendamento-form .combobox {
+    grid-column: 1 / -1;
+    width: 100%;
     max-width: none;
+    margin-bottom: 0;
+}
+
+.agendamento-form .campo,
+.agendamento-form .campo--full {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 0;
 }
 
 .agendamento-form .campo--full {
@@ -1197,6 +1206,12 @@ main button {
     white-space: nowrap;
 }
 
+.page-header__action svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
 .page-header__actions {
     display: flex;
     align-items: center;
@@ -1337,12 +1352,18 @@ main button {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-}
 
-.cliente-card__details-btn i {
-    width: 12px;
-    height: 12px;
-    stroke-width: 2.1;
+    svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
+    i{
+        width: 5px;
+        height: 5px;
+        stroke-width: 2.1;
+    }
 }
 
 .cliente-card__details-btn:hover {
@@ -1868,7 +1889,8 @@ main button {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    max-width: 420px;
+    width: 100%;
+    max-width: 100%;
     margin-bottom: 14px;
 }
 

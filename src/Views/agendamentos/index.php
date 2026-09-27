@@ -117,7 +117,10 @@ $receitaTotal = array_sum(array_map(
                     </div>
 
                     <div class="agendamento-card__footer">
-                        <a href="/agendamentos/<?= (int) $a['id'] ?>/editar" class="agendamento-card__action agendamento-card__action--edit">
+                        <a href="/agendamentos/<?= (int) $a['id'] ?>/editar"
+                           class="agendamento-card__action agendamento-card__action--edit"
+                           data-agendamento-edit
+                           data-agendamento-id="<?= (int) $a['id'] ?>">
                             <i data-lucide="pencil"></i>
                             <span>Editar</span>
                         </a>
@@ -199,10 +202,157 @@ $receitaTotal = array_sum(array_map(
 <script>
     const agendamentoModal = document.getElementById('agendamentoModal');
     const openAgendamentoModal = document.querySelector('[data-agendamento-modal-open]');
+
+    const bindModalCloseHandlers = () => {
+        agendamentoModal?.querySelectorAll('[data-agendamento-modal-close]').forEach((button) => {
+            button.addEventListener('click', closeAgendamentoModal);
+        });
+    };
+
+    const initPetCombobox = () => {
+        const modalForm = agendamentoModal?.querySelector('.agendamento-form, .agendamento-modal__form');
+        if (!modalForm || modalForm.dataset.petComboboxInitialized === 'true') return;
+
+        const busca = modalForm.querySelector('#pet-busca');
+        if (!busca) return;
+
+        if (busca.tagName === 'SELECT') {
+            modalForm.dataset.petComboboxInitialized = 'true';
+            modalForm.addEventListener('submit', (event) => {
+                if (!busca.value) {
+                    event.preventDefault();
+                    alert('Escolha um pet para salvar o agendamento!');
+                    busca.focus();
+                }
+            });
+            return;
+        }
+
+        const lista = modalForm.querySelector('#pet-lista');
+        const hiddenId = modalForm.querySelector('#cachorro_id');
+        const selecao = modalForm.querySelector('#pet-selecionado');
+
+        if (!lista || !hiddenId || !selecao) return;
+
+        modalForm.dataset.petComboboxInitialized = 'true';
+
+        const CACHORROS = window.CACHORROS ?? [];
+
+        const normalizar = (texto) => String(texto ?? '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+
+        const textoItem = (c) => `${c.nome} (dono: ${c.proprietario_nome})`;
+        const textoSelecao = (c) => `✔ ${c.nome} — ${c.proprietario_nome}${c.proprietario_celular ? ` · ${c.proprietario_celular}` : ''}`;
+
+        const mostrarLista = (filtro) => {
+            const termo = normalizar(filtro);
+            const resultados = CACHORROS.filter((c) =>
+                termo === '' ||
+                normalizar(c.nome).includes(termo) ||
+                normalizar(c.proprietario_nome).includes(termo)
+            );
+
+            if (resultados.length === 0) {
+                lista.innerHTML = '<li class="combobox-vazio">Nenhum pet encontrado</li>';
+                lista.hidden = false;
+                return;
+            }
+
+            lista.innerHTML = resultados.map((c) => `
+                <li class="combobox-item" data-id="${c.id}">
+                    <span class="combobox-pet">${c.nome}</span>
+                    <span class="combobox-dono">${c.proprietario_nome} · ${c.raca ?? 'raça não informada'}</span>
+                </li>
+            `).join('');
+
+            lista.hidden = false;
+        };
+
+        busca.addEventListener('input', () => {
+            hiddenId.value = '';
+            selecao.textContent = '';
+            mostrarLista(busca.value);
+        });
+
+        busca.addEventListener('focus', () => {
+            const petAtual = CACHORROS.find((c) => String(c.id) === hiddenId.value);
+            if (petAtual && busca.value.trim() === textoItem(petAtual)) {
+                busca.value = '';
+                hiddenId.value = '';
+                selecao.textContent = '';
+            }
+            mostrarLista(busca.value);
+        });
+
+        lista.addEventListener('click', (event) => {
+            const item = event.target.closest('.combobox-item');
+            if (!item) return;
+
+            const cachorro = CACHORROS.find((c) => String(c.id) === item.dataset.id);
+            if (!cachorro) return;
+
+            hiddenId.value = cachorro.id;
+            busca.value = textoItem(cachorro);
+            selecao.textContent = textoSelecao(cachorro);
+            lista.hidden = true;
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.combobox')) {
+                lista.hidden = true;
+            }
+        });
+
+        modalForm.addEventListener('submit', (event) => {
+            if (!hiddenId.value) {
+                event.preventDefault();
+                alert('Escolha um pet na busca para salvar o agendamento!');
+                busca.focus();
+            }
+        });
+    };
+
     const closeAgendamentoModal = () => {
         if (!agendamentoModal) return;
         agendamentoModal.classList.add('hidden');
         agendamentoModal.setAttribute('aria-hidden', 'true');
+    };
+
+    const openEditAgendamentoModal = async (id) => {
+        if (!agendamentoModal) return;
+
+        const response = await fetch(`/agendamentos/${id}/editar`);
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const formCard = doc.querySelector('.agendamento-form-card');
+        const form = formCard?.querySelector('.agendamento-form');
+
+        if (!form) return;
+
+        const title = formCard?.querySelector('h1')?.textContent?.trim() || 'Remarcar agendamento';
+        agendamentoModal.classList.remove('hidden');
+        agendamentoModal.setAttribute('aria-hidden', 'false');
+
+        const modalContent = agendamentoModal.querySelector('.cliente-modal');
+        if (!modalContent) return;
+
+        modalContent.innerHTML = `
+            <div class="cliente-modal__header">
+                <h2 id="agendamentoModalTitulo">${title}</h2>
+                <button type="button" class="cliente-modal__close" data-agendamento-modal-close aria-label="Fechar modal">&times;</button>
+            </div>
+            ${form.outerHTML}
+        `;
+
+        bindModalCloseHandlers();
+        initPetCombobox();
+        lucide.createIcons();
+
+        const firstField = agendamentoModal.querySelector('input, select, textarea');
+        firstField?.focus();
     };
 
     openAgendamentoModal?.addEventListener('click', (event) => {
@@ -212,13 +362,21 @@ $receitaTotal = array_sum(array_map(
         agendamentoModal?.querySelector('select')?.focus();
     });
 
-    agendamentoModal?.querySelectorAll('[data-agendamento-modal-close]').forEach((button) => {
-        button.addEventListener('click', closeAgendamentoModal);
+    document.querySelectorAll('[data-agendamento-edit]').forEach((link) => {
+        link.addEventListener('click', async (event) => {
+            event.preventDefault();
+            const id = link.dataset.agendamentoId;
+            if (!id) return;
+            await openEditAgendamentoModal(Number(id));
+        });
     });
 
     agendamentoModal?.addEventListener('click', (event) => {
         if (event.target === agendamentoModal) closeAgendamentoModal();
     });
+
+    bindModalCloseHandlers();
+    initPetCombobox();
 
     document.querySelectorAll('.agendamento-card').forEach((card) => {
         const select = card.querySelector('.agendamento-card__status-select');

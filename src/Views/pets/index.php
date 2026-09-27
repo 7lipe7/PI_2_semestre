@@ -28,11 +28,6 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
             <span><?= $totalPets ?></span>
             <span><?= $labelPets ?></span>
         </div>
-
-        <button type="button" class="btn clientes-new-btn" id="novoPetBtn">
-            <i data-lucide="plus"></i>
-            <span>Novo pet</span>
-        </button>
     </div>
 
     <?php if (empty($pets)): ?>

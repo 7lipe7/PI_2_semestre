@@ -30,11 +30,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             <span><?= $totalClientes ?></span>
             <span><?= $labelClientes ?></span>
         </div>
-
-        <a href="/clientes/novo" class="btn clientes-new-btn">
-            <i data-lucide="plus"></i>
-            <span>Novo cliente</span>
-        </a>
     </div>
 
     <?php if (empty($clientes)): ?>
@@ -90,25 +85,26 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             </span>
                             <span><?= \Core\e($telefoneFormatado) ?></span>
                         </div>
-
+                        
                         <?php
                         $descricao = trim((string) ($c['observacoes'] ?? ''));
                         $textoDescricao = $descricao !== '' ? $descricao : 'Nenhuma descrição informada';
                         $pets = trim((string) ($c['pets'] ?? ''));
                         $textoPets = $pets !== '' ? $pets : 'Nenhum pet cadastrado';
                         ?>
-                        <div class="cliente-card__description">
-                            <span class="cliente-card__description-icon" aria-hidden="true">
-                                <i data-lucide="message-square-text"></i>
-                            </span>
-                            <span><?= \Core\e($textoDescricao) ?></span>
-                        </div>
 
                         <div class="cliente-card__pets">
                             <span class="cliente-card__pets-icon" aria-hidden="true">
                                 <i data-lucide="dog"></i>
                             </span>
                             <span><?= \Core\e($textoPets) ?></span>
+                        </div>
+
+                        <div class="cliente-card__description">
+                            <span class="cliente-card__description-icon" aria-hidden="true">
+                                <i data-lucide="message-square-text"></i>
+                            </span>
+                            <span><?= \Core\e($textoDescricao) ?></span>
                         </div>
 
                         <button
