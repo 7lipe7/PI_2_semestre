@@ -119,7 +119,10 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                 </div>
 
                 <div class="agendamento-form__actions">
-                    <button type="submit" class="botao">Cadastrar serviço</button>
+                    <button type="submit" class="botao" style="width: 100%; border-radius: 8px;">
+                        <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                        <span>Cadastrar serviço</span>
+                    </button>
                     <button type="button" class="btn btn-light agendamento-form__cancel" id="servicoCancelBtn">Cancelar</button>
                 </div>
             </form>
@@ -167,7 +170,10 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                 </div>
 
                 <div class="agendamento-form__actions">
-                    <button type="submit" class="botao">Atualizar serviço</button>
+                    <button type="submit" class="botao" style="width: 100%; border-radius: 8px;">
+                        <i data-lucide="save" style="width: 16px; height: 16px;"></i>
+                        <span>Atualizar serviço</span>
+                    </button>
                     <button type="button" class="btn btn-light agendamento-form__cancel" id="servicoEditCancelBtn">Cancelar</button>
                 </div>
             </form>

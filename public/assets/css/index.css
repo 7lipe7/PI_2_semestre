@@ -625,6 +625,24 @@ main button {
     transition: all 0.2s ease;
 }
 
+.agendamento-form__actions .botao svg,
+.agendamento-form__actions .botao i,
+.agendamento-form__actions .botao .lucide {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.agendamento-form__actions .botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
 .botao.cliente-modal__submit {
     width: 100%;
     border: 0;
