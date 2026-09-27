@@ -577,6 +577,8 @@ main button {
     background: #f7f2f3;
     color: var(--text);
     font-size: 15px;
+    accent-color: #d3567a;
+    color-scheme: light;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -599,8 +601,8 @@ main button {
 }
 
 .cliente-modal__actions {
-    display: grid;
-    grid-template-columns: minmax(0, 4fr) minmax(120px, 1fr);
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
     gap: 12px;
     margin-top: 8px;
@@ -623,28 +625,29 @@ main button {
     transition: all 0.2s ease;
 }
 
-.cliente-modal__submit {
+.botao.cliente-modal__submit {
     width: 100%;
     border: 0;
+    border-radius: 8px;
     background: #2bb357;
     color: #fff;
     box-shadow: 0 8px 18px rgba(43, 179, 87, 0.22);
 }
 
-.cliente-modal__submit i,
-.cliente-modal__submit svg {
+.botao.cliente-modal__submit i,
+.botao.cliente-modal__submit svg {
     width: 16px;
     height: 16px;
     stroke-width: 2.2;
     flex-shrink: 0;
 }
 
-.cliente-modal__submit:hover:not(:disabled) {
+.botao.cliente-modal__submit:hover:not(:disabled) {
     background: #22a34a;
     color: #fff;
 }
 
-.cliente-modal__submit:disabled {
+.botao.cliente-modal__submit:disabled {
     cursor: not-allowed;
     opacity: 0.55;
     box-shadow: none;
@@ -662,6 +665,194 @@ main button {
     text-decoration: none;
 }
 
+.cliente-modal--service-style {
+    width: min(560px, calc(100vw - 40px));
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.cliente-modal--service-style .agendamento-form-card {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px 22px;
+    border: 1px solid #efdde4;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 28px rgba(88, 57, 66, 0.05);
+}
+
+.cliente-modal--service-style .cliente-modal__close--inside {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #5d4d52;
+    font-size: 24px;
+}
+
+.cliente-modal--service-style .cliente-modal__close--inside:hover {
+    background: rgba(199, 70, 120, 0.08);
+    color: #241b20;
+}
+
+.pet-modal .agendamento-form-card {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px 22px;
+    border: 1px solid #efdde4;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 28px rgba(88, 57, 66, 0.05);
+}
+
+.pet-modal .agendamento-form-card .agendamento-form-header {
+    margin-bottom: 18px;
+}
+
+.pet-modal .agendamento-form-icon {
+    background: rgba(211, 86, 122, 0.12);
+    color: #d3567a;
+}
+
+.pet-modal .cliente-modal__submit {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: #d3567a;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(211, 86, 122, 0.22);
+}
+
+.pet-modal .cliente-modal__submit i,
+.pet-modal .cliente-modal__submit svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+    flex-shrink: 0;
+}
+
+.pet-modal .cliente-modal__submit:hover:not(:disabled) {
+    background: #c54671;
+    color: #fff;
+}
+
+.pet-modal .cliente-modal__submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.agendamento-modal .agendamento-form-card {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px 22px;
+    border: 1px solid #efdde4;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 28px rgba(88, 57, 66, 0.05);
+}
+
+.agendamento-modal .agendamento-form-header {
+    margin-bottom: 18px;
+}
+
+.agendamento-modal .agendamento-form-icon {
+    background: rgba(211, 86, 122, 0.12);
+    color: #d3567a;
+}
+
+.agendamento-modal .cliente-modal__submit {
+    width: 100%;
+    border: 0;
+    border-radius: 8px;
+    background: #d3567a;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(211, 86, 122, 0.22);
+}
+
+.agendamento-modal .cliente-modal__submit i,
+.agendamento-modal .cliente-modal__submit svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+    flex-shrink: 0;
+}
+
+.agendamento-modal .cliente-modal__submit:hover:not(:disabled) {
+    background: #c54671;
+    color: #fff;
+}
+
+.agendamento-modal .cliente-modal__submit:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+.servico-modal {
+    width: min(820px, calc(100vw - 40px));
+    padding: 0;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.servico-modal .agendamento-form-card {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px 22px;
+    border: 1px solid #efdde4;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 12px 28px rgba(88, 57, 66, 0.05);
+}
+
+.servico-modal .agendamento-form-icon {
+    background: rgba(211, 86, 122, 0.12);
+    color: #d3567a;
+}
+
+.servico-modal .cliente-modal__close--inside {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: #5d4d52;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.servico-modal .cliente-modal__close--inside:hover {
+    background: rgba(199, 70, 120, 0.08);
+    color: #241b20;
+}
+
 /* Area de clientes */
 .clientes-page {
     width: 100%;
@@ -675,7 +866,8 @@ main button {
 
 .agendamentos-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 379px);
+    grid-auto-rows: 368px;
     gap: 18px;
     align-items: stretch;
 }
@@ -683,7 +875,10 @@ main button {
 .agendamento-card {
     display: flex;
     flex-direction: column;
-    min-height: 280px;
+    width: 379px;
+    height: 368px;
+    min-height: 0;
+    overflow: hidden;
     padding: 18px 18px 16px;
     border: 1px solid #eadfe3;
     border-radius: 8px;
@@ -874,6 +1069,54 @@ main button {
     color: #8757e8;
 }
 
+.agendamentos-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0 0 16px;
+}
+
+.agendamentos-filtro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 22px;
+    padding: 3px 9px;
+    border: 1px solid #eadfe4;
+    border-radius: 999px;
+    background: #fff;
+    color: #4e4247;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    box-shadow: 0 1px 3px rgba(87, 62, 71, 0.04);
+}
+
+.agendamentos-filtro span {
+    color: #9d818d;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.agendamentos-filtro--ativo {
+    border-color: #2bb357;
+    background: #2bb357;
+    color: #fff;
+}
+
+.agendamentos-filtro--ativo span {
+    color: #fff;
+}
+
+.agendamento-card--oculto {
+    display: none;
+}
+
 .agendamento-card__line {
     display: flex;
     align-items: center;
@@ -933,10 +1176,20 @@ main button {
     transform: translateY(-1px);
 }
 
-.agendamento-card__action--edit {
-    color: #c74678;
-    border-color: rgba(199, 70, 120, 0.2);
-    background: #fff5f8;
+.agendamento-card__footer .agendamento-card__action.agendamento-card__action--edit {
+    border: 1px solid rgba(199, 70, 120, 0.18);
+    border-radius: 10px;
+    background: #fff1f5;
+    color: #d3567a;
+    box-shadow: 0 6px 14px rgba(211, 86, 122, 0.12);
+    text-decoration: none;
+}
+
+.agendamento-card__footer .agendamento-card__action.agendamento-card__action--edit:hover {
+    background: #ffeaf1;
+    color: #c54671;
+    transform: translateY(-1px);
+    text-decoration: none;
 }
 
 .agendamento-card__action--delete {
@@ -1003,8 +1256,8 @@ main button {
     width: 52px;
     height: 52px;
     border-radius: 16px;
-    background: rgba(199, 70, 120, 0.12);
-    color: #b73870;
+    background: rgba(43, 179, 87, 0.12);
+    color: #2bb357;
 }
 
 .agendamento-form-icon svg {
@@ -1029,12 +1282,21 @@ main button {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px 18px;
+    align-items: start;
 }
 
-.agendamento-form .combobox,
-.agendamento-form .campo--full,
-.agendamento-form .campo {
+.agendamento-form .combobox {
+    grid-column: 1 / -1;
+    width: 100%;
     max-width: none;
+    margin-bottom: 0;
+}
+
+.agendamento-form .campo,
+.agendamento-form .campo--full {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 0;
 }
 
 .agendamento-form .campo--full {
@@ -1086,6 +1348,16 @@ main button {
 
     .agendamentos-grid {
         grid-template-columns: 1fr;
+    }
+
+    .agendamento-card {
+        width: 100%;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .agendamentos-grid {
+        grid-template-columns: repeat(2, 379px);
     }
 }
 
@@ -1208,6 +1480,12 @@ main button {
     padding: 6px 12px;
     font-size: 13px;
     white-space: nowrap;
+}
+
+.page-header__action svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
 }
 
 .page-header__actions {
@@ -1350,12 +1628,18 @@ main button {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-}
 
-.cliente-card__details-btn i {
-    width: 12px;
-    height: 12px;
-    stroke-width: 2.1;
+    svg {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
+    i{
+        width: 5px;
+        height: 5px;
+        stroke-width: 2.1;
+    }
 }
 
 .cliente-card__details-btn:hover {
@@ -1881,7 +2165,8 @@ main button {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    max-width: 420px;
+    width: 100%;
+    max-width: 100%;
     margin-bottom: 14px;
 }
 

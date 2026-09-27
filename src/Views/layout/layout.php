@@ -32,7 +32,11 @@ $paginas = [
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
-    <link rel="stylesheet" href="/assets/css/index.css">
+    <?php
+    $cssPath = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/assets/css/index.css';
+    $cssVersion = is_file($cssPath) ? filemtime($cssPath) : '1';
+    ?>
+    <link rel="stylesheet" href="/assets/css/index.css?v=<?= $cssVersion ?>">
 </head>
 
 <body class="admin-body">
@@ -97,16 +101,33 @@ $paginas = [
             <p class="page-header__subtitle"><?= \Core\e($subtitulo) ?></p>
         </div>
 
-        <?php if ($navAtivo === 'agendamentos'): ?>
+        <?php if ($navAtivo === 'agendamentos' || $navAtivo === 'clientes' || $navAtivo === 'pets' || $navAtivo === 'servicos'): ?>
             <div class="page-header__actions">
-                <a href="/agendamentos/historico" class="btn clientes-new-btn page-header__action">
-                    <i data-lucide="history"></i>
-                    <span>Histórico</span>
-                </a>
-                <a href="/agendamentos/novo" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
-                    <i data-lucide="plus"></i>
-                    <span>Marcar banho</span>
-                </a>
+                <?php if ($navAtivo === 'agendamentos'): ?>
+                    <a href="/agendamentos/historico" class="btn clientes-new-btn page-header__action">
+                        <i data-lucide="history"></i>
+                        <span>Histórico</span>
+                    </a>
+                    <a href="#agendamentoModal" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
+                        <i data-lucide="plus"></i>
+                        <span>Marcar banho</span>
+                    </a>
+                <?php elseif ($navAtivo === 'clientes'): ?>
+                    <a href="/clientes/novo" class="btn clientes-new-btn page-header__action">
+                        <i data-lucide="plus"></i>
+                        <span>Novo cliente</span>
+                    </a>
+                <?php elseif ($navAtivo === 'pets'): ?>
+                    <button type="button" class="btn clientes-new-btn page-header__action" id="novoPetBtn">
+                        <i data-lucide="plus"></i>
+                        <span>Novo pet</span>
+                    </button>
+                <?php elseif ($navAtivo === 'servicos'): ?>
+                    <button type="button" class="btn clientes-new-btn page-header__action" data-servico-modal-open>
+                        <i data-lucide="plus"></i>
+                        <span>Novo serviço</span>
+                    </button>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </header>

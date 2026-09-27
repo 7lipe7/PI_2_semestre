@@ -1,6 +1,9 @@
 <?php
 
 /** Form de agendamento. Variáveis: $agendamento, $cachorros, $erro */
+$agendamento = $agendamento ?? [];
+$cachorros = $cachorros ?? [];
+$erro = $erro ?? null;
 
 $editando = !empty($agendamento['id']);
 $valor = fn(string $campo, string $padrao = '') => \Core\e((string) ($agendamento[$campo] ?? $padrao));
@@ -35,31 +38,24 @@ $statusAtual = $valor('status', 'agendado');
 
         <form method="post" action="<?= $editando ? '/agendamentos/' . (int) $agendamento['id'] : '/agendamentos' ?>" class="agendamento-form">
             <div class="combobox">
-                <label for="pet-busca">Pet (busca pelo nome do pet ou do dono)</label>
+                <label for="pet-busca">Pet</label>
 
-                <input
-                    type="text"
+                <select
                     id="pet-busca"
                     class="combobox-busca"
-                    placeholder="Ex.: Thor, ou o nome do dono..."
-                    autocomplete="off"
-                    value="<?= $cachorroSelecionado !== null
-                                ? \Core\e($cachorroSelecionado['nome'] . ' (dono: ' . $cachorroSelecionado['proprietario_nome'] . ')')
-                                : '' ?>">
-
-                <input
-                    type="hidden"
                     name="cachorro_id"
-                    id="cachorro_id"
-                    value="<?= $cachorroSelecionado !== null ? (int) $cachorroSelecionado['id'] : '' ?>">
-
-                <div id="pet-selecionado" class="combobox-selecionado">
-                    <?= $cachorroSelecionado !== null
-                        ? \Core\e($cachorroSelecionado['nome'] . ' — ' . $cachorroSelecionado['proprietario_nome'])
-                        : '' ?>
-                </div>
-
-                <ul id="pet-lista" class="combobox-lista" hidden></ul>
+                    required
+                >
+                    <option value="">Selecione um pet</option>
+                    <?php foreach ($cachorros as $c): ?>
+                        <option
+                            value="<?= (int) $c['id'] ?>"
+                            <?= $cachorroSelecionado !== null && (int) $c['id'] === (int) $cachorroSelecionado['id'] ? 'selected' : '' ?>
+                        >
+                            <?= \Core\e($c['nome'] . ' (dono: ' . $c['proprietario_nome'] . ')') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <?php if (!empty($servicos)): ?>
@@ -109,18 +105,12 @@ $statusAtual = $valor('status', 'agendado');
                 <textarea name="observacoes" id="observacoes" rows="3"><?= $valor('observacoes') ?></textarea>
             </div>
                         <div class="agendamento-form__actions">
-                <button type="submit" class="botao"><?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?></button>
+                <button type="submit" class="botao botao--atualizar-agendamento cliente-modal__submit" style="width: 100%; border-radius: 8px;">
+                    <i data-lucide="save"></i>
+                    <span>Atualizar agendamento</span>
+                </button>
 
-                <?php if ($editando): ?>
-                    <button type="submit"
-                            class="btn btn-outline-danger"
-                            formaction="/agendamentos/<?= (int) $agendamento['id'] ?>/excluir"
-                            onclick="return confirm('Excluir DEFINITIVAMENTE este agendamento? O histórico dele também será apagado.')">
-                        Excluir do banco
-                    </button>
-                <?php endif; ?>
-
-                <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">Cancelar</a>
+                <button type="button" class="btn btn-light agendamento-form__cancel cliente-modal__cancel" data-agendamento-modal-close>Cancelar</button>
             </div>
 
 

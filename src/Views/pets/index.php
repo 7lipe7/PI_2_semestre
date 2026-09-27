@@ -3,6 +3,9 @@
 $busca = trim((string) ($busca ?? ''));
 $totalPets = count($pets ?? []);
 $labelPets = $totalPets === 1 ? 'pet' : 'pets';
+$proprietarios = $proprietarios ?? [];
+$petEdit = $petEdit ?? null;
+$petEditAberto = !empty($petEditAberto);
 ?>
 <div class="clientes-page pets-page">
     <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
@@ -28,11 +31,6 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
             <span><?= $totalPets ?></span>
             <span><?= $labelPets ?></span>
         </div>
-
-        <button type="button" class="btn clientes-new-btn" id="novoPetBtn">
-            <i data-lucide="plus"></i>
-            <span>Novo pet</span>
-        </button>
     </div>
 
     <?php if (empty($pets)): ?>
@@ -63,9 +61,20 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
                         </div>
 
                         <div class="cliente-card__actions" aria-label="Ações do pet">
-                            <a href="/pets/<?= $p['id'] ?>/editar" class="cliente-card__action cliente-card__action--edit" aria-label="Editar pet">
+                            <button
+                                type="button"
+                                class="cliente-card__action cliente-card__action--edit pet-edit-btn"
+                                aria-label="Editar pet"
+                                data-id="<?= (int) ($p['id'] ?? 0) ?>"
+                                data-proprietario-id="<?= (int) ($p['proprietario_id'] ?? 0) ?>"
+                                data-nome="<?= \Core\e($p['nome'] ?? '') ?>"
+                                data-raca="<?= \Core\e((string) ($p['raca'] ?? '')) ?>"
+                                data-porte="<?= \Core\e((string) ($p['porte'] ?? '')) ?>"
+                                data-pelagem="<?= \Core\e((string) ($p['pelagem'] ?? '')) ?>"
+                                data-observacoes="<?= \Core\e((string) ($p['observacoes'] ?? '')) ?>"
+                            >
                                 <i data-lucide="pencil"></i>
-                            </a>
+                            </button>
 
                             <form method="post" action="/pets/<?= $p['id'] ?>/excluir"
                                   class="cliente-card__delete-form"
@@ -125,67 +134,150 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
 </div>
 
 <div class="cliente-modal-backdrop <?= !empty($petModalAberto) ? '' : 'hidden' ?>" id="petModalBackdrop" aria-hidden="<?= !empty($petModalAberto) ? 'false' : 'true' ?>">
-    <div class="cliente-modal pet-modal" role="dialog" aria-modal="true" aria-labelledby="petModalTitulo">
-        <div class="cliente-modal__header">
-            <h2 id="petModalTitulo">Novo pet</h2>
-            <button type="button" class="cliente-modal__close" id="petModalClose" aria-label="Fechar modal">&times;</button>
+    <div class="cliente-modal pet-modal cliente-modal--service-style" role="dialog" aria-modal="true" aria-labelledby="petModalTitulo">
+        <div class="agendamento-form-card">
+            <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="petModalClose" aria-label="Fechar modal">&times;</button>
+
+            <div class="agendamento-form-header">
+                <div class="agendamento-form-icon" aria-hidden="true">
+                    <i data-lucide="paw-print"></i>
+                </div>
+                <div>
+                    <h1 id="petModalTitulo">Novo pet</h1>
+                    <p>Cadastre os dados do pet</p>
+                </div>
+            </div>
+
+            <form method="post" action="/pets" class="pet-modal__form" id="petForm">
+                <div class="cliente-modal__row">
+                    <div class="campo">
+                        <label for="petProprietarioId">Tutor <span class="campo-required">*</span></label>
+                        <select id="petProprietarioId" name="proprietario_id" required>
+                            <option value="">Selecione um tutor</option>
+                            <?php foreach ($proprietarios as $prop): ?>
+                                <option value="<?= (int) $prop['id'] ?>"><?= \Core\e($prop['nome']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="petNome">Nome do pet <span class="campo-required">*</span></label>
+                        <input id="petNome" type="text" name="nome" placeholder="Ex: Belinha" required>
+                    </div>
+                </div>
+
+                <div class="cliente-modal__row">
+                    <div class="campo">
+                        <label for="petRaca">Raça</label>
+                        <input id="petRaca" type="text" name="raca" placeholder="Ex: Poodle">
+                    </div>
+
+                    <div class="campo">
+                        <label for="petPorte">Porte <span class="campo-required">*</span></label>
+                        <select id="petPorte" name="porte" required>
+                            <option value="">Selecione o porte</option>
+                            <option value="pequeno">Pequeno</option>
+                            <option value="medio">Médio</option>
+                            <option value="grande">Grande</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="cliente-modal__row cliente-modal__row--restante">
+                    <div class="campo campo--restante">
+                        <label for="petPelagem">Pelagem</label>
+                        <input id="petPelagem" type="text" name="pelagem" placeholder="Ex: Cacheada">
+                    </div>
+
+                    <div class="campo campo--restante">
+                        <label for="petObservacoes">Observações</label>
+                        <textarea id="petObservacoes" name="observacoes" rows="4" placeholder="Alergias, restrições, cuidados especiais, comportamento..."></textarea>
+                    </div>
+                </div>
+
+                <div class="cliente-modal__actions">
+                    <button type="submit" class="cliente-modal__submit" id="petSubmitBtn" disabled>
+                        <i data-lucide="save" aria-hidden="true"></i>
+                        <span>Cadastrar pet</span>
+                    </button>
+                    <button type="button" class="cliente-modal__cancel" id="petCancelBtn">Cancelar</button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
 
-        <form method="post" action="/pets" class="pet-modal__form" id="petForm">
-            <div class="cliente-modal__row">
-                <div class="campo">
-                    <label for="petProprietarioId">Tutor <span class="campo-required">*</span></label>
-                    <select id="petProprietarioId" name="proprietario_id" required>
-                        <option value="">Selecione um tutor</option>
-                        <?php foreach ($proprietarios as $prop): ?>
-                            <option value="<?= (int) $prop['id'] ?>"><?= \Core\e($prop['nome']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+<div class="cliente-modal-backdrop <?= $petEditAberto ? '' : 'hidden' ?>" id="petEditModalBackdrop" aria-hidden="<?= $petEditAberto ? 'false' : 'true' ?>">
+    <div class="cliente-modal pet-modal cliente-modal--service-style" role="dialog" aria-modal="true" aria-labelledby="petEditModalTitulo">
+        <div class="agendamento-form-card">
+            <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="petEditModalClose" aria-label="Fechar modal">&times;</button>
+
+            <div class="agendamento-form-header">
+                <div class="agendamento-form-icon" aria-hidden="true">
+                    <i data-lucide="dog"></i>
                 </div>
-
-                <div class="campo">
-                    <label for="petNome">Nome do pet <span class="campo-required">*</span></label>
-                    <input id="petNome" type="text" name="nome" placeholder="Ex: Belinha" required>
-                </div>
-            </div>
-
-            <div class="cliente-modal__row">
-                <div class="campo">
-                    <label for="petRaca">Raça</label>
-                    <input id="petRaca" type="text" name="raca" placeholder="Ex: Poodle">
-                </div>
-
-                <div class="campo">
-                    <label for="petPorte">Porte <span class="campo-required">*</span></label>
-                    <select id="petPorte" name="porte" required>
-                        <option value="">Selecione o porte</option>
-                        <option value="pequeno">Pequeno</option>
-                        <option value="medio">Médio</option>
-                        <option value="grande">Grande</option>
-                    </select>
+                <div>
+                    <h1 id="petEditModalTitulo">Editar pet</h1>
+                    <p>Atualize os dados do pet</p>
                 </div>
             </div>
 
-            <div class="cliente-modal__row cliente-modal__row--restante">
-                <div class="campo campo--restante">
-                    <label for="petPelagem">Pelagem</label>
-                    <input id="petPelagem" type="text" name="pelagem" placeholder="Ex: Cacheada">
+            <form method="post" action="/pets/<?= (int) ($petEdit['id'] ?? 0) ?>" class="pet-modal__form" id="petEditForm">
+                <div class="cliente-modal__row">
+                    <div class="campo">
+                        <label for="petEditProprietarioId">Tutor <span class="campo-required">*</span></label>
+                        <select id="petEditProprietarioId" name="proprietario_id" required>
+                            <option value="">Selecione um tutor</option>
+                            <?php foreach ($proprietarios as $prop): ?>
+                                <option value="<?= (int) $prop['id'] ?>" <?= (($petEdit['proprietario_id'] ?? null) == $prop['id']) ? 'selected' : '' ?>><?= \Core\e($prop['nome']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="campo">
+                        <label for="petEditNome">Nome do pet <span class="campo-required">*</span></label>
+                        <input id="petEditNome" type="text" name="nome" value="<?= \Core\e((string) ($petEdit['nome'] ?? '')) ?>" required>
+                    </div>
                 </div>
 
-                <div class="campo campo--restante">
-                    <label for="petObservacoes">Observações</label>
-                    <textarea id="petObservacoes" name="observacoes" rows="4" placeholder="Alergias, restrições, cuidados especiais, comportamento..."></textarea>
-                </div>
-            </div>
+                <div class="cliente-modal__row">
+                    <div class="campo">
+                        <label for="petEditRaca">Raça</label>
+                        <input id="petEditRaca" type="text" name="raca" value="<?= \Core\e((string) ($petEdit['raca'] ?? '')) ?>">
+                    </div>
 
-            <div class="cliente-modal__actions">
-                <button type="submit" class="cliente-modal__submit" id="petSubmitBtn" disabled>
-                    <i data-lucide="save" aria-hidden="true"></i>
-                    <span>Cadastrar pet</span>
-                </button>
-                <button type="button" class="cliente-modal__cancel" id="petCancelBtn">Cancelar</button>
-            </div>
-        </form>
+                    <div class="campo">
+                        <label for="petEditPorte">Porte <span class="campo-required">*</span></label>
+                        <select id="petEditPorte" name="porte" required>
+                            <option value="">Selecione o porte</option>
+                            <option value="pequeno" <?= (($petEdit['porte'] ?? '') === 'pequeno') ? 'selected' : '' ?>>Pequeno</option>
+                            <option value="medio" <?= (($petEdit['porte'] ?? '') === 'medio') ? 'selected' : '' ?>>Médio</option>
+                            <option value="grande" <?= (($petEdit['porte'] ?? '') === 'grande') ? 'selected' : '' ?>>Grande</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="cliente-modal__row cliente-modal__row--restante">
+                    <div class="campo campo--restante">
+                        <label for="petEditPelagem">Pelagem</label>
+                        <input id="petEditPelagem" type="text" name="pelagem" value="<?= \Core\e((string) ($petEdit['pelagem'] ?? '')) ?>">
+                    </div>
+
+                    <div class="campo campo--restante">
+                        <label for="petEditObservacoes">Observações</label>
+                        <textarea id="petEditObservacoes" name="observacoes" rows="4"><?= \Core\e((string) ($petEdit['observacoes'] ?? '')) ?></textarea>
+                    </div>
+                </div>
+
+                <div class="cliente-modal__actions">
+                    <button type="submit" class="cliente-modal__submit" id="petEditSubmitBtn">
+                        <i data-lucide="save" aria-hidden="true"></i>
+                        <span>Atualizar Pet</span>
+                    </button>
+                    <button type="button" class="cliente-modal__cancel" id="petEditCancelBtn">Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -257,6 +349,12 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
         const petForm = document.getElementById('petForm');
         const petSubmitBtn = document.getElementById('petSubmitBtn');
 
+        const petEditModalBackdrop = document.getElementById('petEditModalBackdrop');
+        const petEditModalClose = document.getElementById('petEditModalClose');
+        const petEditCancelBtn = document.getElementById('petEditCancelBtn');
+        const petEditForm = document.getElementById('petEditForm');
+        const petEditSubmitBtn = document.getElementById('petEditSubmitBtn');
+
         if (petForm && petSubmitBtn) {
             const petTutorInput = document.getElementById('petProprietarioId');
             const petNomeInput = document.getElementById('petNome');
@@ -306,6 +404,73 @@ $labelPets = $totalPets === 1 ? 'pet' : 'pets';
                 }
             });
         }
+
+        const closePetEditModal = () => {
+            if (!petEditModalBackdrop) return;
+            petEditModalBackdrop.classList.add('hidden');
+            petEditModalBackdrop.setAttribute('aria-hidden', 'true');
+        };
+
+        const openPetEditModal = (button) => {
+            if (!petEditModalBackdrop || !petEditForm) return;
+
+            const id = button.dataset.id || '';
+            const proprietarioId = button.dataset.proprietarioId || '';
+            const nome = button.dataset.nome || '';
+            const raca = button.dataset.raca || '';
+            const porte = button.dataset.porte || '';
+            const pelagem = button.dataset.pelagem || '';
+            const observacoes = button.dataset.observacoes || '';
+
+            const petEditAction = petEditForm.getAttribute('action');
+            if (id) {
+                petEditForm.setAttribute('action', '/pets/' + id);
+            }
+
+            const proprietarioSelect = document.getElementById('petEditProprietarioId');
+            const nomeInput = document.getElementById('petEditNome');
+            const racaInput = document.getElementById('petEditRaca');
+            const porteSelect = document.getElementById('petEditPorte');
+            const pelagemInput = document.getElementById('petEditPelagem');
+            const observacoesInput = document.getElementById('petEditObservacoes');
+
+            if (proprietarioSelect) proprietarioSelect.value = proprietarioId;
+            if (nomeInput) nomeInput.value = nome;
+            if (racaInput) racaInput.value = raca;
+            if (porteSelect) porteSelect.value = porte;
+            if (pelagemInput) pelagemInput.value = pelagem;
+            if (observacoesInput) observacoesInput.value = observacoes;
+
+            if (petEditSubmitBtn) {
+                petEditSubmitBtn.disabled = false;
+            }
+
+            petEditModalBackdrop.classList.remove('hidden');
+            petEditModalBackdrop.setAttribute('aria-hidden', 'false');
+        };
+
+        if (petEditModalClose) {
+            petEditModalClose.addEventListener('click', closePetEditModal);
+        }
+
+        if (petEditCancelBtn) {
+            petEditCancelBtn.addEventListener('click', closePetEditModal);
+        }
+
+        if (petEditModalBackdrop) {
+            petEditModalBackdrop.addEventListener('click', (event) => {
+                if (event.target === petEditModalBackdrop) {
+                    closePetEditModal();
+                }
+            });
+        }
+
+        document.querySelectorAll('.pet-edit-btn').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                openPetEditModal(button);
+            });
+        });
 
         const petBackdrop = document.getElementById('petDetalhesBackdrop');
         const petCloseBtn = document.getElementById('petDetalhesClose');
