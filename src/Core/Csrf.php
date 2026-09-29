@@ -48,7 +48,9 @@ final class Csrf
 
         error_log('CSRF recusado em ' . ($_SERVER['REQUEST_URI'] ?? '?'));
 
-        http_response_code(419);
+        // 403 é o código padrão para falha de validação CSRF.
+        // Não use 419: não existe na spec HTTP e o Apache o converte em 500.
+        http_response_code(403);
         header('Content-Type: text/html; charset=utf-8');
 
         echo '<!DOCTYPE html><meta charset="utf-8"><title>Sessão expirada</title>'

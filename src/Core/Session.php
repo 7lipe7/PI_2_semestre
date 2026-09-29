@@ -68,6 +68,12 @@ final class Session
     {
         $_SESSION = [];
 
+        // Sem sessão ativa o PHP emite um warning — e warning vira saída,
+        // o que por sua vez impede os headers de saírem depois.
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            return;
+        }
+
         if (ini_get('session.use_cookies')) {
             $p = session_get_cookie_params();
 
@@ -82,6 +88,21 @@ final class Session
         }
 
         session_destroy();
+    }
+
+    /**
+     * Derruba a autenticação sem matar a sessão.
+     *
+     * Os dados somem e o id troca (invalida qualquer cópia que tenha vazado),
+     * mas a sessão continua viva para carregar o flash até o /login.
+     */
+    public static function expirar(): void
+    {
+        $_SESSION = [];
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
     }
 
     /** False quando passou do tempo de inatividade. */

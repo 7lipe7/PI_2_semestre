@@ -30,8 +30,16 @@ final class Auth
             return;
         }
 
-        Session::destruir();
-        Session::start();
+        // Só limpa a sessão se havia alguém autenticado (sessão expirou).
+        //
+        // Visitante anônimo não tem o que limpar — e apagar $_SESSION aqui
+        // destruiria o token CSRF que a tela de login acabou de criar. Como
+        // o navegador pede /favicon.ico sozinho e essa URL cai neste gate,
+        // a limpeza invalidava o formulário de login ("Sessão expirada").
+        if (self::check()) {
+            Session::expirar();
+        }
+
         Session::setFlash('Faça login para continuar.');
 
         header('Location: /login');
