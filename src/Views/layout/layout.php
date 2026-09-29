@@ -56,14 +56,6 @@ $paginas = [
 
         <nav class="sidebar-nav d-flex flex-column gap-1">
 
-            <form method="post" action="/logout">
-                <?= \Core\Csrf::campo() ?>
-                <button type="submit" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent">
-                    <i class="nav-icon" data-lucide="log-out" aria-hidden="true"></i>
-                    <span>Sair</span>
-                </button>
-            </form>
-
 
             <a href="/" class="nav-item d-flex align-items-center gap-3 text-decoration-none<?= $navAtivo === 'home' ? ' active' : '' ?>" <?= $navAtivo === 'home' ? ' aria-current="page"' : '' ?>>
                 <i class="nav-icon" data-lucide="layout-dashboard" aria-hidden="true"></i>
@@ -88,6 +80,16 @@ $paginas = [
                 <i class="nav-icon" data-lucide="users-round" aria-hidden="true"></i>
                 <span>Clientes</span>
             </a>
+
+
+            <form method="post" action="/logout">
+                <?= \Core\Csrf::campo() ?>
+                <button type="submit" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent">
+                    <i class="nav-icon" data-lucide="log-out" aria-hidden="true"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
+
 
 
         </nav>

@@ -2249,3 +2249,146 @@ main button {
     padding: 10px 12px;
     color: #999;
 }
+
+/* --- Tela de login --- */
+
+.login-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 24px;
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 680px;
+    padding: 36px 32px 32px;
+    border: 1px solid #f0e9e9;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 18px 40px rgba(43, 24, 35, 0.10);
+    text-align: center;
+}
+
+.login-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--sidebar-bg);
+    color: var(--pink);
+}
+
+.login-logo i,
+.login-logo svg {
+    width: 30px;
+    height: 30px;
+    stroke-width: 2;
+}
+
+.login-title {
+    margin: 0 0 6px;
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--sidebar-bg);
+}
+
+.login-subtitle {
+    margin: 0 0 22px;
+    color: #8a7d85;
+    font-size: 14px;
+}
+
+/* Aviso de erro: precisa ser IMPOSSIVEL de nao ver. Sem isso o usuario
+   acha que "nao aconteceu nada" quando a senha esta errada. */
+.login-erro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border: 1px solid #f5c2c7;
+    border-radius: 10px;
+    background: #ffe3e3;
+    color: #b02a37;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+}
+
+.login-erro i,
+.login-erro svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2;
+    flex-shrink: 0;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.login-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+
+.login-campo label {
+    color: #6d5f67;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.login-campo input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid #eec4d6;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.login-campo input:focus {
+    border-color: var(--pink);
+    outline: none;
+}
+
+.login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 4px;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 22px;
+    background: var(--pink);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    filter: brightness(.94);
+}
+
+.login-btn i,
+.login-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.2;
+}
+

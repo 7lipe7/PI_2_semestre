@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         $this->renderLimpo('auth/login', [
             'erro'    => Session::getFlash(),
-            'usuario' => '',
+            'usuario' => Session::pegarLoginTentativa(),
             'navAtivo' => '',
         ]);
     }
@@ -26,6 +26,11 @@ class AuthController extends Controller
 
         $login = trim((string) ($_POST['login'] ?? ''));
         $senha = (string) ($_POST['senha'] ?? '');
+
+        // Devolve o que foi digitado ao formulário: sem isso o campo volta
+        // vazio e o usuário não percebe que o navegador (autofill) mandou
+        // outro valor — foi exatamente o que causou o "não consigo logar".
+        Session::guardarLoginTentativa($login);
 
         if ($login === '' || $senha === '') {
             Session::setFlash('Informe usuário e senha.');
@@ -51,7 +56,8 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
-        // Login confirmado: novo id de sessão + marca a atividade
+        // Login confirmado: descarta a tentativa guardada e troca o id
+        Session::pegarLoginTentativa();
         Session::regenerar();
         Session::put('usuario_id', (int) $usuario['id']);
         Session::put('usuario_nome', (string) $usuario['nome']);

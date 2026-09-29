@@ -10,6 +10,7 @@ final class Session
 
     private const CHAVE_TEMPO = 'usuario_ultima_atividade';
     private const CHAVE_FLASH = '_flash';
+    private const CHAVE_LOGIN_TENTATIVA = '_login_tentativa';
 
     public static function start(): void
     {
@@ -135,5 +136,26 @@ final class Session
         unset($_SESSION[self::CHAVE_FLASH]);
 
         return is_string($mensagem) ? $mensagem : null;
+    }
+
+    /**
+     * Guarda o login digitado para devolver no formulário.
+     *
+     * Sem isso o campo volta vazio e o usuário não tem como perceber que o
+     * navegador preencheu outra coisa (autofill) — ele só vê a senha sendo
+     * recusada sem entender por quê.
+     */
+    public static function guardarLoginTentativa(string $login): void
+    {
+        $_SESSION[self::CHAVE_LOGIN_TENTATIVA] = $login;
+    }
+
+    /** Lê e apaga: o campo só é repovoado uma vez. */
+    public static function pegarLoginTentativa(): string
+    {
+        $login = $_SESSION[self::CHAVE_LOGIN_TENTATIVA] ?? '';
+        unset($_SESSION[self::CHAVE_LOGIN_TENTATIVA]);
+
+        return is_string($login) ? $login : '';
     }
 }
