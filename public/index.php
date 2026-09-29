@@ -19,8 +19,6 @@ require_once __DIR__ . '/../src/Controllers/AgendamentoController.php';
 require_once __DIR__ . '/../src/Models/Servico.php';
 require_once __DIR__ . '/../src/Controllers/ServicoController.php';
 
-
-
 use Core\Router;
 
 

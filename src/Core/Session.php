@@ -1,0 +1,12 @@
+<?php 
+
+declare(strict_types= 1);
+
+
+namespace Core;
+
+final class Session{
+
+public const timeout = 1800;
+}
+?>
