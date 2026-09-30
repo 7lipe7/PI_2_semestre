@@ -15,12 +15,14 @@ se tudo der certo abra http://localhost:8080/
  * Cria (ou redefine a senha de) um usuário do painel.
  *
  * Rode de dentro do projeto:
+
  *   docker compose exec php php /var/www/src/bin/criar-usuario.php
  *
  * Ou informando os dados:
+
  *   docker compose exec php php /var/www/src/bin/criar-usuario.php "Maria" maria "SenhaForte@2026"
  *
- * Sem argumentos, usa os valores padrão de apresentação.
+ * 
  */
 
 

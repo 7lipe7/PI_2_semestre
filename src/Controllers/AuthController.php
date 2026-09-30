@@ -8,9 +8,19 @@ use core\Controller;
 use Core\Csrf;
 use Core\Session;
 use Usuario;
+use TentativaLogin;
+
 
 class AuthController extends Controller
 {
+
+
+    /** Tentativas malsucedidas antes do bloqueio (por login+IP). */
+    private const MAX_TENTATIVAS = 5;
+
+    /** Janela, em minutos, na qual as tentativas são contadas. */
+    private const JANELA_BLOQUEIO_MIN = 15;
+
     public function form(array $params = []): void
     {
         $this->renderLimpo('auth/login', [
@@ -38,12 +48,28 @@ class AuthController extends Controller
             $this->redirect('/login');
         }
 
+        // Bloqueio de força bruta: conta tentativas malsucedidas recentes
+        // do mesmo login vindas do mesmo IP, dentro da janela.
+        $ip   = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
+        $tentativas = TentativaLogin::contar($login, $ip, self::JANELA_BLOQUEIO_MIN);
+
+        if ($tentativas >= self::MAX_TENTATIVAS) {
+            // Não dizemos quantas faltam nem distinguimos login existente de
+            // inexistente — a mesma mensagem para qualquer motivo de recusa.
+            Session::setFlash('Muitas tentativas. Aguarde alguns minutos e tente de novo.');
+
+            $this->redirect('/login');
+        }
+
         $usuario = Usuario::findByLogin($login);
+
 
         if ($usuario === null) {
             // Even sem usuário, gastamos o mesmo tempo: senão o tempo de
             // resposta revelaria quais logins existem (timing attack).
             password_verify($senha, '$2y$12$JkbJ9GoTp/nQLPMRMbbpbOWM1Pakx9KfiVM6cJHcuoyNllkZks/E6');
+
+            TentativaLogin::registrar($login, $ip);
 
             Session::setFlash('Usuário ou senha inválidos.');
 
@@ -51,10 +77,17 @@ class AuthController extends Controller
         }
 
         if (!Usuario::verificarSenha($usuario, $senha)) {
+            TentativaLogin::registrar($login, $ip);
+
             Session::setFlash('Usuário ou senha inválidos.');
 
             $this->redirect('/login');
         }
+
+        // Login confirmado: o histórico de erros é zerado, para que o próximo
+        // erro do usuário legítimo comece do zero em vez de herdar as
+        // tentativas de um ataque anterior.
+        TentativaLogin::limpar($login, $ip);
 
         // Login confirmado: descarta a tentativa guardada e troca o id
         Session::pegarLoginTentativa();

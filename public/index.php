@@ -20,6 +20,11 @@ require_once __DIR__ . '/../src/Core/Auth.php';
 require_once __DIR__ . '/../src/Models/Usuario.php';
 require_once __DIR__ . '/../src/Controllers/AuthController.php';
 
+// protecao brute force
+require_once __DIR__ . '/../src/Models/TentativaLogin.php';
+
+
+
 // A sessão TEM de começar aqui: é o primeiro ponto do sistema com as classes
 // carregadas e ainda sem nenhuma saída enviada. Além disso o gate de login
 // abaixo lê $_SESSION — sem session_start() ele veria uma sessão vazia e
