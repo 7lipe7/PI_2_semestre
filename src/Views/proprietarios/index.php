@@ -30,11 +30,6 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             <span><?= $totalClientes ?></span>
             <span><?= $labelClientes ?></span>
         </div>
-
-        <a href="/clientes/novo" class="btn clientes-new-btn">
-            <i data-lucide="plus"></i>
-            <span>Novo cliente</span>
-        </a>
     </div>
 
     <?php if (empty($clientes)): ?>
@@ -90,25 +85,26 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             </span>
                             <span><?= \Core\e($telefoneFormatado) ?></span>
                         </div>
-
+                        
                         <?php
                         $descricao = trim((string) ($c['observacoes'] ?? ''));
                         $textoDescricao = $descricao !== '' ? $descricao : 'Nenhuma descrição informada';
                         $pets = trim((string) ($c['pets'] ?? ''));
                         $textoPets = $pets !== '' ? $pets : 'Nenhum pet cadastrado';
                         ?>
-                        <div class="cliente-card__description">
-                            <span class="cliente-card__description-icon" aria-hidden="true">
-                                <i data-lucide="message-square-text"></i>
-                            </span>
-                            <span><?= \Core\e($textoDescricao) ?></span>
-                        </div>
 
                         <div class="cliente-card__pets">
                             <span class="cliente-card__pets-icon" aria-hidden="true">
                                 <i data-lucide="dog"></i>
                             </span>
                             <span><?= \Core\e($textoPets) ?></span>
+                        </div>
+
+                        <div class="cliente-card__description">
+                            <span class="cliente-card__description-icon" aria-hidden="true">
+                                <i data-lucide="message-square-text"></i>
+                            </span>
+                            <span><?= \Core\e($textoDescricao) ?></span>
                         </div>
 
                         <button
@@ -143,21 +139,31 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
 <?php if (!empty($modalAberto)): ?>
     <div class="cliente-modal-backdrop" aria-hidden="false">
-        <div class="cliente-modal " role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
+        <div class="cliente-modal" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
             <div class="cliente-modal__header">
                 <h2 id="clienteModalTitulo"><?= $editando ? 'Editar cliente' : 'Novo cliente' ?></h2>
                 <button type="button" class="cliente-modal__close" id="clienteModalClose" aria-label="Fechar modal">
                     <i data-lucide="x"></i>
                 </button>
-            </div>
 
-            <?php if (!empty($erro)): ?>
-                <div class="cliente-modal__erro">
-                    <strong><?= \Core\e($erro) ?></strong>
+                <div class="agendamento-form-header">
+                    <div class="agendamento-form-icon" aria-hidden="true">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div>
+                        <h1 id="clienteModalTitulo"><?= $editando ? 'Editar cliente' : 'Novo cliente' ?></h1>
+                        <p><?= $editando ? 'Atualize os dados do cliente' : 'Cadastre um novo tutor' ?></p>
+                    </div>
                 </div>
-            <?php endif; ?>
+
+                <?php if (!empty($erro)): ?>
+                    <div class="cliente-modal__erro">
+                        <strong><?= \Core\e($erro) ?></strong>
+                    </div>
+                <?php endif; ?>
 
             <form method="post" action="<?= $editando ? '/clientes/' . $clienteForm['id'] : '/clientes' ?>" class="cliente-modal__form">
+                <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="nome">Nome <span class="campo-required">*</span></label>
                         <input
@@ -182,24 +188,25 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                         >
                     </div>
 
-                <div class="campo campo--full">
-                    <label for="observacoes">Descrição</label>
-                    <textarea
-                        id="observacoes"
-                        name="observacoes"
-                        rows="4"
-                        placeholder="Algumas observações sobre o cliente..."
-                    ><?= \Core\e($clienteForm['observacoes'] ?? '') ?></textarea>
-                </div>
+                    <div class="campo campo--full">
+                        <label for="observacoes">Descrição</label>
+                        <textarea
+                            id="observacoes"
+                            name="observacoes"
+                            rows="4"
+                            placeholder="Algumas observações sobre o cliente..."
+                        ><?= \Core\e($clienteForm['observacoes'] ?? '') ?></textarea>
+                    </div>
 
-                <div class="cliente-modal__actions">
-                    <button type="submit" class="cliente-modal__submit" disabled>
-                        <i data-lucide="save" aria-hidden="true"></i>
-                        <span><?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?></span>
-                    </button>
-                    <button type="button" class="cliente-modal__cancel" id="clienteModalCancel">Cancelar</button>
-                </div>
-            </form>
+                    <div class="agendamento-form__actions cliente-modal__actions">
+                        <button type="submit" class="botao cliente-modal__submit" disabled>
+                            <i data-lucide="save" aria-hidden="true"></i>
+                            <span><?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?></span>
+                        </button>
+                        <button type="button" class="btn btn-light agendamento-form__cancel cliente-modal__cancel" id="clienteModalCancel">Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 <?php endif; ?>

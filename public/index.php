@@ -12,14 +12,26 @@ require_once __DIR__ . '/../src/Core/Controller.php';
 require_once __DIR__ . '/../src/Models/Agendamento.php';
 require_once __DIR__ . '/../src/Models/Cachorro.php';
 require_once __DIR__ . '/../src/Models/Proprietario.php';
+
+// autenticacao
+require_once __DIR__ . '/../src/Core/Session.php';
+require_once __DIR__ . '/../src/Core/Csrf.php';
+require_once __DIR__ . '/../src/Core/Auth.php';
+require_once __DIR__ . '/../src/Models/Usuario.php';
+require_once __DIR__ . '/../src/Controllers/AuthController.php';
+
+// A sessão TEM de começar aqui: é o primeiro ponto do sistema com as classes
+// carregadas e ainda sem nenhuma saída enviada. Além disso o gate de login
+// abaixo lê $_SESSION — sem session_start() ele veria uma sessão vazia e
+// destruiria algo que nunca existiu (warning + headers já enviados).
+\Core\Session::start();
+
 require_once __DIR__ . '/../src/Controllers/HomeController.php';
 require_once __DIR__ . '/../src/Controllers/ProprietarioController.php';
 require_once __DIR__ . '/../src/Controllers/CachorroController.php';
 require_once __DIR__ . '/../src/Controllers/AgendamentoController.php';
 require_once __DIR__ . '/../src/Models/Servico.php';
 require_once __DIR__ . '/../src/Controllers/ServicoController.php';
-
-
 
 use Core\Router;
 
@@ -66,5 +78,17 @@ $router->post('/servicos/{id}/excluir', 'ServicoController@destroy');
 
 
 
+// ---- Login (rotas livres) ----
+$router->get('/login',  'AuthController@form');
+$router->post('/login', 'AuthController@login');
+$router->post('/logout', 'AuthController@logout');
+
+// ---- Proteção: tudo abaixo do login exige sessão ----
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+if ($path !== '/login') {
+    \Core\Auth::exigirLogin();
+}
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+

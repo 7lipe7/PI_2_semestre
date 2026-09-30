@@ -32,7 +32,11 @@ $paginas = [
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
-    <link rel="stylesheet" href="/assets/css/index.css">
+    <?php
+    $cssPath = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/assets/css/index.css';
+    $cssVersion = is_file($cssPath) ? filemtime($cssPath) : '1';
+    ?>
+    <link rel="stylesheet" href="/assets/css/index.css?v=<?= $cssVersion ?>">
 </head>
 
 <body class="admin-body">
@@ -51,6 +55,7 @@ $paginas = [
         </div>
 
         <nav class="sidebar-nav d-flex flex-column gap-1">
+
 
             <a href="/" class="nav-item d-flex align-items-center gap-3 text-decoration-none<?= $navAtivo === 'home' ? ' active' : '' ?>" <?= $navAtivo === 'home' ? ' aria-current="page"' : '' ?>>
                 <i class="nav-icon" data-lucide="layout-dashboard" aria-hidden="true"></i>
@@ -77,6 +82,16 @@ $paginas = [
             </a>
 
 
+            <form method="post" action="/logout">
+                <?= \Core\Csrf::campo() ?>
+                <button type="submit" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent">
+                    <i class="nav-icon" data-lucide="log-out" aria-hidden="true"></i>
+                    <span>Sair</span>
+                </button>
+            </form>
+
+
+
         </nav>
 
         <div class="sidebar-footer d-flex gap-2 mt-auto">
@@ -96,19 +111,6 @@ $paginas = [
             <h1 class="page-header__title"><?= \Core\e($titulo) ?></h1>
             <p class="page-header__subtitle"><?= \Core\e($subtitulo) ?></p>
         </div>
-
-        <?php if ($navAtivo === 'agendamentos'): ?>
-            <div class="page-header__actions">
-                <a href="/agendamentos/historico" class="btn clientes-new-btn page-header__action">
-                    <i data-lucide="history"></i>
-                    <span>Histórico</span>
-                </a>
-                <a href="/agendamentos/novo" class="btn clientes-new-btn page-header__action" data-agendamento-modal-open>
-                    <i data-lucide="plus"></i>
-                    <span>Marcar banho</span>
-                </a>
-            </div>
-        <?php endif; ?>
     </header>
 
     <main>

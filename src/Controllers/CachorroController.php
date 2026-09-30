@@ -79,11 +79,14 @@ class CachorroController extends Controller
             return;
         }
 
-        $this->render('pets/form', [
-            'pet'           => $pet,
-            'proprietarios' => Proprietario::all(),
-            'erro'          => null,
-            'navAtivo'      => 'pets',
+        $this->render('pets/index', [
+            'pets'            => Cachorro::all(),
+            'proprietarios'  => Proprietario::all(),
+            'busca'          => '',
+            'petEditAberto'  => true,
+            'petEdit'        => $pet,
+            'erro'           => null,
+            'navAtivo'       => 'pets',
         ]);
     }
 
