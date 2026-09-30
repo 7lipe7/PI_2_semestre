@@ -19,6 +19,7 @@ $editando = $pet !== null;
         <?php endif; ?>
 
         <form method="post" action="<?= $editando ? '/pets/' . $pet['id'] : '/pets' ?>" class="agendamento-form">
+            <?= \Core\Csrf::campo() ?>
 
             <div class="campo">
                 <label for="proprietario_id">Dono *</label>

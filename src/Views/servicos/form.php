@@ -30,6 +30,7 @@ $ativoAtual = (int) ($servico['ativo'] ?? 1);
         <?php endif; ?>
 
         <form method="post" action="<?= $editando ? '/servicos/' . (int) $servico['id'] : '/servicos' ?>" class="agendamento-form">
+            <?= \Core\Csrf::campo() ?>
             <div class="campo">
                 <label for="nome">Nome</label>
                 <input

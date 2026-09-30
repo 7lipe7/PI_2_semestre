@@ -77,6 +77,7 @@ $petEditAberto = !empty($petEditAberto);
                             <form method="post" action="/pets/<?= $p['id'] ?>/excluir"
                                 class="cliente-card__delete-form"
                                 onsubmit="return confirm('Excluir <?= \Core\e($p['nome']) ?>? Os agendamentos dele também serão apagados!')">
+                                <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir pet">
                                     <i data-lucide="trash-2"></i>
                                 </button>
@@ -146,6 +147,7 @@ $petEditAberto = !empty($petEditAberto);
             </div>
 
             <form method="post" action="/pets" class="cliente-modal__form" id="petForm">
+                <?= \Core\Csrf::campo() ?>
                 <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="petProprietarioId">Tutor <span class="campo-required">*</span></label>
@@ -220,6 +222,7 @@ $petEditAberto = !empty($petEditAberto);
             </div>
 
             <form method="post" action="/pets/<?= (int) ($petEdit['id'] ?? 0) ?>" class="pet-modal__form" id="petEditForm">
+                <?= \Core\Csrf::campo() ?>
                 <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="petEditProprietarioId">Tutor <span class="campo-required">*</span></label>

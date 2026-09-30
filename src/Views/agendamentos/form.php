@@ -37,6 +37,7 @@ $statusAtual = $valor('status', 'agendado');
         <?php endif; ?>
 
         <form method="post" action="<?= $editando ? '/agendamentos/' . (int) $agendamento['id'] : '/agendamentos' ?>" class="agendamento-form">
+            <?= \Core\Csrf::campo() ?>
             <div class="combobox">
                 <label for="pet-busca">Pet</label>
 

@@ -85,9 +85,25 @@ $router->post('/logout', 'AuthController@logout');
 
 // ---- Proteção: tudo abaixo do login exige sessão ----
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$metodo = $_SERVER['REQUEST_METHOD'];
 
-if ($path !== '/login') {
+// Rota livre: só o login. Qualquer outra rota — inclusive o logout — exige
+// sessão ativa, senão um POST anônimo poderia alcançar o AuthController.
+$rotasLivres = ['/login'];
+
+if (!in_array($path, $rotasLivres, true)) {
     \Core\Auth::exigirLogin();
+}
+
+// ---- CSRF: todo POST exige token válido ----
+// O gate é global de propósito. Exigir o token em cada action do controller
+// é fácil de esquecer — um controller novo sem a chamada ficaria aberto.
+// Um único ponto de verificação não depende de disciplina do programador.
+//
+// A única exceção é o POST /login: é a única requisição que o usuário faz
+// sem sessão, então ainda não existe token para conferir.
+if ($metodo === 'POST' && $path !== '/login') {
+    \Core\Csrf::exigir();
 }
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

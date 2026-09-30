@@ -24,6 +24,7 @@ $editando = $cliente !== null && !empty($cliente['id']);
         <?php endif; ?>
 
         <form method="post" action="<?= $editando ? '/clientes/' . $cliente['id'] : '/clientes' ?>" class="cliente-modal__form">
+            <?= \Core\Csrf::campo() ?>
             <div class="campo campo--full">
                 <label for="nome">Nome <span class="campo-required">*</span></label>
                 <input

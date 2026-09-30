@@ -128,6 +128,7 @@ $agendamentos = $agendamentos ?? [];
                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/excluir"
                               class="agendamento-card__delete-form"
                               onsubmit="return confirm('Cancelar este agendamento?')">
+                            <?= \Core\Csrf::campo() ?>
                             <button type="submit" class="agendamento-card__action agendamento-card__action--delete">
                                 <i data-lucide="trash-2"></i>
                                 <span>Cancelar</span>

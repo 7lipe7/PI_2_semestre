@@ -32,6 +32,7 @@
 
                         <form method="post" action="/servicos/<?= (int) $s['id'] ?>/excluir"
                               onsubmit="return confirm('Excluir o serviço <?= \Core\e($s['nome']) ?>?')">
+                            <?= \Core\Csrf::campo() ?>
                             <button>Excluir</button>
                         </form>
                     </td>

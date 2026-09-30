@@ -71,6 +71,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
                                   class="cliente-card__delete-form"
                                   onsubmit="return confirm('Excluir <?= \Core\e($c['nome']) ?>?')">
+                                <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir cliente">
                                     <i data-lucide="trash-2"></i>
                                 </button>
@@ -163,6 +164,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                 <?php endif; ?>
 
             <form method="post" action="<?= $editando ? '/clientes/' . $clienteForm['id'] : '/clientes' ?>" class="cliente-modal__form">
+                <?= \Core\Csrf::campo() ?>
                 <div class="cliente-modal__row">
                     <div class="campo">
                         <label for="nome">Nome <span class="campo-required">*</span></label>
