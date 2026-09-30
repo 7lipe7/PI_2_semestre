@@ -34,8 +34,34 @@ $agendamentos = $agendamentos ?? [];
         <div class="agendamentos-grid">
             <?php foreach ($agendamentos as $a): ?>
                 <?php
-                $status = (string) ($a['status'] ?? 'agendado');
-                $statusClass = 'agendamento-card__badge--' . $status;
+                $status = strtolower((string) ($a['status'] ?? 'agendado'));
+
+                $statusMap = [
+                    'agendado' => ['icon' => 'calendar-check-2', 'label' => 'Agendado', 'class' => 'agendamento-card__badge--agendado'],
+                    'andamento' => ['icon' => 'activity', 'label' => 'Em andamento', 'class' => 'agendamento-card__badge--andamento'],
+                    'concluido' => ['icon' => 'check-circle', 'label' => 'Concluído', 'class' => 'agendamento-card__badge--concluido'],
+                    'cancelado' => ['icon' => 'x-circle', 'label' => 'Cancelado', 'class' => 'agendamento-card__badge--cancelado'],
+                ];
+
+                $statusInfo = $statusMap[$status] ?? ['icon' => 'clock-3', 'label' => ucfirst($status), 'class' => 'agendamento-card__badge--agendado'];
+                $statusClass = $statusInfo['class'];
+                $statusIcon = $statusInfo['icon'];
+                $statusLabel = $statusInfo['label'];
+
+                $servicoNome = strtolower((string) ($a['servico_nome'] ?? ''));
+                $servicoClass = 'agendamento-card__icon--default';
+                $servicoIcon = 'scissors';
+
+                if (strpos($servicoNome, 'banho') !== false) {
+                    $servicoClass = 'agendamento-card__icon--banho';
+                    $servicoIcon = 'sparkles';
+                } elseif (strpos($servicoNome, 'tosa') !== false) {
+                    $servicoClass = 'agendamento-card__icon--tosa';
+                    $servicoIcon = 'brush-cleaning';
+                } elseif (strpos($servicoNome, 'higiene') !== false) {
+                    $servicoClass = 'agendamento-card__icon--higiene';
+                    $servicoIcon = 'shield-check';
+                }
                 ?>
                 <article class="agendamento-card">
                     <div class="agendamento-card__header">
