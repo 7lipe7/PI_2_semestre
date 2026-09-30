@@ -45,6 +45,46 @@ services:
       # Script executado automaticamente na primeira criação do banco
       - ./docker/php/db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  # Limpeza diária da tabela login_tentativas (proteção de força bruta).
+  #
+  # Roda como um container "descanso": dorme 24h, executa o script, volta a
+  # dormir. Fica dentro do Docker, então não depende de cron do host — o
+  # `restart: unless-stopped` garante que volte sozinho após um reboot da VM.
+  limpeza:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+
+    container_name: petshop_limpeza
+
+    # Não serve a web: nada de porta publicada nem Apache necessário.
+    command: >
+      sh -c "while true; do
+        php /var/www/src/bin/limpar-tentativas.php 7;
+        sleep 86400;
+      done"
+
+    volumes:
+      # Só precisa do src (model + config); o public não é usado aqui.
+      - ./src:/var/www/src
+
+    env_file:
+      - .env
+    environment:
+      APP_TIMEZONE: America/Sao_Paulo
+      TZ: America/Sao_Paulo
+
+    depends_on:
+      - db
+
+    # O script usa o mesmo servidor PHP da aplicação — reaproveita a imagem.
+    restart: unless-stopped
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   db_data:

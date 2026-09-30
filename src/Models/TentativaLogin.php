@@ -12,6 +12,12 @@ declare(strict_types=1);
  */
 class TentativaLogin
 {
+    /** Mesmo tamanho da coluna usuarios.login e de login_tentativas.login. */
+    private const TAMANHO_MAXIMO_LOGIN = 60;
+
+    /** Comporta IPv4 e IPv6 por inteiro (o máximo de chars de um IP IPv6). */
+    private const TAMANHO_MAXIMO_IP = 45;
+
     /**
      * Quantas tentativas o mesmo login+IP acumulou dentro da janela.
      * $minutos = null conta o histórico inteiro (usado na limpeza).
@@ -36,13 +42,17 @@ class TentativaLogin
     /** Registra uma tentativa malsucedida. */
     public static function registrar(string $login, string $ip): void
     {
+        // A coluna é VARCHAR(60), igual ao login de usuarios. Sem truncar,
+        // um login maior causaria "Data too long" e derrubaria a tela com
+        // HTTP 500 — um visitante anônimo derrubaria o login só de digitar
+        // uma string longa no campo.
         $stmt = getConnection()->prepare(
             'INSERT INTO login_tentativas (login, ip) VALUES (:login, :ip)'
         );
 
         $stmt->execute([
-            ':login' => $login,
-            ':ip'    => $ip,
+            ':login' => mb_substr($login, 0, self::TAMANHO_MAXIMO_LOGIN),
+            ':ip'    => mb_substr($ip, 0, self::TAMANHO_MAXIMO_IP),
         ]);
     }
 
@@ -58,8 +68,8 @@ class TentativaLogin
         );
 
         $stmt->execute([
-            ':login' => $login,
-            ':ip'    => $ip,
+            ':login' => mb_substr($login, 0, self::TAMANHO_MAXIMO_LOGIN),
+            ':ip'    => mb_substr($ip, 0, self::TAMANHO_MAXIMO_IP),
         ]);
     }
 
