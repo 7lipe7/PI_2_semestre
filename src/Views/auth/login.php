@@ -57,14 +57,14 @@
             <div class="login-campo">
                 <label for="login">Usuário</label>
                 <input type="text" id="login" name="login" class="form-control" 
-                       maxlength="30"  value="<?= \Core\e($usuario ?? '') ?>"
+                       maxlength="60"  value="<?= \Core\e($usuario ?? '') ?>"
                        autocomplete="username" required autofocus>
             </div>
 
             <div class="login-campo">
                 <label for="senha">Senha</label>
                 <input type="password" id="senha" name="senha" class="form-control"
-                maxlength="30"
+                maxlength="60"
                        autocomplete="current-password" required>
             </div>
 
