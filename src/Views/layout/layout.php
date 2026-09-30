@@ -81,7 +81,6 @@ $paginas = [
                 <span>Clientes</span>
             </a>
 
-
             <form method="post" action="/logout">
                 <?= \Core\Csrf::campo() ?>
                 <button type="submit" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent">
@@ -111,6 +110,33 @@ $paginas = [
             <h1 class="page-header__title"><?= \Core\e($titulo) ?></h1>
             <p class="page-header__subtitle"><?= \Core\e($subtitulo) ?></p>
         </div>
+
+        <?php if ($navAtivo === 'agendamentos' || $navAtivo === 'clientes' || $navAtivo === 'pets' || $navAtivo === 'servicos'): ?>
+            <div class="page-header__actions">
+                <?php if ($navAtivo === 'agendamentos'): ?>
+                    <a href="/agendamentos/historico" class="btn clientes-new-btn page-header__action">
+                        <i data-lucide="history"></i>
+                        <span>Histórico</span>
+                    </a>
+               
+                <?php elseif ($navAtivo === 'clientes'): ?>
+                    <a href="/clientes/novo" class="btn clientes-new-btn page-header__action">
+                        <i data-lucide="plus"></i>
+                        <span>Novo cliente</span>
+                    </a>
+                <?php elseif ($navAtivo === 'pets'): ?>
+                    <button type="button" class="btn clientes-new-btn page-header__action" id="novoPetBtn">
+                        <i data-lucide="plus"></i>
+                        <span>Novo pet</span>
+                    </button>
+                <?php elseif ($navAtivo === 'servicos'): ?>
+                    <button type="button" class="btn clientes-new-btn page-header__action" data-servico-modal-open>
+                        <i data-lucide="plus"></i>
+                        <span>Novo serviço</span>
+                    </button>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
     </header>
 
     <main>

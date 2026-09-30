@@ -1471,6 +1471,29 @@ main button {
     stroke-width: 2.4;
 }
 
+.page-header__action {
+    flex: 0 0 auto;
+    min-width: 0;
+    min-height: 36px;
+    margin-left: 0;
+    padding: 6px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.page-header__action svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.page-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
 .pets-page .clientes-new-btn {
     min-height: 40px;
     min-width: 130px;
