@@ -44,13 +44,18 @@ docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MY
 docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
   < docker/php/db/migrations/002_historico_fk_cascade.sql
 
-conferir se pegou (tem que aparecer andamento no enum e CASCADE na fk):
+docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
+  < docker/php/db/migrations/003_login_tentativas.sql
+
+conferir se pegou (tem que aparecer andamento no enum, CASCADE na fk e a tabela
+de tentativas de login):
 
 docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" -e "
   SELECT COLUMN_NAME, COLUMN_TYPE FROM information_schema.COLUMNS
     WHERE TABLE_SCHEMA = DATABASE() AND COLUMN_NAME = \"status\";
   SELECT CONSTRAINT_NAME, DELETE_RULE FROM information_schema.REFERENTIAL_CONSTRAINTS
-    WHERE CONSTRAINT_SCHEMA = DATABASE();"'
+    WHERE CONSTRAINT_SCHEMA = DATABASE();
+  SHOW TABLES LIKE \"login_tentativas\";"'
 
 nunca use "docker compose down -v" para consertar schema: o -v apaga o volume
 com os dados. aplique as migrations.

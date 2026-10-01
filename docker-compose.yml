@@ -21,7 +21,11 @@ services:
       TZ: America/Sao_Paulo
 
     depends_on:
-      - db
+      db:
+        # Só sobe quando o MySQL responde de verdade. Sem isso a primeira
+        # requisição batia em "Connection refused", porque o entrypoint ainda
+        # está inicializando o banco quando o Apache já está atendendo.
+        condition: service_healthy
 
     restart: unless-stopped
 
@@ -44,6 +48,15 @@ services:
       - db_data:/var/lib/mysql
       # Script executado automaticamente na primeira criação do banco
       - ./docker/php/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+    # O Compose espera o MySQL ficar realmente pronto (e não só "started")
+    # antes de subir a aplicação e a limpeza.
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
 
   # Limpeza diária da tabela login_tentativas (proteção de força bruta).
   #
@@ -75,7 +88,8 @@ services:
       TZ: America/Sao_Paulo
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
     # O script usa o mesmo servidor PHP da aplicação — reaproveita a imagem.
     restart: unless-stopped

@@ -181,13 +181,13 @@ O schema "oficial" é o `docker/php/db/init.sql` (usado apenas na primeira subid
 2. Crie o arquivo em `docker/php/db/migrations/` para quem já tem o banco populado:
 
 ```text
-docker/php/db/migrations/003_minha_mudanca.sql
+docker/php/db/migrations/004_minha_mudanca.sql
 ```
 
-Aplicar manualmente em um banco que já existe:
+Aplicar manualmente em um banco que já existe (rode os arquivos em ordem):
 
 ```bash
-docker compose exec -T db sh -c 'exec mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < docker/php/db/migrations/003_minha_mudanca.sql
+docker compose exec -T db sh -c 'exec mysql -u root -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' < docker/php/db/migrations/003_login_tentativas.sql
 ```
 
 > ⚠️ Não use `docker compose down -v` para "consertar" o banco: o `-v` apaga o volume `db_data` e todos os dados. Migrations são o caminho seguro.
@@ -204,10 +204,11 @@ Pontos conscientes do escopo atual, registrados para evolução do projeto:
 
 ## Docker
 
-O ambiente é composto por dois containers:
+O ambiente é composto por três containers:
 
 * **php** — PHP 8.4 + Apache, disponível em `http://localhost:8080`;
-* **db** — MySQL 8.4, acessível externamente pela porta `3307`.
+* **db** — MySQL 8.4, acessível externamente pela porta `3307`;
+* **limpeza** — executa 1x por dia `src/bin/limpar-tentativas.php`, que remove os registros antigos de `login_tentativas`. Não serve web (não publica porta) e só depende do banco.
 
 Para iniciar o ambiente:
 
