@@ -171,7 +171,11 @@ agendado ──► andamento ──► concluido
 * **concluido** — serviço finalizado (é o único que conta na receita);
 * **cancelado** — desmarcado.
 
-O status pode ser alterado pelo seletor no card da listagem ou pela tela de edição.
+O status pode ser alterado pelo seletor na tela de edição ou direto do **dashboard**, pelos botões *Iniciar atendimento* e *Concluir*. A mudança é gravada por `POST /agendamentos/{id}/status`: o JavaScript pede a resposta em JSON e atualiza o card na hora, sem recarregar a página; sem JavaScript, o mesmo formulário redireciona de volta para a agenda. O trigger `trg_historico_status_agendamento` registra a transição em `historico_agendamentos`.
+
+### Seletor de categoria (Agendamentos)
+
+A listagem tem abas com a contagem de cada categoria: **Todos**, **Agendado próximo**, **Em andamento**, **Concluídos** e **Cancelados**. O filtro roda só no navegador — cada card já sai do PHP com `data-agendamento-categoria`, então trocar de aba não faz nenhum request ao servidor. As categorias e os rótulos ficam em `Agendamento::CATEGORIAS`, que é a fonte única usada pela view e pelo JavaScript.
 
 ### Migrations
 

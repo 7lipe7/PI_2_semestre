@@ -15,8 +15,11 @@ class AgendamentoController extends Controller
 {
     public function index(array $params = []): void
     {
+        $agendamentos = Agendamento::all();
+
         $this->render('agendamentos/index', [
-            'agendamentos' => Agendamento::all(),
+            'agendamentos' => $agendamentos,
+            'contagem'     => Agendamento::contagemPorCategoria($agendamentos),
             'cachorros'    => Cachorro::all(),
             'servicos'     => $this->servicosDisponiveis(),
             'navAtivo'     => 'agendamentos',
@@ -195,26 +198,103 @@ class AgendamentoController extends Controller
         }
     }
 
+    /**
+     * Troca rápida de status (botões do dashboard e da listagem).
+     *
+     * Quando a requisição vem do JavaScript (Accept: application/json), devolve
+     * JSON com os dados já formatados para o card ser atualizado na hora, sem
+     * recarregar a página. Sem JS, cai no redirect traditional para $destino.
+     */
     public function updateStatus(array $params): void
     {
         $id     = (int) $params['id'];
         $status = (string) ($_POST['status'] ?? '');
+        $destino = $this->destinoAposStatus();
 
         if (!in_array($status, Agendamento::STATUS, true)) {
-            http_response_code(422);
-            echo 'Status inválido.';
+            $this->responderStatus(422, ['erro' => 'Status inválido.'], $destino);
+
             return;
         }
 
         if (Agendamento::find($id) === null) {
-            http_response_code(404);
-            echo 'Agendamento não encontrado.';
+            $this->responderStatus(404, ['erro' => 'Agendamento não encontrado.'], $destino);
+
             return;
         }
 
-        Agendamento::updateStatus($id, $status);
+        try {
+            Agendamento::updateStatus($id, $status);
+        } catch (PDOException $e) {
+            error_log('Falha ao mudar o status do agendamento #' . $id . ': ' . $e->getMessage());
 
-        $this->redirect('/agendamentos');
+            $this->responderStatus(
+                500,
+                ['erro' => 'Não foi possível mudar o status. Tente novamente.'],
+                $destino
+            );
+
+            return;
+        }
+
+        $this->responderStatus(200, [
+            'id'       => $id,
+            'status'   => $status,
+            'rotulo'   => Agendamento::rotulo($status),
+            'icone'    => Agendamento::icone($status),
+            'categoria' => Agendamento::categoriaDe(['status' => $status]),
+            'acoes'    => Agendamento::acoesDe($status),
+        ], $destino);
+    }
+
+    /**
+     * Para onde voltar depois de mudar o status. Só aceita destinos internos
+     * conhecidos — um "redirecionar" livre permitiria redirect aberto.
+     */
+    private function destinoAposStatus(): string
+    {
+        $redirecionar = (string) ($_POST['redirecionar'] ?? '');
+
+        if ($redirecionar !== '/') {
+            return '/agendamentos';
+        }
+
+        $data = trim((string) ($_POST['data'] ?? ''));
+
+        if ($data === '') {
+            return '/';
+        }
+
+        $valida = DateTimeImmutable::createFromFormat('!Y-m-d', $data);
+
+        return $valida !== false && $valida->format('Y-m-d') === $data
+            ? '/?data=' . $data
+            : '/';
+    }
+
+    /**
+     * Responde em JSON quando o pedido espera JSON; senão redireciona.
+     * Mantém o endpoint utilizável pelos dois caminhos (com e sem JavaScript).
+     */
+    private function responderStatus(int $codigo, array $payload, string $destino): void
+    {
+        $aceita = str_contains((string) ($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json');
+
+        if (!$aceita) {
+            http_response_code($codigo);
+
+            if ($codigo >= 400) {
+                echo htmlspecialchars((string) ($payload['erro'] ?? 'Operação não concluída.'), ENT_QUOTES, 'UTF-8');
+
+                return;
+            }
+
+            $this->redirect($destino);
+        }
+
+        http_response_code($codigo);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($payload, JSON_UNESCAPED_UNICODE);
     }
 
     public function destroy(array $params): void

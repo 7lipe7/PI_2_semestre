@@ -9,6 +9,116 @@ class Agendamento
     /** Lista canônica dos status aceitos (usada também pelo controller). */
     public const STATUS = ['agendado', 'andamento', 'concluido', 'cancelado'];
 
+    /** Rótulo exibido de cada status nas telas. */
+    public const ROTULOS = [
+        'agendado'  => 'Agendado',
+        'andamento' => 'Em andamento',
+        'concluido' => 'Concluído',
+        'cancelado' => 'Cancelado',
+    ];
+
+    /** Ícone (lucide) que representa cada status. */
+    public const ICONES = [
+        'agendado'  => 'calendar-check-2',
+        'andamento' => 'activity',
+        'concluido' => 'check-circle',
+        'cancelado' => 'x-circle',
+    ];
+
+    /**
+     * Categorias do seletor da listagem de agendamentos.
+     * Tudo que ainda está por fazer cai em "proximos" (status agendado);
+     * as outras três categorias são o próprio status.
+     */
+    public const CATEGORIAS = [
+        'proximos'  => ['rotulo' => 'Agendado próximo', 'icone' => 'calendar-clock'],
+        'andamento' => ['rotulo' => 'Em andamento', 'icone' => 'activity'],
+        'concluido' => ['rotulo' => 'Concluídos', 'icone' => 'check-circle'],
+        'cancelado' => ['rotulo' => 'Cancelados', 'icone' => 'x-circle'],
+    ];
+
+    /**
+     * Normaliza o status vindo do banco: minúsculas e sem espaço.
+     * Valor desconhecido vira "agendado" (nunca quebra a tela).
+     */
+    public static function normalizarStatus(mixed $status): string
+    {
+        $status = strtolower(trim((string) $status));
+
+        return in_array($status, self::STATUS, true) ? $status : 'agendado';
+    }
+
+    /** Rótulo amigável de um status. */
+    public static function rotulo(string $status): string
+    {
+        return self::ROTULOS[self::normalizarStatus($status)];
+    }
+
+    /** Ícone (lucide) de um status. */
+    public static function icone(string $status): string
+    {
+        return self::ICONES[self::normalizarStatus($status)];
+    }
+
+    /** Categoria do agendamento no seletor da listagem. */
+    public static function categoriaDe(array $agendamento): string
+    {
+        $status = self::normalizarStatus($agendamento['status'] ?? 'agendado');
+
+        return $status === 'agendado' ? 'proximos' : $status;
+    }
+
+    /** Quantos agendamentos existem em cada categoria (chave 'todos' inclusa). */
+    public static function contagemPorCategoria(array $agendamentos): array
+    {
+        $contagem = array_fill_keys(array_keys(self::CATEGORIAS), 0);
+        $contagem['todos'] = count($agendamentos);
+
+        foreach ($agendamentos as $agendamento) {
+            $categoria = self::categoriaDe($agendamento);
+
+            if (isset($contagem[$categoria])) {
+                $contagem[$categoria]++;
+            }
+        }
+
+        return $contagem;
+    }
+
+    /** Total de cada status numa lista de agendamentos (usado no resumo do dia). */
+    public static function resumoPorStatus(array $agendamentos): array
+    {
+        $resumo = array_fill_keys(self::STATUS, 0);
+
+        foreach ($agendamentos as $agendamento) {
+            $resumo[self::normalizarStatus($agendamento['status'] ?? 'agendado')]++;
+        }
+
+        return $resumo;
+    }
+
+    /**
+     * Transições rápidas exibidas no card da agenda (dashboard).
+     * O histórico dessas mudanças é gravado pelo trigger do banco
+     * na tabela historico_agendamentos.
+     */
+    public static function acoesDe(string $status): array
+    {
+        $acoes = [
+            'agendado' => [
+                ['status' => 'andamento', 'rotulo' => 'Iniciar atendimento', 'icone' => 'play'],
+                ['status' => 'concluido', 'rotulo' => 'Concluir', 'icone' => 'check'],
+            ],
+            'andamento' => [
+                ['status' => 'concluido', 'rotulo' => 'Concluir atendimento', 'icone' => 'check'],
+            ],
+            'concluido' => [],
+            'cancelado' => [],
+        ];
+
+        return $acoes[self::normalizarStatus($status)];
+    }
+
     /**
      * Atualiza apenas o status (ação rápida do card).
      */

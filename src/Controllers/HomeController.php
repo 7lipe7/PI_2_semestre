@@ -17,8 +17,11 @@ class HomeController extends Controller
         $dataInformada = $_GET['data'] ?? null;
         $data = $this->dataSelecionada(is_string($dataInformada) ? $dataInformada : null) ?? $hoje;
 
+        $agendamentos = Agendamento::byData($data);
+
         $this->render('home/home', [
-            'agendamentos'    => Agendamento::byData($data),
+            'agendamentos'    => $agendamentos,
+            'resumo'          => Agendamento::resumoPorStatus($agendamentos),
             'dataSelecionada' => $data,
             'dataHoje'        => $hoje,
             'dataAnterior'    => date('Y-m-d', strtotime($data . ' -1 day')),

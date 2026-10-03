@@ -1,7 +1,18 @@
 <?php
 
-/** Lista de agendamentos. Variável: $agendamentos (com data, hora, status, cachorro_nome...) */
+/**
+ * Lista de agendamentos com seletor de categoria.
+ * Variáveis:
+ *   $agendamentos (com data, hora, status, cachorro_nome...),
+ *   $contagem     (itens por categoria, com a chave 'todos')
+ */
 $agendamentos = $agendamentos ?? [];
+$contagem     = $contagem ?? [];
+
+$totalAgendamentos = count($agendamentos);
+
+// "Todos" + as categorias do model (chave => rótulo/ícone)
+$categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Agendamento::CATEGORIAS;
 ?>
 <div class="clientes-page agendamentos-page">
     <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
@@ -13,7 +24,8 @@ $agendamentos = $agendamentos ?? [];
                 <input
                     type="text"
                     class="clientes-search-input"
-                    value="<?= count($agendamentos) ?> agendamento<?= count($agendamentos) === 1 ? '' : 's' ?>"
+                    id="agendamentosContagem"
+                    value="<?= $totalAgendamentos ?> agendamento<?= $totalAgendamentos === 1 ? '' : 's' ?>"
                     readonly
                     aria-label="Quantidade de agendamentos"
                 >
@@ -31,22 +43,38 @@ $agendamentos = $agendamentos ?? [];
             <p>Nenhum horário marcado.</p>
         </div>
     <?php else: ?>
+        <div class="agendamentos-filtros" role="group" aria-label="Filtrar agendamentos por categoria">
+            <?php foreach ($categorias as $chave => $categoria): ?>
+                <?php $quantidade = (int) ($contagem[$chave] ?? 0); ?>
+                <button
+                    type="button"
+                    class="agendamentos-filtro<?= $chave === 'todos' ? ' is-ativo' : '' ?><?= $quantidade === 0 && $chave !== 'todos' ? ' is-vazio' : '' ?>"
+                    data-agendamento-filtro="<?= \Core\e($chave) ?>"
+                    aria-pressed="<?= $chave === 'todos' ? 'true' : 'false' ?>">
+                    <i data-lucide="<?= \Core\e($categoria['icone']) ?>" aria-hidden="true"></i>
+                    <span class="agendamentos-filtro__rotulo"><?= \Core\e($categoria['rotulo']) ?></span>
+                    <span class="agendamentos-filtro__contagem"><?= $quantidade ?></span>
+                </button>
+            <?php endforeach; ?>
+        </div>
+
         <div class="agendamentos-grid">
             <?php foreach ($agendamentos as $a): ?>
                 <?php
-                $status = strtolower((string) ($a['status'] ?? 'agendado'));
+                $status = \Agendamento::normalizarStatus($a['status'] ?? 'agendado');
 
                 $statusMap = [
-                    'agendado' => ['icon' => 'calendar-check-2', 'label' => 'Agendado', 'class' => 'agendamento-card__badge--agendado'],
-                    'andamento' => ['icon' => 'activity', 'label' => 'Em andamento', 'class' => 'agendamento-card__badge--andamento'],
-                    'concluido' => ['icon' => 'check-circle', 'label' => 'Concluído', 'class' => 'agendamento-card__badge--concluido'],
-                    'cancelado' => ['icon' => 'x-circle', 'label' => 'Cancelado', 'class' => 'agendamento-card__badge--cancelado'],
+                    'agendado' => ['class' => 'agendamento-card__badge--agendado'],
+                    'andamento' => ['class' => 'agendamento-card__badge--andamento'],
+                    'concluido' => ['class' => 'agendamento-card__badge--concluido'],
+                    'cancelado' => ['class' => 'agendamento-card__badge--cancelado'],
                 ];
 
-                $statusInfo = $statusMap[$status] ?? ['icon' => 'clock-3', 'label' => ucfirst($status), 'class' => 'agendamento-card__badge--agendado'];
+                $statusInfo = $statusMap[$status] ?? ['class' => 'agendamento-card__badge--agendado'];
                 $statusClass = $statusInfo['class'];
-                $statusIcon = $statusInfo['icon'];
-                $statusLabel = $statusInfo['label'];
+                $statusIcon = \Agendamento::icone($status);
+                $statusLabel = \Agendamento::rotulo($status);
+                $categoria = \Agendamento::categoriaDe($a);
 
                 $servicoNome = strtolower((string) ($a['servico_nome'] ?? ''));
                 $servicoClass = 'agendamento-card__icon--default';
@@ -63,7 +91,12 @@ $agendamentos = $agendamentos ?? [];
                     $servicoIcon = 'shield-check';
                 }
                 ?>
-                <article class="agendamento-card">
+                <article
+                    class="agendamento-card"
+                    data-agendamento-card
+                    data-agendamento-categoria="<?= \Core\e($categoria) ?>"
+                    data-agendamento-status="<?= \Core\e($status) ?>"
+                >
                     <div class="agendamento-card__header">
                         <div class="agendamento-card__icon <?= $servicoClass ?>" aria-hidden="true">
                             <i data-lucide="<?= $servicoIcon ?>"></i>
@@ -73,7 +106,7 @@ $agendamentos = $agendamentos ?? [];
                             <h2><?= \Core\e($a['cachorro_nome']) ?></h2>
                             <span class="agendamento-card__status-badge <?= $statusClass ?>" data-status-badge>
                                 <i data-status-icon data-lucide="<?= $statusIcon ?>"></i>
-                                <span><?= $status === 'andamento' ? 'Em andamento' : ($status === 'concluido' ? 'Concluído' : ucfirst($status)) ?></span>
+                                <span data-status-rotulo><?= \Core\e($statusLabel) ?></span>
                             </span>
                             <p><?= \Core\e($a['proprietario_nome']) ?></p>
                         </div>
@@ -144,4 +177,6 @@ $agendamentos = $agendamentos ?? [];
         </div>
     <?php endif; ?>
 </div>
+
+<script src="/assets/js/agendamentos-filtro.js"></script>
 
