@@ -6,7 +6,7 @@ namespace Controllers;
 
 use Cachorro;
 use Proprietario;
-use core\Controller;
+use Core\Controller;
 
 class CachorroController extends Controller
 {

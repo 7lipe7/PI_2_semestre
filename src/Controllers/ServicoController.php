@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Controllers;
 
 use PDOException;
-use core\Controller;
+use Core\Controller;
 use Servico;
 
 class ServicoController extends Controller

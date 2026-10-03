@@ -104,21 +104,16 @@ CREATE TABLE historico_agendamentos (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- TRIGGER PARA REGISTRAR O HISTÓRICO DE ALTERAÇÕES DE STATUS DOS AGENDAMENTOS
-DELIMITER //
-
+-- Sem DELIMITER/BEGIN/IF: o entrypoint do MySQL no Docker executa o init.sql
+-- comando a comando, então o bloco BEGIN...END com DELIMITER quebra a criação
+-- do banco na primeira subida (vide logs do container db).
 CREATE TRIGGER trg_historico_status_agendamento
 AFTER UPDATE ON agendamentos
 FOR EACH ROW
-BEGIN
-    IF OLD.status <> NEW.status THEN
-        INSERT INTO historico_agendamentos
-            (agendamento_id, status_anterior, status_novo)
-        VALUES
-            (NEW.id, OLD.status, NEW.status);
-    END IF;
-END//
-
-DELIMITER ;
+    INSERT INTO historico_agendamentos
+        (agendamento_id, status_anterior, status_novo)
+    SELECT NEW.id, OLD.status, NEW.status
+    WHERE OLD.status <> NEW.status;
 
 -- VIEW PARA CONSULTAR O HISTÓRICO DE AGENDAMENTOS
 CREATE VIEW vw_historico_agendamentos AS

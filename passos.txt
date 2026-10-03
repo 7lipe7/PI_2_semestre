@@ -26,7 +26,7 @@ se tudo der certo abra http://localhost:8080/
  */
 
 
-para acessar o MySQL por fora (ex.: HeidiSQL, DBeaver, mysql client) = host localhost, porta 3307
+para acessar o MySQL por fora (ex.: HeidiSQL, DBeaver, mysql client) = host localhost, porta 3308
 
 para ver os logs = docker compose logs -f
 

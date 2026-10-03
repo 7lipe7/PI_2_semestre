@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Controllers;
 
-use core\Controller;
+use Core\Controller;
 use Proprietario;
 
 class ProprietarioController extends Controller{

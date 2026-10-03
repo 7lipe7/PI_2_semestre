@@ -35,7 +35,10 @@ services:
     container_name: petshop_db
 
     ports:
-      - "3307:3306"
+      # 3307 conflita com o container mysql_db (outro projeto, mysql:8.0) que
+      # já publica 3307 no host. Com o conflito, o Compose sobe o petshop_db
+      # sem rede/porta publicada e o PHP nunca resolve o host "db".
+      - "3308:3306"
 
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -52,7 +55,10 @@ services:
     # O Compose espera o MySQL ficar realmente pronto (e não só "started")
     # antes de subir a aplicação e a limpeza.
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      # CMD-SHELL (e não CMD): só com shell o $MYSQL_ROOT_PASSWORD expande.
+      # Com CMD o mysqladmin recebia a string literal "-p$MYSQL_ROOT_PASSWORD",
+      # falhava o ping e o php subia sem banco (getaddrinfo/Connection refused).
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 5s
       retries: 20

@@ -148,7 +148,7 @@ também pode conectar a um MySQL remoto por meio de `DATABASE_URL`.
 
 ```text
 Host: localhost
-Porta: 3307
+Porta: 3308
 Usuário: valor de DB_USER no .env
 Senha: valor de DB_PASSWORD no .env
 Banco: valor de DB_NAME no .env
@@ -215,7 +215,7 @@ Pontos conscientes do escopo atual, registrados para evolução do projeto:
 O ambiente é composto por três containers:
 
 * **php** — PHP 8.4 + Apache, disponível em `http://localhost:8080`;
-* **db** — MySQL 8.4, acessível externamente pela porta `3307`;
+* **db** — MySQL 8.4, acessível externamente pela porta `3308`;
 * **limpeza** — executa 1x por dia `src/bin/limpar-tentativas.php`, que remove os registros antigos de `login_tentativas`. Não serve web (não publica porta) e só depende do banco.
 
 Para iniciar o ambiente:
