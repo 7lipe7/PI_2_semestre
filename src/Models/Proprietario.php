@@ -24,7 +24,7 @@ class Proprietario
         $busca = trim((string) $busca);
 
         $sql = 'SELECT p.id, p.nome, p.celular, p.observacoes,
-                       GROUP_CONCAT(DISTINCT c.nome ORDER BY c.nome SEPARATOR ", ") AS pets,
+                       GROUP_CONCAT(DISTINCT c.nome ORDER BY c.nome SEPARATOR \', \') AS pets,
                        COUNT(a.id) AS visitas,
                        COALESCE(SUM(
                            COALESCE(s.preco, 0)
@@ -32,7 +32,7 @@ class Proprietario
                 FROM proprietarios p
                 LEFT JOIN cachorros c ON c.proprietario_id = p.id
                 LEFT JOIN agendamentos a ON a.cachorro_id = c.id
-                    AND a.status = "concluido"
+                    AND a.status = \'concluido\'
                 LEFT JOIN servicos s ON s.id = a.servico_id';
 
         $params = [];
