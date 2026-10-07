@@ -113,6 +113,7 @@ FOR EACH ROW
     INSERT INTO historico_agendamentos
         (agendamento_id, status_anterior, status_novo)
     SELECT NEW.id, OLD.status, NEW.status
+    FROM DUAL
     WHERE OLD.status <> NEW.status;
 
 -- VIEW PARA CONSULTAR O HISTÓRICO DE AGENDAMENTOS
