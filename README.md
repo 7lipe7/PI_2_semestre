@@ -71,7 +71,10 @@ cd PI_2_semestre
 cp .env.example .env
 ```
 
-Ajuste as credenciais do banco de dados no arquivo `.env`, se necessário.
+Ajuste as credenciais do banco de dados no arquivo `.env`. Para conectar a um banco remoto,
+defina `DATABASE_URL` no formato `mysql://usuario:senha@host:porta/banco?ssl-mode=REQUIRED`.
+Quando `DATABASE_URL` estiver preenchida, ela prevalece sobre `DB_HOST`, `DB_PORT`,
+`DB_NAME`, `DB_USER` e `DB_PASSWORD`; se estiver vazia, essas variáveis mantêm a conexão local.
 
 > O arquivo `.env` **não** é versionado no Git (está no `.gitignore`). Nunca envie senhas ou credenciais para o GitHub.
 
@@ -136,10 +139,11 @@ fetch('/api/encomendas', {
 
 ## Banco de dados
 
-O projeto utiliza o **MySQL 8.4**, executado em um container Docker junto com a aplicação PHP.
+O projeto utiliza **MySQL**. Por padrão, o banco roda em um container Docker; a aplicação
+também pode conectar a um MySQL remoto por meio de `DATABASE_URL`.
 
-* O banco é criado automaticamente ao subir os containers, com o nome definido em `DB_NAME` no arquivo `.env`;
-* Os dados ficam persistidos no volume `db_data` do Docker;
+* No modo local, o banco é criado automaticamente ao subir os containers, com o nome definido em `DB_NAME` no arquivo `.env`;
+* No modo local, os dados ficam persistidos no volume `db_data` do Docker;
 * Para acessar o MySQL a partir de um cliente externo (DBeaver, HeidiSQL, mysql client), utilize:
 
 ```text
