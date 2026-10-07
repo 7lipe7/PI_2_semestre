@@ -12,7 +12,8 @@
 function carregarEnvLocal(): void
 {
     // Variável já vinda do ambiente (docker-compose, export, linha de comando)
-    // tem precedência sobre o arquivo.
+    // tem precedência sobre o arquivo. O Compose também injeta as variáveis
+    // do env_file, então no container este bloco quase nunca faz nada.
     $candidatos = [
         __DIR__ . '/../../.env',
         dirname(__DIR__, 2) . '/.env',
@@ -20,7 +21,7 @@ function carregarEnvLocal(): void
 
     $arquivo = null;
     foreach ($candidatos as $c) {
-        if (is_file($c)) {
+        if (is_file($c) && is_readable($c)) {
             $arquivo = $c;
             break;
         }
@@ -36,7 +37,9 @@ function carregarEnvLocal(): void
     }
 
     foreach ($linhas as $linha) {
-        $linha = trim($linha);
+        // Remove BOM invisível que quebra a primeira chave do arquivo.
+        $linha = ltrim($linha, "\xEF\xBB\xBF \t");
+        $linha = rtrim($linha, "\r\n");
 
         if ($linha === '' || str_starts_with($linha, '#')) {
             continue;
@@ -47,14 +50,20 @@ function carregarEnvLocal(): void
         }
 
         [$chave, $valor] = explode('=', $linha, 2);
+        // Chave com espaço ("DATABASE_URL =" ou "export DATABASE_URL=")
+        // nunca bateria com getenv('DATABASE_URL').
         $chave = trim($chave);
+        if (str_starts_with($chave, 'export ')) {
+            $chave = trim(substr($chave, 7));
+        }
         $valor = trim($valor);
 
-        if ($chave === '') {
+        if ($chave === '' || !preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $chave)) {
             continue;
         }
 
         // Remove aspas: DATABASE_URL="..." vira string vazia de verdade.
+        // Sem isso, o valor literal `"` cai no parse_url e quebra a conexão.
         if (strlen($valor) >= 2) {
             $primeiro = $valor[0];
             $ultimo = $valor[strlen($valor) - 1];
@@ -62,6 +71,7 @@ function carregarEnvLocal(): void
                 $valor = substr($valor, 1, -1);
             }
         }
+        $valor = trim($valor, "\"'");
 
         if (getenv($chave) === false) {
             putenv($chave . '=' . $valor);
@@ -134,14 +144,40 @@ function getConnection(): PDO
             throw new InvalidArgumentException('DATABASE_URL usa um ssl-mode não suportado.');
         }
     } else {
-        $host     = getenv('DB_HOST')     ?: 'db';
+        // Fora do Docker (php -S no host), "db" só existe dentro da rede do
+        // Compose. Aponta para o MySQL publicado no host (porta 3308).
+        $host = getenv('DB_HOST') ?: 'db';
+        if ($host === 'db' && PHP_SAPI === 'cli-server') {
+            $host = '127.0.0.1';
+        }
         $port     = getenv('DB_PORT')     ?: '3306';
+        if ($host === '127.0.0.1' && ($port === '3306' || $port === '')) {
+            // 3306 costuma estar ocupada por outro MySQL do host; a nossa é a 3308.
+            $port = '3308';
+        }
         $dbname   = getenv('DB_NAME')     ?: 'petshop';
         $user     = getenv('DB_USER')     ?: 'petshop_user';
         $password = getenv('DB_PASSWORD') ?: '';
     }
 
     $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
+
+    if (!extension_loaded('pdo_mysql')) {
+        // PHP do host (Fedora) vem sem pdo_mysql: o caminho suportado é o Docker.
+        error_log('Extensão pdo_mysql ausente no PHP local. Rode via Docker: docker compose up -d');
+
+        if (PHP_SAPI === 'cli') {
+            throw new RuntimeException(
+                'PHP sem pdo_mysql. Rode via Docker (docker compose up -d) ou instale php-mysqlnd.'
+            );
+        }
+
+        http_response_code(500);
+        header('Content-Type: application/json; charset=utf-8');
+        die(json_encode([
+            'error' => 'PHP sem pdo_mysql. Rode via Docker (docker compose up -d).',
+        ], JSON_UNESCAPED_UNICODE));
+    }
 
     try {
         $pdo = new PDO($dsn, $user, $password, $options);
