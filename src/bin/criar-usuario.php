@@ -9,9 +9,9 @@ declare(strict_types=1);
  *   docker compose exec php php /var/www/src/bin/criar-usuario.php
  *
  * Ou informando os dados:
- *   docker compose exec php php /var/www/src/bin/criar-usuario.php "Maria" maria "SenhaForte@2026"
+ *   docker compose exec php php /var/www/src/bin/criar-usuario.php "Maria" maria
  *
- * Sem argumentos, usa os valores padrão de apresentação.
+ * Sem argumentos, usa nome e login padrão e pede a senha sem exibi-la.
  */
 
 // Script de uso interno: nunca deve responder requisição web.
@@ -24,7 +24,29 @@ require_once __DIR__ . '/../config/database.php';
 
 $nome  = $argv[1] ?? 'Administrador';
 $login = $argv[2] ?? 'admin';
-$senha = $argv[3] ?? 'Petshop@2026';
+$senha = $argv[3] ?? null;
+
+if ($senha === null) {
+    fwrite(STDERR, 'Senha para o usuário ' . $login . ': ');
+
+    exec('stty -echo', $output, $status);
+    if ($status !== 0) {
+        fwrite(STDERR, "\nNão foi possível ocultar a senha neste terminal. Execute em um terminal interativo.\n");
+        exit(1);
+    }
+
+    try {
+        $senha = rtrim((string) fgets(STDIN), "\r\n");
+    } finally {
+        exec('stty echo');
+        fwrite(STDERR, PHP_EOL);
+    }
+}
+
+if ($senha === '') {
+    fwrite(STDERR, "A senha não pode ser vazia.\n");
+    exit(1);
+}
 
 $pdo = getConnection();
 
@@ -58,11 +80,15 @@ if ($id === false) {
 printf("Usuário %s: #%d\n", $acao, $id);
 printf("  nome : %s\n", $nome);
 printf("  login: %s\n", $login);
-printf("  senha: %s\n", $senha);
 
 // Confere lendo de volta do banco, do mesmo jeito que o login faz.
 $stmt = $pdo->prepare('SELECT senha_hash FROM usuarios WHERE id = :id');
 $stmt->execute([':id' => $id]);
 $gravado = (string) $stmt->fetchColumn();
 
-printf("\npassword_verify() contra o banco: %s\n", password_verify($senha, $gravado) ? 'OK' : 'FALHOU');
+if (!password_verify($senha, $gravado)) {
+    fwrite(STDERR, "Falha ao verificar a senha gravada.\n");
+    exit(1);
+}
+
+printf("Senha gravada e verificada com sucesso.\n");
