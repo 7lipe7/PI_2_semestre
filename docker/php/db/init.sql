@@ -89,6 +89,14 @@ CREATE TABLE login_tentativas (
     INDEX idx_login_tentativas_login_ip (login, ip, criado_em)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Índices para melhorar buscas por nome e filtros de listagem.
+-- Mantém o sistema responsivo conforme o volume de dados cresce.
+CREATE INDEX idx_proprietarios_nome ON proprietarios (nome);
+CREATE INDEX idx_cachorros_nome ON cachorros (nome);
+CREATE INDEX idx_cachorros_proprietario_id ON cachorros (proprietario_id);
+CREATE INDEX idx_agendamentos_status_data ON agendamentos (status, data);
+CREATE INDEX idx_agendamentos_cachorro_id_status ON agendamentos (cachorro_id, status);
+CREATE INDEX idx_agendamentos_servico_id ON agendamentos (servico_id);
 
 -- Usando triggers para registrar histórico de alterações de status dos agendamentos
 
