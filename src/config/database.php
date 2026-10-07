@@ -51,10 +51,11 @@ function getConnection(): PDO
         parse_str($url['query'] ?? '', $query);
         $sslMode = strtoupper($query['ssl-mode'] ?? '');
 
-        if ($sslMode === 'REQUIRED') {
-            // REQUIRED encrypts the connection but does not verify the server certificate.
-            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
-        } elseif ($sslMode !== '' && $sslMode !== 'PREFERRED') {
+        if ($sslMode === 'REQUIRED' || $sslMode === 'PREFERRED') {
+            // REQUIRED/PREFERRED: criptografa a conexão e verifica o certificado
+            // do servidor para evitar ataque do tipo Man-in-the-Middle.
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+        } elseif ($sslMode !== '') {
             throw new InvalidArgumentException('DATABASE_URL usa um ssl-mode não suportado.');
         }
     } else {

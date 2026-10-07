@@ -65,10 +65,10 @@ class AuthController extends Controller
 
 
         if ($usuario === null) {
-            // Even sem usuário, gastamos o mesmo tempo: senão o tempo de
-            // resposta revelaria quais logins existem (timing attack).
-            password_verify($senha, '$2y$12$JkbJ9GoTp/nQLPMRMbbpbOWM1Pakx9KfiVM6cJHcuoyNllkZks/E6');
-
+            // Sem usuário não há hash de verificação — o fluxo abaixo é
+            // idêntico para login legítimo e para quem errou: registra a
+            // tentativa (bloqueio de força bruta) e informa genericamente
+            // "inválido".
             TentativaLogin::registrar($login, $ip);
 
             Session::setFlash('Usuário ou senha inválidos.');

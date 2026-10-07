@@ -24,10 +24,16 @@ final class Session
 
         session_name('PETSHOPSESSID');
 
+        // O flag 'secure' do cookie só deve ser false em dev local (HTTP puro).
+        // Em produção, quando o container é atingido por um proxy reverso em TLS,
+        // basta definir SESSION_SECURE_COOKIE=1 no .env (ou deixar o proxy
+        // definir $_SERVER['HTTPS']). Se vazio, mantém o sinal viaHttps().
+        $secure = (bool) getenv('SESSION_SECURE_COOKIE') || self::viaHttps();
+
         session_set_cookie_params([
             'lifetime' => 0,           // morre ao fechar o navegador
             'path'     => '/',
-            'secure'   => self::viaHttps(),
+            'secure'   => $secure,
             'httponly' => true,        // JavaScript não lê o cookie
             'samesite' => 'Lax',       // não reenvia quando vem de outro site
         ]);
