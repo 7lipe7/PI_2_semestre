@@ -2,9 +2,33 @@
 
 declare(strict_types=1);
 
-// Define o fuso antes que qualquer controller ou view utilize date().
-// O PHP dos containers pode iniciar em UTC por padrão.
-date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo');
+// Segurança: cabeçalhos de resposta aplicados a TODAS as requisições.
+// Esse bloco vai antes de qualquer saída (HTML, erro de database, 404/500 do
+// Router), garantindo headers em todas as páginas, inclusive a tela /login.
+$secure = !empty($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) !== 'off';
+if (!$secure) {
+    $secure = strtolower(trim((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''))) === 'https';
+}
+$maxAgeHsts = 'max-age=31536000';
+header('Strict-Transport-Security: ' . ($secure ? $maxAgeHsts . '; includeSubDomains; preload' : $maxAgeHsts));
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Content-Type-Options: nosniff');
+header('X-Permitted-Cross-Domain-Policies: none');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header('Cross-Origin-Resource-Policy: same-origin');
+header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
+header('Cross-Origin-Opener-Policy: same-origin');
+header('Cross-Origin-Embedder-Policy: require-corp');
+header('Content-Security-Policy: '
+    . "'default-src 'self'; "
+    . "'script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "'style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "'img-src 'self' data: https:; "
+    . "'font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "'connect-src 'self'; "
+    . "'frame-ancestors 'self'; "
+    . "'base-uri 'self'; "
+    . "'form-action 'self';");
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/Router.php';

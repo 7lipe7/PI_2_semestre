@@ -35,7 +35,7 @@ final class Session
             'path'     => '/',
             'secure'   => $secure,
             'httponly' => true,        // JavaScript não lê o cookie
-            'samesite' => 'Lax',       // não reenvia quando vem de outro site
+            'samesite' => 'Strict',  // evita que o cookie viaje em navegação de outro site
         ]);
 
         session_start();
