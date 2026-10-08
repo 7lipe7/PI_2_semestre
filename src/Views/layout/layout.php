@@ -29,7 +29,7 @@ $paginas = [
     <title><?= \Core\e($titulo) ?> — Amora Banho e Tosa</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-b11225e24c482c5bd8e3b275e9cafd670074eef3f827cf8b1fba8a427baa92e200bcd58bcde37cb44e5806e8d9a892c1" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
     <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
     <?php
@@ -144,10 +144,10 @@ $paginas = [
     </main>
 
     <!-- Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-14aca8105a2b086972bf0c7d1e3d3d25c627de7bfbc223d5973ed863026b5957172bf0669d50f133e0f6b1c41b213c48" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" integrity="sha384-1e1ec2df7de65de97eaa9a46a05b38a80397a7b87aedebabe17b10545d9bbc700cdcc4380d7e1c408ee8442cdbf7c278" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
     <script>
         lucide.createIcons();
 
