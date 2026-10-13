@@ -36,13 +36,7 @@ class AgendamentoController extends Controller
 
     public function create(array $params = []): void
     {
-        $this->render('agendamentos/form', [
-            'agendamento' => null,
-            'cachorros'   => Cachorro::all(),
-            'servicos'    => $this->servicosDisponiveis(),
-            'erro'        => null,
-            'navAtivo'    => 'agendamentos',
-        ]);
+        $this->renderIndiceComModal();
     }
 
     public function store(array $params = []): void
@@ -60,19 +54,13 @@ class AgendamentoController extends Controller
         }
 
         if ($erro !== null) {
-            $this->render('agendamentos/form', [
-                'agendamento' => [
-                    'cachorro_id' => $cachorroId,
-                    'servico_id'  => $servicoId,
-                    'data'        => $data,
-                    'hora'        => $hora,
-                    'observacoes' => $observacoes,
-                ],
-                'cachorros' => Cachorro::all(),
-                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
-                'erro'      => $erro,
-                'navAtivo'  => 'agendamentos',
-            ]);
+            $this->renderIndiceComModal([
+                'cachorro_id' => $cachorroId,
+                'servico_id'  => $servicoId,
+                'data'        => $data,
+                'hora'        => $hora,
+                'observacoes' => $observacoes,
+            ], $erro);
 
             return;
         }
@@ -88,19 +76,13 @@ class AgendamentoController extends Controller
 
             $this->redirect('/agendamentos');
         } catch (PDOException $e) {
-            $this->render('agendamentos/form', [
-                'agendamento' => [
-                    'cachorro_id' => $cachorroId,
-                    'servico_id'  => $servicoId,
-                    'data'        => $data,
-                    'hora'        => $hora,
-                    'observacoes' => $observacoes,
-                ],
-                'cachorros' => Cachorro::all(),
-                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
-                'erro'      => $this->mensagemErroBanco($e),
-                'navAtivo'  => 'agendamentos',
-            ]);
+            $this->renderIndiceComModal([
+                'cachorro_id' => $cachorroId,
+                'servico_id'  => $servicoId,
+                'data'        => $data,
+                'hora'        => $hora,
+                'observacoes' => $observacoes,
+            ], $this->mensagemErroBanco($e));
         }
     }
 
@@ -114,13 +96,7 @@ class AgendamentoController extends Controller
             return;
         }
 
-        $this->render('agendamentos/form', [
-            'agendamento' => $agendamento,
-            'cachorros'   => Cachorro::all(),
-            'servicos'    => $this->servicosDisponiveis($agendamento),
-            'erro'        => null,
-            'navAtivo'    => 'agendamentos',
-        ]);
+        $this->renderIndiceComModal($agendamento);
     }
 
     public function update(array $params): void
@@ -148,21 +124,15 @@ class AgendamentoController extends Controller
         }
 
         if ($erro !== null) {
-            $this->render('agendamentos/form', [
-                'agendamento' => [
-                    'id'          => $id,
-                    'cachorro_id' => $cachorroId,
-                    'servico_id'  => $servicoId,
-                    'data'        => $data,
-                    'hora'        => $hora,
-                    'status'      => $status,
-                    'observacoes' => $observacoes,
-                ],
-                'cachorros' => Cachorro::all(),
-                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
-                'erro'      => $erro,
-                'navAtivo'  => 'agendamentos',
-            ]);
+            $this->renderIndiceComModal([
+                'id'          => $id,
+                'cachorro_id' => $cachorroId,
+                'servico_id'  => $servicoId,
+                'data'        => $data,
+                'hora'        => $hora,
+                'status'      => $status,
+                'observacoes' => $observacoes,
+            ], $erro);
 
             return;
         }
@@ -180,21 +150,15 @@ class AgendamentoController extends Controller
 
             $this->redirect('/agendamentos');
         } catch (PDOException $e) {
-            $this->render('agendamentos/form', [
-                'agendamento' => [
-                    'id'          => $id,
-                    'cachorro_id' => $cachorroId,
-                    'servico_id'  => $servicoId,
-                    'data'        => $data,
-                    'hora'        => $hora,
-                    'status'      => $status,
-                    'observacoes' => $observacoes,
-                ],
-                'cachorros' => Cachorro::all(),
-                'servicos'  => $this->servicosDisponiveis(['servico_id' => $servicoId]),
-                'erro'      => $this->mensagemErroBanco($e),
-                'navAtivo'  => 'agendamentos',
-            ]);
+            $this->renderIndiceComModal([
+                'id'          => $id,
+                'cachorro_id' => $cachorroId,
+                'servico_id'  => $servicoId,
+                'data'        => $data,
+                'hora'        => $hora,
+                'status'      => $status,
+                'observacoes' => $observacoes,
+            ], $this->mensagemErroBanco($e));
         }
     }
 
@@ -335,6 +299,22 @@ class AgendamentoController extends Controller
         }
 
         return null;
+    }
+
+    private function renderIndiceComModal(array $agendamento = [], ?string $erro = null): void
+    {
+        $agendamentos = Agendamento::all();
+
+        $this->render('agendamentos/index', [
+            'agendamentos'           => $agendamentos,
+            'contagem'               => Agendamento::contagemPorCategoria($agendamentos),
+            'cachorros'              => Cachorro::all(),
+            'servicos'               => $this->servicosDisponiveis($agendamento),
+            'agendamentoModalAberto' => true,
+            'agendamentoFormulario'  => $agendamento,
+            'erro'                   => $erro,
+            'navAtivo'               => 'agendamentos',
+        ]);
     }
 
     /** Formato AAAA-MM-DD com data real (ex.: 2026-02-30 é inválida). */

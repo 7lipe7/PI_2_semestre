@@ -882,6 +882,93 @@ main button {
     padding-top: 18px;
 }
 
+.agendamentos-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 0 14px;
+}
+
+.agendamentos-filtro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 4px 8px;
+    border: 1px solid #eadfe3;
+    border-radius: 999px;
+    background: #fff;
+    color: #67575f;
+    font: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.agendamentos-filtro:hover {
+    border-color: #b9dfc4;
+    background: #f3fbf5;
+    color: #237b3d;
+}
+
+.agendamentos-filtro:focus-visible {
+    outline: 2px solid #2bb357;
+    outline-offset: 2px;
+}
+
+.agendamentos-filtro > i,
+.agendamentos-filtro > svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 14px;
+    stroke-width: 2;
+}
+
+.agendamentos-filtro__rotulo {
+    white-space: nowrap;
+}
+
+.agendamentos-filtro__contagem {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #f3eef0;
+    color: #67575f;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.agendamentos-filtro.is-ativo {
+    border-color: #2bb357;
+    background: #2bb357;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(43, 179, 87, 0.2);
+}
+
+.agendamentos-filtro.is-ativo:hover {
+    border-color: #239b49;
+    background: #239b49;
+    color: #fff;
+}
+
+.agendamentos-filtro.is-ativo .agendamentos-filtro__contagem {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.agendamentos-filtro.is-vazio:not(.is-ativo) {
+    color: #94858c;
+}
+
 .agendamentos-grid {
     display: grid;
     grid-template-columns: repeat(3, 379px);
@@ -1153,6 +1240,10 @@ main button {
     border-top: 1px solid #f0e7ea;
 }
 
+.agendamento-card__info .agendamento-card__details-btn {
+    margin-bottom: 0;
+}
+
 .agendamento-card__action {
     display: inline-flex;
     align-items: center;
@@ -1240,6 +1331,20 @@ main button {
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.9);
     box-shadow: 0 12px 28px rgba(88, 57, 66, 0.05);
+}
+
+.agendamento-edit-modal {
+    width: min(820px, calc(100vw - 40px));
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.agendamento-edit-modal .agendamento-form-card {
+    width: 100%;
+    max-width: none;
+    margin: 0;
 }
 
 .agendamento-form-header {
@@ -1330,6 +1435,10 @@ main button {
 
     .agendamento-form-card {
         padding: 18px 14px;
+    }
+
+    .agendamento-edit-modal {
+        width: min(100%, calc(100vw - 16px));
     }
 
     .agendamento-form {
@@ -1710,6 +1819,10 @@ main button {
     flex-shrink: 0;
 }
 
+.agendamento-card__info{
+    margin-top: 10px;
+}
+
 .agendamento-card__description .cliente-card__description-icon {
     width: 30px;
     height: 30px;
@@ -2042,6 +2155,47 @@ main button {
     color: #241b20;
     font-size: 15px;
     font-weight: 600;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-row {
+    border-color: #d8eadb;
+    background: #f1f8f2;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-label {
+    color: #52745a;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-row strong {
+    color: #28623a;
+}
+
+.agendamento-detalhes-modal .cliente-detalhes-texto {
+    border-color: #d8eadb;
+    background: #f1f8f2;
+    color: #426b4b;
+}
+
+.agendamento-detalhes-modal .cliente-detalhes-avatar {
+    background: rgba(43, 179, 87, 0.12);
+    color: #2f9a5d;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-body {
+    scrollbar-color: #a8d9b1 #eff8f0;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-body::-webkit-scrollbar-track {
+    background: #eff8f0;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-body::-webkit-scrollbar-thumb {
+    background: #a8d9b1;
+    border-color: #eff8f0;
+}
+
+.agendamento-detalhes-modal .pet-detalhes-body::-webkit-scrollbar-thumb:hover {
+    background: #83c991;
 }
 
 .clientes-empty {

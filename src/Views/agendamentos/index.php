@@ -147,6 +147,22 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                                         ? \Core\e($a['observacoes'])
                                         : 'Nenhuma descrição informada' ?></span>
                         </div>
+
+                        <button
+                            type="button"
+                            class="cliente-card__details-btn agendamento-card__details-btn"
+                            data-agendamento-detalhes
+                            data-pet="<?= \Core\e($a['cachorro_nome']) ?>"
+                            data-tutor="<?= \Core\e($a['proprietario_nome']) ?>"
+                            data-servico="<?= \Core\e($a['servico_nome']) ?>"
+                            data-valor="R$ <?= number_format((float) ($a['servico_preco'] ?? 0), 2, ',', '.') ?>"
+                            data-data="<?= date('d/m/Y', strtotime($a['data'])) ?>"
+                            data-hora="<?= date('H:i', strtotime($a['hora'])) ?>"
+                            data-status="<?= \Core\e($statusLabel) ?>"
+                            data-observacoes="<?= \Core\e((string) ($a['observacoes'] ?? '')) ?>">
+                            <span>Ver detalhes</span>
+                            <i data-lucide="chevron-right" aria-hidden="true"></i>
+                        </button>
                     </div>
 
                     <div class="agendamento-card__footer">
@@ -178,5 +194,150 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
     <?php endif; ?>
 </div>
 
+<div class="cliente-detalhes-backdrop hidden" id="agendamentoDetalhesBackdrop" aria-hidden="true">
+    <div class="cliente-detalhes-modal pet-detalhes-modal agendamento-detalhes-modal" role="dialog" aria-modal="true" aria-labelledby="agendamentoDetalhesTitulo">
+        <div class="cliente-detalhes-header">
+            <h3 id="agendamentoDetalhesTitulo">Detalhes do agendamento</h3>
+        </div>
+        <button type="button" class="cliente-detalhes-close" id="agendamentoDetalhesClose" aria-label="Fechar modal">&times;</button>
+
+        <div class="cliente-detalhes-body pet-detalhes-body">
+            <div class="cliente-detalhes-user">
+                <div class="cliente-detalhes-avatar" aria-hidden="true">
+                    <i data-lucide="calendar-clock"></i>
+                </div>
+                <div class="cliente-detalhes-identity">
+                    <h4 id="agendamentoDetalhesPet">Pet</h4>
+                    <p id="agendamentoDetalhesTutor">Tutor</p>
+                </div>
+            </div>
+
+            <div class="cliente-detalhes-separator"></div>
+
+            <div class="cliente-detalhes-section">
+                <h5>Informações do atendimento</h5>
+                <div class="pet-detalhes-grid">
+                    <div class="pet-detalhes-row">
+                        <span class="pet-detalhes-label">Serviço</span>
+                        <strong id="agendamentoDetalhesServico">Não informado</strong>
+                    </div>
+                    <div class="pet-detalhes-row">
+                        <span class="pet-detalhes-label">Valor</span>
+                        <strong id="agendamentoDetalhesValor">Não informado</strong>
+                    </div>
+                    <div class="pet-detalhes-row">
+                        <span class="pet-detalhes-label">Data</span>
+                        <strong id="agendamentoDetalhesData">Não informada</strong>
+                    </div>
+                    <div class="pet-detalhes-row">
+                        <span class="pet-detalhes-label">Horário</span>
+                        <strong id="agendamentoDetalhesHora">Não informado</strong>
+                    </div>
+                    <div class="pet-detalhes-row">
+                        <span class="pet-detalhes-label">Status</span>
+                        <strong id="agendamentoDetalhesStatus">Não informado</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cliente-detalhes-separator"></div>
+
+            <div class="cliente-detalhes-section">
+                <h5>Observações</h5>
+                <div class="cliente-detalhes-texto" id="agendamentoDetalhesObservacoes">Sem observações.</div>
+            </div>
+
+            <div class="cliente-detalhes-actions">
+                <button type="button" class="cliente-detalhes-fechar" id="agendamentoDetalhesFechar">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php if (!empty($agendamentoModalAberto)): ?>
+    <?php
+    $agendamento = $agendamentoFormulario ?? [];
+    $modalAgendamento = true;
+    require __DIR__ . '/form.php';
+    ?>
+<?php endif; ?>
+
 <script src="/assets/js/agendamentos-filtro.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const backdrop = document.getElementById('agendamentoDetalhesBackdrop');
+        const closeButton = document.getElementById('agendamentoDetalhesClose');
+        const closeAction = document.getElementById('agendamentoDetalhesFechar');
+        const fields = {
+            pet: document.getElementById('agendamentoDetalhesPet'),
+            tutor: document.getElementById('agendamentoDetalhesTutor'),
+            servico: document.getElementById('agendamentoDetalhesServico'),
+            valor: document.getElementById('agendamentoDetalhesValor'),
+            data: document.getElementById('agendamentoDetalhesData'),
+            hora: document.getElementById('agendamentoDetalhesHora'),
+            status: document.getElementById('agendamentoDetalhesStatus'),
+            observacoes: document.getElementById('agendamentoDetalhesObservacoes'),
+        };
+
+        if (!backdrop) return;
+
+        const closeModal = () => {
+            backdrop.classList.add('hidden');
+            backdrop.setAttribute('aria-hidden', 'true');
+        };
+
+        document.querySelectorAll('[data-agendamento-detalhes]').forEach((button) => {
+            button.addEventListener('click', () => {
+                fields.pet.textContent = button.dataset.pet || 'Pet';
+                fields.tutor.textContent = button.dataset.tutor || 'Tutor não informado';
+                fields.servico.textContent = button.dataset.servico || 'Não informado';
+                fields.valor.textContent = button.dataset.valor || 'Não informado';
+                fields.data.textContent = button.dataset.data || 'Não informada';
+                fields.hora.textContent = button.dataset.hora || 'Não informado';
+                fields.status.textContent = button.dataset.status || 'Não informado';
+                fields.observacoes.textContent = button.dataset.observacoes || 'Sem observações.';
+                backdrop.classList.remove('hidden');
+                backdrop.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        closeButton?.addEventListener('click', closeModal);
+        closeAction?.addEventListener('click', closeModal);
+        backdrop.addEventListener('click', (event) => {
+            if (event.target === backdrop) closeModal();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && backdrop.getAttribute('aria-hidden') === 'false') {
+                closeModal();
+            }
+        });
+    });
+</script>
+
+<?php if (!empty($agendamentoModalAberto)): ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const backdrop = document.getElementById('agendamentoModalBackdrop');
+            const closeButton = document.getElementById('agendamentoModalClose');
+            const cancelButton = document.getElementById('agendamentoModalCancel');
+
+            if (!backdrop) return;
+
+            const closeModal = () => {
+                backdrop.classList.add('hidden');
+                backdrop.setAttribute('aria-hidden', 'true');
+            };
+
+            closeButton?.addEventListener('click', closeModal);
+            cancelButton?.addEventListener('click', closeModal);
+            backdrop.addEventListener('click', (event) => {
+                if (event.target === backdrop) closeModal();
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') closeModal();
+            });
+        });
+    </script>
+<?php endif; ?>
 

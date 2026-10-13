@@ -19,15 +19,23 @@ if (!empty($agendamento['cachorro_id'])) {
 }
 
 $statusAtual = $valor('status', 'agendado');
+$modalAgendamento = !empty($modalAgendamento);
 ?>
-<div class="agendamento-form-page">
-    <div class="agendamento-form-card">
+<?php if ($modalAgendamento): ?>
+    <div class="cliente-modal-backdrop" id="agendamentoModalBackdrop" aria-hidden="false">
+        <div class="cliente-modal cliente-modal--service-style agendamento-form-modal" role="dialog" aria-modal="true" aria-labelledby="agendamento-form-title">
+            <div class="agendamento-form-card">
+                <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="agendamentoModalClose" aria-label="Fechar modal">&times;</button>
+<?php else: ?>
+    <div class="agendamento-form-page">
+        <div class="agendamento-form-card">
+<?php endif; ?>
         <div class="agendamento-form-header">
             <div class="agendamento-form-icon" aria-hidden="true">
                 <i data-lucide="calendar-clock"></i>
             </div>
             <div>
-                <h1><?= $editando ? 'Remarcar agendamento' : 'Marcar banho e tosa' ?></h1>
+                <h1 id="agendamento-form-title"><?= $editando ? 'Remarcar agendamento' : 'Marcar banho e tosa' ?></h1>
                 <p><?= $editando ? 'Atualize os dados do atendimento' : 'Preencha os dados do agendamento' ?></p>
             </div>
         </div>
@@ -115,15 +123,32 @@ $statusAtual = $valor('status', 'agendado');
             </div>
 
             <div class="agendamento-form__actions">
-                <button type="submit" class="botao"><?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?></button>
-                <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">Cancelar</a>
+                <button type="submit" class="botao<?= $modalAgendamento ? ' cliente-modal__submit' : '' ?>">
+                    <?php if ($modalAgendamento): ?>
+                        <i data-lucide="<?= $editando ? 'save' : 'calendar-plus' ?>" aria-hidden="true"></i>
+                        <span><?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?></span>
+                    <?php else: ?>
+                        <?= $editando ? 'Salvar alterações' : 'Marcar agendamento' ?>
+                    <?php endif; ?>
+                </button>
+                <?php if ($modalAgendamento): ?>
+                    <button type="button" class="cliente-modal__cancel" id="agendamentoModalCancel">Cancelar</button>
+                <?php else: ?>
+                    <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">Cancelar</a>
+                <?php endif; ?>
             </div>
 
 
        
         </form>
+<?php if ($modalAgendamento): ?>
+            </div>
+        </div>
     </div>
-</div>
+<?php else: ?>
+        </div>
+    </div>
+<?php endif; ?>
 
 <?php
 $petsJson = json_encode(
