@@ -111,7 +111,20 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                             <p><?= \Core\e($a['proprietario_nome']) ?></p>
                         </div>
 
-                        <span class="agendamento-card__badge <?= $statusClass ?>"><?= \Core\e($statusLabel) ?></span>
+                        <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status" class="agendamento-card__status-form">
+                            <?= \Core\Csrf::campo() ?>
+                            <select
+                                id="agendamento-status-<?= (int) $a['id'] ?>"
+                                name="status"
+                                class="agendamento-card__status-select"
+                                data-agendamento-status-select
+                                aria-label="Alterar status do agendamento de <?= \Core\e($a['cachorro_nome']) ?>">
+                                <option value="agendado" <?= $status === 'agendado' ? 'selected' : '' ?>>Agendado</option>
+                                <option value="andamento" <?= $status === 'andamento' ? 'selected' : '' ?>>Em andamento</option>
+                                <option value="concluido" <?= $status === 'concluido' ? 'selected' : '' ?>>Concluído</option>
+                                <option value="cancelado" <?= $status === 'cancelado' ? 'selected' : '' ?>>Cancelado</option>
+                            </select>
+                        </form>
                     </div>
 
                     <div class="agendamento-card__info">
@@ -266,6 +279,10 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('[data-agendamento-status-select]').forEach((select) => {
+            select.addEventListener('change', () => select.form?.requestSubmit());
+        });
+
         const backdrop = document.getElementById('agendamentoDetalhesBackdrop');
         const closeButton = document.getElementById('agendamentoDetalhesClose');
         const closeAction = document.getElementById('agendamentoDetalhesFechar');

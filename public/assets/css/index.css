@@ -1150,6 +1150,47 @@ main button {
     box-shadow: 0 0 0 3px rgba(199, 70, 120, 0.1);
 }
 
+.agendamento-card__header .agendamento-card__status-form {
+    flex-shrink: 0;
+}
+
+.agendamento-card__header .agendamento-card__status-select {
+    width: 120px;
+    min-width: 120px;
+    height: 32px;
+    padding: 0 28px 0 10px;
+    border-radius: 4px;
+    background-position: right 9px center;
+    background-size: 13px;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: none;
+}
+
+.agendamento-card__badge--agendado {
+    border-color: #c8e5d1;
+    background-color: #edf7f0;
+    color: #1f7d50;
+}
+
+.agendamento-card__badge--andamento {
+    border-color: #f5d5b3;
+    background-color: #fff1e2;
+    color: #b45309;
+}
+
+.agendamento-card__badge--concluido {
+    border-color: #bbf7d0;
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.agendamento-card__badge--cancelado {
+    border-color: rgba(178, 59, 78, 0.2);
+    background-color: rgba(178, 59, 78, 0.1);
+    color: #b13741;
+}
+
 
 
 
