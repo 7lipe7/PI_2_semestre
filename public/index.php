@@ -20,15 +20,15 @@ header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
 header('Cross-Origin-Opener-Policy: same-origin');
 header('Cross-Origin-Embedder-Policy: require-corp');
 header('Content-Security-Policy: '
-    . "'default-src 'self'; "
-    . "'script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'img-src 'self' data: https:; "
-    . "'font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'connect-src 'self'; "
-    . "'frame-ancestors 'self'; "
-    . "'base-uri 'self'; "
-    . "'form-action 'self';");
+    . "default-src 'self'; "
+    . "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "img-src 'self' data: https:; "
+    . "font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "connect-src 'self'; "
+    . "frame-ancestors 'self'; "
+    . "base-uri 'self'; "
+    . "form-action 'self';");
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/Router.php';

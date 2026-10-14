@@ -185,7 +185,6 @@ $resumoCards = [
     console.log('Dashboard "Hoje":', <?= json_encode($dataHoje ?? date('Y-m-d')) ?>);
     console.log('Navegador data/hora:', new Date().toString());
     console.log('Navegador fuso:', Intl.DateTimeFormat().resolvedOptions().timeZone);
-    
 </script>
 <script src="/assets/js/agenda-status.js"></script>
 
