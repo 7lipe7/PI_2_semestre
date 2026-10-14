@@ -25,7 +25,9 @@ header('Content-Security-Policy: '
     . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
     . "img-src 'self' data: https:; "
     . "font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "connect-src 'self'; "
+    // connect-src inclui os CDNs porque o DevTools busca os source maps (.map)
+    // de bootstrap/lucide quando aberto — esse download é regido por connect-src.
+    . "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
     . "frame-ancestors 'self'; "
     . "base-uri 'self'; "
     . "form-action 'self';");
