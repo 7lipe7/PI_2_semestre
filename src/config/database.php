@@ -83,6 +83,14 @@ function carregarEnvLocal(): void
 
 carregarEnvLocal();
 
+// Fuso horário da aplicação definido AQUI, no carregamento do arquivo, e não
+// dentro de getConnection(): public/index.php inclui este arquivo antes de
+// qualquer date()/strtotime(), mas getConnection() só roda quando um controller
+// consulta o banco. HomeController@index chamava date('Y-m-d') antes disso —
+// com o fuso ainda em UTC, depois das 21h (America/Sao_Paulo = UTC-3) o dia
+// de "Hoje" no dashboard já era o dia seguinte.
+date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo');
+
 function getConnection(): PDO
 {
     static $pdo = null;
@@ -90,8 +98,6 @@ function getConnection(): PDO
     if ($pdo !== null) {
         return $pdo;
     }
-
-    date_default_timezone_set(getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo');
 
     $timezone = getenv('APP_TIMEZONE') ?: 'America/Sao_Paulo';
 
