@@ -29,18 +29,18 @@ header('Cross-Origin-Embedder-Policy: require-corp');
 // template do Nuclei não sinaliza style-src.
 $cspNonce = \Core\Csp::nonce();
 header('Content-Security-Policy: '
-    . "'default-src 'self'; "
-    . "'script-src 'self' 'nonce-{$cspNonce}' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'img-src 'self' data: https:; "
-    . "'font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "default-src 'self'; "
+    . "script-src 'self' 'nonce-{$cspNonce}' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "img-src 'self' data: https:; "
+    . "font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
     // connect-src inclui os CDNs porque o DevTools busca os source maps (.map)
     // de bootstrap/lucide quando aberto — esse download é regido por connect-src.
-    . "'connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'object-src 'none'; "
-    . "'frame-ancestors 'self'; "
-    . "'base-uri 'self'; "
-    . "'form-action 'self';");
+    . "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "object-src 'none'; "
+    . "frame-ancestors 'self'; "
+    . "base-uri 'self'; "
+    . "form-action 'self';");
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/Router.php';
@@ -148,4 +148,3 @@ if ($metodo === 'POST' && $path !== '/login') {
 }
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-
