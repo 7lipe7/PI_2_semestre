@@ -22,8 +22,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar — Amora Banho e Tosa</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- Bootstrap (SRI: garante que o arquivo do CDN chegou intacto) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB">
 
     <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
     <?php
@@ -76,9 +77,10 @@
 
     </main>
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
-    <script>
+    <!-- Lucide Icons (SRI) -->
+    <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"
+            integrity="sha384-Hh7C333mXel+qppGoFs4qAOXp7h67eur4XsQVF2bvHAM3MQ4DX4cQI7oRCzb98J4"></script>
+    <script nonce="<?= \Core\Csp::nonce() ?>">
         lucide.createIcons();
     </script>
 

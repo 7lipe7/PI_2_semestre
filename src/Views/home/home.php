@@ -172,7 +172,7 @@ $resumoCards = [
     <p class="agenda-aviso hidden" id="agendaAviso" role="status" aria-live="polite"></p>
 </div>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     // Token usado para remontar os botões quando o status muda (o do PHP, nunca gerado aqui)
     window.AGENDA_CSRF = <?= json_encode(\Core\Csrf::token()) ?>;
 </script>

@@ -65,10 +65,7 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                             <form method="post"
                                   action="/servicos/<?= (int) $s['id'] ?>/excluir"
                                   class="d-inline"
-                                  onsubmit="return confirm(<?= json_encode(
-                                      'Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.',
-                                      JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
-                                  ) ?>)">
+                                  data-confirm="<?= \Core\e('Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.') ?>">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
                             </form>
@@ -184,7 +181,7 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
     </div>
 </div>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const servicoModalBackdrop = document.getElementById('servicoModalBackdrop');
         const servicoModalClose = document.getElementById('servicoModalClose');

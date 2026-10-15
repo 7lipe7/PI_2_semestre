@@ -76,7 +76,7 @@ $petEditAberto = !empty($petEditAberto);
 
                             <form method="post" action="/pets/<?= $p['id'] ?>/excluir"
                                 class="cliente-card__delete-form"
-                                onsubmit="return confirm('Excluir <?= \Core\e($p['nome']) ?>? Os agendamentos dele também serão apagados!')">
+                                data-confirm="Excluir <?= \Core\e($p['nome']) ?>? Os agendamentos dele também serão apagados!">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir pet">
                                     <i data-lucide="trash-2"></i>
@@ -336,7 +336,7 @@ $petEditAberto = !empty($petEditAberto);
     </div>
 </div>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.querySelector('.clientes-search-input');
         const cards = document.querySelectorAll('.pet-card');

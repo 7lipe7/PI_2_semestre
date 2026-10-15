@@ -176,7 +176,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 
                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/excluir"
                               class="agendamento-card__delete-form"
-                              onsubmit="return confirm('Cancelar este agendamento?')">
+                              data-confirm="Cancelar este agendamento?">
                             <?= \Core\Csrf::campo() ?>
                             <button type="submit" class="agendamento-card__action agendamento-card__action--delete">
                                 <i data-lucide="trash-2"></i>
@@ -264,7 +264,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 
 <script src="/assets/js/agendamentos-filtro.js"></script>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const backdrop = document.getElementById('agendamentoDetalhesBackdrop');
         const closeButton = document.getElementById('agendamentoDetalhesClose');
@@ -316,7 +316,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 </script>
 
 <?php if (!empty($agendamentoModalAberto)): ?>
-    <script>
+    <script nonce="<?= \Core\Csp::nonce() ?>">
         document.addEventListener('DOMContentLoaded', function () {
             const backdrop = document.getElementById('agendamentoModalBackdrop');
             const closeButton = document.getElementById('agendamentoModalClose');
