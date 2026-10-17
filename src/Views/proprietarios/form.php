@@ -69,7 +69,7 @@ $editando = $cliente !== null && !empty($cliente['id']);
     </div>
 </div>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('.cliente-modal__form');
         const submitBtn = document.querySelector('.cliente-modal__submit');

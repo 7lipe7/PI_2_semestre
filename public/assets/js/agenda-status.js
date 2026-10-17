@@ -42,8 +42,13 @@ document.addEventListener('DOMContentLoaded', function () {
         clearTimeout(avisoTimer);
 
         avisoTimer = setTimeout(() => {
-            aviso.classList.add('hidden');
-        }, 4000);
+            aviso.classList.add('agenda-aviso--saindo');
+
+            avisoTimer = setTimeout(() => {
+                aviso.classList.add('hidden');
+                aviso.classList.remove('agenda-aviso--saindo');
+            }, 180);
+        }, 2800);
     }
 
     function criarIcone(nome) {

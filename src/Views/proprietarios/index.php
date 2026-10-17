@@ -70,7 +70,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
                             <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
                                   class="cliente-card__delete-form"
-                                  onsubmit="return confirm('Excluir <?= \Core\e($c['nome']) ?>?')">
+                                  data-confirm="Excluir <?= \Core\e($c['nome']) ?>?">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir cliente">
                                     <i data-lucide="trash-2"></i>
@@ -252,7 +252,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
     </div>
 </div>
 
-<script>
+<script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const modalBackdrop = document.querySelector('.cliente-modal-backdrop');
         const modalCloseBtn = document.getElementById('clienteModalClose');

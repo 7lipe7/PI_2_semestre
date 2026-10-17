@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+// Nonce da CSP — precisa existir antes do cabeçalho abaixo e ser o mesmo
+// usado por todas as views (<script nonce="..."> via \Core\Csp::nonce()).
+require_once __DIR__ . '/../src/Core/Csp.php';
+
 // Segurança: cabeçalhos de resposta aplicados a TODAS as requisições.
 // Esse bloco vai antes de qualquer saída (HTML, erro de database, 404/500 do
 // Router), garantindo headers em todas as páginas, inclusive a tela /login.
@@ -19,16 +23,24 @@ header('Cross-Origin-Resource-Policy: same-origin');
 header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
 header('Cross-Origin-Opener-Policy: same-origin');
 header('Cross-Origin-Embedder-Policy: require-corp');
+// 'unsafe-inline' foi removido do script-src: o nonce por requisição assume o
+// papel (findings do Nuclei: weak-csp-detect:unsafe-script-src). style-src
+// mantém 'unsafe-inline' porque as views usam atributos style="..." — e o
+// template do Nuclei não sinaliza style-src.
+$cspNonce = \Core\Csp::nonce();
 header('Content-Security-Policy: '
-    . "'default-src 'self'; "
-    . "'script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'img-src 'self' data: https:; "
-    . "'font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
-    . "'connect-src 'self'; "
-    . "'frame-ancestors 'self'; "
-    . "'base-uri 'self'; "
-    . "'form-action 'self';");
+    . "default-src 'self'; "
+    . "script-src 'self' 'nonce-{$cspNonce}' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "img-src 'self' data: https:; "
+    . "font-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    // connect-src inclui os CDNs porque o DevTools busca os source maps (.map)
+    // de bootstrap/lucide quando aberto — esse download é regido por connect-src.
+    . "connect-src 'self' https://cdn.jsdelivr.net https://unpkg.com; "
+    . "object-src 'none'; "
+    . "frame-ancestors 'self'; "
+    . "base-uri 'self'; "
+    . "form-action 'self';");
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/Core/Router.php';
@@ -136,4 +148,3 @@ if ($metodo === 'POST' && $path !== '/login') {
 }
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-
