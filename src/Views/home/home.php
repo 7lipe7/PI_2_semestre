@@ -172,15 +172,7 @@ $resumoCards = [
     // Token usado para remontar os botões quando o status muda (o do PHP, nunca gerado aqui)
     window.AGENDA_CSRF = <?= json_encode(\Core\Csrf::token()) ?>;
 
-    // Conferência de horário (console do navegador — F12 > Console).
-    // "time_zone" não existe em JS: os valores do servidor vêm do PHP via json_encode.
-    // Depois das 21h, o dia do servidor e o dia do navegador precisam bater —
-    // era exatamente o bug do badge "Hoje".
-    console.log('Servidor fuso horário:', <?= json_encode(date_default_timezone_get()) ?>);
-    console.log('Servidor data/hora:', <?= json_encode(date('Y-m-d H:i:s')) ?>);
-    console.log('Dashboard "Hoje":', <?= json_encode($dataHoje ?? date('Y-m-d')) ?>);
-    console.log('Navegador data/hora:', new Date().toString());
-    console.log('Navegador fuso:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+
 </script>
 <script src="/assets/js/agenda-status.js"></script>
 
