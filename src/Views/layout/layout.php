@@ -30,7 +30,7 @@ $paginas = [
 
     <!-- Bootstrap (SRI: garante que o arquivo do CDN chegou intacto) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"
-          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB">
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB">
 
     <!-- CSS do projeto (?v= força o navegador a buscar a versão nova) -->
     <?php
@@ -119,7 +119,7 @@ $paginas = [
                         <i data-lucide="history"></i>
                         <span>Histórico</span>
                     </a>
-               
+
                 <?php elseif ($navAtivo === 'clientes'): ?>
                     <a href="/clientes/novo" class="btn clientes-new-btn page-header__action">
                         <i data-lucide="plus"></i>
@@ -146,69 +146,14 @@ $paginas = [
 
     <!-- Bootstrap JavaScript (SRI) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"></script>
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"></script>
 
     <!-- Lucide Icons (SRI) -->
     <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"
-            integrity="sha384-Hh7C333mXel+qppGoFs4qAOXp7h67eur4XsQVF2bvHAM3MQ4DX4cQI7oRCzb98J4"></script>
-    <script nonce="<?= \Core\Csp::nonce() ?>">
-        lucide.createIcons();
-
-        // Confirmação de exclusão via data-confirm: sem 'unsafe-inline' na CSP
-        // os atributos onsubmit seriam bloqueados — o listener delegado assume
-        // o mesmo papel e também cobre forms criados dinamicamente.
-        document.addEventListener('submit', (event) => {
-            const form = event.target.closest('form[data-confirm]');
-            if (form && !window.confirm(form.dataset.confirm)) {
-                event.preventDefault();
-            }
-        });
-
-        const sidebar = document.querySelector('.sidebar');
-        const sidebarToggle = document.querySelector('.sidebar-toggle');
-        const body = document.body;
-
-        if (sidebar && sidebarToggle) {
-            const syncSidebarState = (isOpen) => {
-                body.classList.toggle('sidebar-open', isOpen);
-                sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                sidebarToggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
-            };
-
-            sidebarToggle.addEventListener('click', () => {
-                const willOpen = !body.classList.contains('sidebar-open');
-                syncSidebarState(willOpen);
-            });
-
-            document.querySelectorAll('.nav-item').forEach((item) => {
-                item.addEventListener('click', () => {
-                    if (window.innerWidth <= 991) {
-                        syncSidebarState(false);
-                    }
-                });
-            });
-
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 991) {
-                    syncSidebarState(false);
-                }
-            });
-
-            document.addEventListener('click', (event) => {
-                if (window.innerWidth > 991) {
-                    return;
-                }
-
-                const clickedInsideSidebar = sidebar.contains(event.target);
-                const clickedToggle = sidebarToggle.contains(event.target);
-
-                if (!clickedInsideSidebar && !clickedToggle && body.classList.contains('sidebar-open')) {
-                    syncSidebarState(false);
-                }
-            });
-        }
-    </script>
-
+        integrity="sha384-Hh7C333mXel+qppGoFs4qAOXp7h67eur4XsQVF2bvHAM3MQ4DX4cQI7oRCzb98J4"></script>
+    <script
+        src="/assets/js/admin.js"
+        defer></script>
 </body>
 
 </html>
