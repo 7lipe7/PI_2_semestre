@@ -1,0 +1,44 @@
+
+@startuml
+title Sistema Amora Banho e Tosa — Casos de Uso
+
+left to right direction
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #EFE6F5
+  BorderColor #5D2B86
+}
+skinparam package {
+  BorderColor #5D2B86
+  FontColor #5D2B86
+}
+
+actor "Funcionário" as F
+
+rectangle "Sistema Amora Banho e Tosa" {
+  usecase "Autenticar-se" as Auth
+  usecase "Consultar agenda\ndo dia" as Agenda
+  usecase "Gerenciar\nproprietários" as Proprietarios
+  usecase "Gerenciar\ncachorros" as Cachorros
+  usecase "Gerenciar\nagendamentos" as Agendamentos
+  usecase "Alterar status\ndo agendamento" as Status
+  usecase "Gerenciar\nserviços" as Servicos
+  usecase "Encerrar sessão" as Sair
+}
+
+F -- Auth
+F -- Agenda
+F -- Proprietarios
+F -- Cachorros
+F -- Agendamentos
+F -- Status
+F -- Servicos
+F -- Sair
+
+note bottom of Status
+  Agendado, em andamento,
+  concluído ou cancelado.
+end note
+
+@enduml

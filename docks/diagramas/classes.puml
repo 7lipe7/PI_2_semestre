@@ -1,0 +1,51 @@
+
+@startuml
+title Diagrama de classes — domínio operacional
+
+left to right direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor white
+  BorderColor #5D2B86
+  HeaderBackgroundColor #5D2B86
+  FontColor #222222
+  HeaderFontColor white
+}
+skinparam ArrowColor #5D2B86
+
+class Proprietario {
+  id: int
+  nome: string
+  celular: string
+}
+
+class Cachorro {
+  id: int
+  nome: string
+  raca: string?
+  porte: string?
+  proprietario_id: int
+}
+
+class Servico {
+  id: int
+  nome: string
+  preco: decimal
+  ativo: boolean
+}
+
+class Agendamento {
+  id: int
+  data: date
+  hora: time
+  status: string
+  cachorro_id: int
+  servico_id: int
+}
+
+Proprietario "1" -- "0..*" Cachorro : possui
+Cachorro "1" -- "0..*" Agendamento : recebe
+Servico "1" -- "0..*" Agendamento : corresponde a
+
+@enduml

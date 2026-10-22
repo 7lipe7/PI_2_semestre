@@ -1,0 +1,46 @@
+
+@startuml
+title Sequência — criação de agendamento
+
+skinparam shadowing false
+skinparam sequence {
+  ParticipantBorderColor #5D2B86
+  ParticipantBackgroundColor #5D2B86
+  ParticipantFontColor white
+  ArrowColor #444444
+}
+hide footbox
+
+actor "Funcionário" as F
+boundary "Navegador" as UI
+control "Router" as R
+control "AgendamentoController" as C
+entity "AgendamentoModel" as M
+database "MySQL" as DB
+
+F -> UI: Abre formulário de agendamento
+UI -> R: GET /agendamentos/novo
+R -> C: create()
+C --> UI: Exibe formulário
+
+F -> UI: Preenche e envia os dados
+UI -> R: POST /agendamentos
+R -> C: store()
+
+C -> C: Valida os campos
+C -> M: Verifica disponibilidade do horário
+M -> DB: Consulta agendamentos da data e hora
+DB --> M: Resultado da consulta
+M --> C: Disponibilidade
+
+alt Horário ocupado ou dados inválidos
+  C --> UI: Exibe mensagem de erro
+else Horário disponível e dados válidos
+  C -> M: Cria agendamento
+  M -> DB: INSERT INTO agendamentos
+  DB --> M: Confirma gravação
+  M --> C: Retorna resultado
+  C --> UI: Redireciona para a agenda
+end
+
+@enduml

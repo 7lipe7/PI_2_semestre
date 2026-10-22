@@ -1,0 +1,103 @@
+
+@startuml
+title Modelo lógico — banco de dados MySQL
+
+hide methods
+hide stereotypes
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+skinparam entity {
+  BackgroundColor white
+  BorderColor #5D2B86
+  FontColor #222222
+}
+skinparam ArrowColor #5D2B86
+
+entity proprietarios {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * celular : VARCHAR(20)
+  observacoes : TEXT NULL
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity cachorros {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * proprietario_id : INT UNSIGNED <<FK>>
+  * nome : VARCHAR(80)
+  raca : VARCHAR(80) NULL
+  porte : ENUM NULL
+  pelagem : VARCHAR(80) NULL
+  observacoes : TEXT NULL
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity servicos {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * nome : VARCHAR(80)
+  descricao : VARCHAR(255) NULL
+  * preco : DECIMAL(10,2)
+  * ativo : TINYINT(1)
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+}
+
+entity agendamentos {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * cachorro_id : INT UNSIGNED <<FK>>
+  * servico_id : INT UNSIGNED <<FK>>
+  * data : DATE
+  * hora : TIME
+  * status : ENUM
+  observacoes : TEXT NULL
+  * criado_em : TIMESTAMP
+  * atualizado_em : TIMESTAMP
+  --
+  UNIQUE(data, hora)
+}
+
+entity historico_agendamentos {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * agendamento_id : INT UNSIGNED <<FK>>
+  * status_anterior : ENUM
+  * status_novo : ENUM
+  * alterado_em : TIMESTAMP
+}
+
+entity usuarios {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * nome : VARCHAR(120)
+  * login : VARCHAR(60) <<UNIQUE>>
+  * senha_hash : VARCHAR(255)
+  * criado_em : TIMESTAMP
+}
+
+entity login_tentativas {
+  * id : INT UNSIGNED <<PK>>
+  --
+  * login : VARCHAR(60)
+  * ip : VARCHAR(45)
+  * criado_em : TIMESTAMP
+  INDEX(login, ip, criado_em)
+}
+
+proprietarios ||--o{ cachorros : possui
+cachorros ||--o{ agendamentos : recebe
+servicos ||--o{ agendamentos : vinculado a
+agendamentos ||--o{ historico_agendamentos : registra
+
+note bottom of agendamentos
+  Restrição: UNIQUE(data, hora)
+end note
+
+@enduml
