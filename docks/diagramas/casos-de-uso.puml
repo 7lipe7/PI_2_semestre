@@ -1,4 +1,3 @@
-
 @startuml
 title Sistema Amora Banho e Tosa — Casos de Uso
 
@@ -17,28 +16,69 @@ skinparam package {
 actor "Funcionário" as F
 
 rectangle "Sistema Amora Banho e Tosa" {
-  usecase "Autenticar-se" as Auth
-  usecase "Consultar agenda\ndo dia" as Agenda
-  usecase "Gerenciar\nproprietários" as Proprietarios
-  usecase "Gerenciar\ncachorros" as Cachorros
-  usecase "Gerenciar\nagendamentos" as Agendamentos
-  usecase "Alterar status\ndo agendamento" as Status
-  usecase "Gerenciar\nserviços" as Servicos
-  usecase "Encerrar sessão" as Sair
+  package "Agenda e atendimentos" {
+    usecase "UC01\nConsultar agenda" as UC01
+    usecase "UC10\nListar agendamentos" as UC10
+    usecase "UC11\nCriar agendamento" as UC11
+    usecase "UC12\nEditar agendamento" as UC12
+    usecase "UC13\nAlterar status" as UC13
+    usecase "UC14\nExcluir agendamento" as UC14
+    usecase "UC16\nConsultar histórico\nde status" as UC16
+  }
+
+  package "Proprietários" {
+    usecase "UC02\nListar proprietários" as UC02
+    usecase "UC03\nCadastrar proprietário" as UC03
+    usecase "UC04\nEditar proprietário" as UC04
+    usecase "UC05\nExcluir proprietário" as UC05
+  }
+
+  package "Cachorros" {
+    usecase "UC06\nListar cachorros" as UC06
+    usecase "UC07\nCadastrar cachorro" as UC07
+    usecase "UC08\nEditar cachorro" as UC08
+    usecase "UC09\nExcluir cachorro" as UC09
+  }
+
+  package "Serviços" {
+    usecase "UC15\nGerenciar serviços" as UC15
+  }
+
+  package "Acesso" {
+    usecase "UC17\nAutenticar-se" as UC17
+    usecase "UC18\nEncerrar sessão" as UC18
+  }
 }
 
-F -- Auth
-F -- Agenda
-F -- Proprietarios
-F -- Cachorros
-F -- Agendamentos
-F -- Status
-F -- Servicos
-F -- Sair
+F -- UC01
+F -- UC02
+F -- UC03
+F -- UC04
+F -- UC05
+F -- UC06
+F -- UC07
+F -- UC08
+F -- UC09
+F -- UC10
+F -- UC11
+F -- UC12
+F -- UC13
+F -- UC14
+F -- UC15
+F -- UC16
+F -- UC17
+F -- UC18
 
-note bottom of Status
-  Agendado, em andamento,
-  concluído ou cancelado.
+note bottom of UC13
+  Disponível na edição e por ações rápidas.
+  Status: agendado, andamento,
+  concluido ou cancelado.
+end note
+
+note bottom of UC17
+  A criação e redefinição de contas
+  é feita por script de linha de comando.
+  UC01–UC16 e UC18 exigem sessão autenticada.
 end note
 
 @enduml
