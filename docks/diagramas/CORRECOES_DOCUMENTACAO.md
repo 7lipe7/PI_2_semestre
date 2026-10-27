@@ -1,47 +1,4 @@
 
-
-Atualize a Tabela 2 para esta lista, mantendo UC01–UC14 e acrescentando UC15–UC18:
-
-| Código | Caso de uso | Descrição |
-|---|---|---|
-| UC01 | Consultar agenda | Exibe os agendamentos da data selecionada, ordenados por horário. Por padrão, a página inicial exibe a data atual e permite navegar para outras datas. |
-| UC02 | Listar proprietários | Exibe os proprietários cadastrados e informações resumidas de visitas e gastos. |
-| UC03 | Cadastrar proprietário | Cadastra um proprietário com nome e celular obrigatórios e observações opcionais. |
-| UC04 | Editar proprietário | Altera os dados de um proprietário existente. |
-| UC05 | Excluir proprietário | Exclui o proprietário; os cachorros vinculados e os agendamentos deles são removidos em cascata. |
-| UC06 | Listar cachorros | Exibe os cachorros cadastrados e seus proprietários, com busca por nome do cachorro ou do proprietário. |
-| UC07 | Cadastrar cachorro | Cadastra um cachorro vinculado a um proprietário; nome, proprietário e porte são obrigatórios no formulário. |
-| UC08 | Editar cachorro | Altera os dados de um cachorro existente. |
-| UC09 | Excluir cachorro | Exclui o cachorro e, em cascata, os agendamentos associados. |
-| UC10 | Listar agendamentos | Exibe os agendamentos cadastrados, ordenados por data e horário, com cachorro, proprietário, serviço e status. |
-| UC11 | Criar agendamento | Cria agendamento para um cachorro e serviço existentes, com data, hora e observações opcionais. O status inicial é `agendado`. |
-| UC12 | Editar agendamento | Altera cachorro, serviço, data, hora, observações e/ou status de um agendamento existente. |
-| UC13 | Alterar status do agendamento | Altera o status pela edição do agendamento ou pelas ações rápidas disponíveis na agenda/listagem. A aplicação aceita `agendado`, `andamento`, `concluido` e `cancelado`. |
-| UC14 | Excluir agendamento | Exclui um agendamento. O horário fica disponível novamente; seu histórico associado também é excluído. |
-| UC15 | Gerenciar serviços | Lista, cadastra e edita serviços e seus preços; permite excluir serviços sem uso ou inativar serviços já associados a agendamentos. |
-| UC16 | Consultar histórico de status | Exibe as alterações de status registradas, com dados do agendamento, cachorro, proprietário e serviço. |
-| UC17 | Autenticar-se | Permite ao funcionário entrar com login e senha válidos. Não há cadastro de usuário pela interface; a conta é criada ou redefinida por script de linha de comando. |
-| UC18 | Encerrar sessão | Encerra a sessão autenticada do funcionário e retorna à tela de login. |
-
-**Ator:** use “Funcionário” como ator. UC17 ocorre antes da autenticação; UC01–UC16 e UC18 exigem sessão autenticada. Inclua essa observação na legenda do diagrama, em vez de chamar o ator de “Funcionário autenticado” no caso de uso de login.
-
-**Relações:** UC13 é um caso de uso próprio, sem relação obrigatória `«include»` com UC12, pois também pode ser iniciado pelas ações rápidas da agenda/listagem. Não desenhe relações `«include»` ou `«extend»` sem correspondência explícita no comportamento implementado.
-
-**Fluxos detalhados:** atualize a descrição dos casos de uso já existente no documento:
-
-- UC01 deve dizer “data selecionada”; o dashboard usa hoje por padrão, mas também permite consultar outra data.
-- UC07 deve tratar porte como obrigatório no formulário. Embora a coluna do banco aceite `NULL`, o controller rejeita porte vazio.
-- UC11/UC12: em erro, o controller reapresenta os dados recebidos do formulário de agendamento. A validação de campos ausentes e a validação de formato de data/hora têm mensagens diferentes; descreva as mensagens realmente exibidas.
-- UC03/UC04: não diga que os dados digitados são preservados após erro de nome/celular obrigatório. O controller reabre o formulário, mas não repassa esses valores para renderização nesses fluxos.
-- UC13: descreva as ações rápidas e a edição, os quatro status válidos e o registro das alterações no histórico.
-- UC15: serviço associado a agendamentos é inativado, em vez de excluído; serviço sem uso pode ser excluído.
-- UC16: o histórico guarda alterações de status, não um registro de criação de cada agendamento.
-- UC17/UC18: não existe tela de cadastro de usuário; o logout exige sessão e encerra a sessão atual.
-
-## 4. Dicionário de dados — seção 3.5
-
-Substitua o dicionário por tabelas que correspondam ao `docker/php/db/init.sql`. Tipos de chave primária e estrangeira são `INT UNSIGNED`; as datas de auditoria são `TIMESTAMP`, não `DATETIME`.
-
 ### `proprietarios`
 
 | Campo | Tipo | Nulo | Chave / restrição | Descrição |
