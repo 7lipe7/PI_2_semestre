@@ -70,7 +70,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
                             <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
                                   class="cliente-card__delete-form"
-                                  data-confirm="Excluir <?= \Core\e($c['nome']) ?>?">
+                                  data-confirm="<?= \Core\e('Excluir ' . $c['nome'] . '? Esta ação removerá todos os cães e agendamentos vinculados a este cliente e não poderá ser desfeita.') ?>">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir cliente">
                                     <i data-lucide="trash-2"></i>
@@ -397,4 +397,3 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
         applyFilter();
     });
 </script>
-
