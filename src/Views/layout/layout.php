@@ -154,6 +154,15 @@ $paginas = [
     <script
         src="/assets/js/admin.js"
         defer></script>
+    <script nonce="<?= \Core\Csp::nonce() ?>">
+        document.querySelectorAll('form[data-confirm]').forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                if (!window.confirm(form.dataset.confirm)) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

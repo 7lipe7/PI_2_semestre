@@ -6,14 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.lucide.createIcons();
     }
 
-    document.querySelectorAll('form[data-confirm]').forEach((form) => {
-        form.addEventListener('submit', (event) => {
-            if (!window.confirm(form.dataset.confirm)) {
-                event.preventDefault();
-            }
-        });
-    });
-
     const sidebar = document.querySelector('.sidebar');
     const toggle = document.querySelector('.sidebar-toggle');
     const body = document.body;
