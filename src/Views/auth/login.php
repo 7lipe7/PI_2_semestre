@@ -39,10 +39,10 @@
     <main class="login-card">
 
         <div class="login-logo" aria-hidden="true">
-            <i data-lucide="paw-print"></i>
+        <img src="/assets/img/amora.jpeg" alt="Logo Amora">
         </div>
 
-        <h1 class="login-title">PetShop Admin</h1>
+        <h1 class="login-title">amora banho e tosa Admin</h1>
         <p class="login-subtitle">Entre para gerenciar o pet shop</p>
 
         <?php if (($erro ?? null) !== null): ?>

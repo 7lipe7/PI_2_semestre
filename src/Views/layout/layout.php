@@ -46,11 +46,11 @@ $paginas = [
 
         <div class="sidebar-header d-flex align-items-center gap-3">
             <div class="sidebar-logo" aria-hidden="true">
-                <i data-lucide="paw-print"></i>
+          <img src="/assets/img/amora.jpeg" alt="Logo Amora" width="40px">
             </div>
 
             <div class="sidebar-title">
-                <h2>PetShop Admin</h2>
+                <h2>Amora Banho e Tosa</h2>
                 <p>Painel de controle</p>
             </div>
         </div>
@@ -95,9 +95,9 @@ $paginas = [
         </nav>
 
         <div class="sidebar-footer d-flex gap-2 mt-auto">
-            <span>v1.0</span>
+            <span>v1.0.01</span>
             <span aria-hidden="true">•</span>
-            <span>PetShop</span>
+            <span>amora banho e tosa</span>
         </div>
 
     </aside>
