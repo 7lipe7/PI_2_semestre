@@ -2998,7 +2998,7 @@ main button {
 
 .combobox-lista {
     position: absolute;
-    top: calc(100% - 24px);
+    top: calc(25% - 24px);
     left: 0;
     right: 0;
     max-height: 240px;
