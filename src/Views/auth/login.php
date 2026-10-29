@@ -39,7 +39,7 @@
     <main class="login-card">
 
         <div class="login-logo" aria-hidden="true">
-        <img src="/assets/img/amora.jpeg" alt="Logo Amora">
+        <img src="/assets/img/amora.webp" alt="Logo Amora">
         </div>
 
         <h1 class="login-title">amora banho e tosa Admin</h1>

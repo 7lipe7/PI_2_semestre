@@ -46,7 +46,7 @@ $paginas = [
 
         <div class="sidebar-header d-flex align-items-center gap-3">
             <div class="sidebar-logo" aria-hidden="true">
-          <img src="/assets/img/amora.jpeg" alt="Logo Amora" width="40px">
+          <img src="/assets/img/amora.webp" alt="Logo Amora" width="40px">
             </div>
 
             <div class="sidebar-title">
