@@ -193,7 +193,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                             <?= \Core\Csrf::campo() ?>
                             <button type="submit" class="agendamento-card__action agendamento-card__action--delete">
                                 <i data-lucide="trash-2"></i>
-                                <span>Cancelar</span>
+                                <span>exluir</span>
                             </button>
                         </form>
                         

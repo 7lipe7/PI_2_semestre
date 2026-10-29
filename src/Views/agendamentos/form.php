@@ -149,7 +149,7 @@ $modalAgendamento = !empty($modalAgendamento);
                                 <?php if ($modalAgendamento): ?>
                                     <button type="button" class="cliente-modal__cancel" id="agendamentoModalCancel">Cancelar</button>
                                 <?php else: ?>
-                                    <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">Cancelar</a>
+                                    <a href="/agendamentos" class="btn btn-light agendamento-form__cancel">excluir</a>
                                 <?php endif; ?>
                             </div>
 
