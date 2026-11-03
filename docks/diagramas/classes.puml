@@ -18,6 +18,7 @@ class Proprietario {
   id: int
   nome: string
   celular: string
+  observacoes: string?
 }
 
 class Cachorro {
@@ -25,12 +26,15 @@ class Cachorro {
   nome: string
   raca: string?
   porte: string?
+  pelagem: string?
+  observacoes: string?
   proprietario_id: int
 }
 
 class Servico {
   id: int
   nome: string
+  descricao: string?
   preco: decimal
   ativo: boolean
 }
@@ -42,10 +46,16 @@ class Agendamento {
   status: string
   cachorro_id: int
   servico_id: int
+  observacoes: string?
 }
 
 Proprietario "1" -- "0..*" Cachorro : possui
 Cachorro "1" -- "0..*" Agendamento : recebe
 Servico "1" -- "0..*" Agendamento : corresponde a
+
+note bottom of Cachorro
+  porte aceita pequeno, medio ou grande.
+  Pode ser NULL no banco, mas é obrigatório no formulário.
+end note
 
 @enduml

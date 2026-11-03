@@ -346,7 +346,7 @@ class AgendamentoController extends Controller
         error_log('Erro de banco em agendamento: ' . $e->getMessage());
 
         if ($codigo === '23000' && $driver === '1062') {
-            if (str_contains($mensagem, 'uq_agendamentos_data_hora')) {
+            if (str_contains($mensagem, 'uq_agenda_horario')) {
                 return 'Este horário já está ocupado. Escolha outro.';
             }
 

@@ -90,7 +90,7 @@ end
 @enduml
 ```
 
-**Verificação de implementação antes de afirmar a mensagem do último ramo:** a constraint no `init.sql` se chama `uq_agenda_horario`, enquanto `AgendamentoController::mensagemErroBanco()` procura `uq_agendamentos_data_hora`. Alinhe esses nomes no código ou ajuste o tratamento; até isso ser verificado/corrigido, não prometa que uma colisão concorrente sempre exibirá a mensagem específica de horário ocupado.
+**Verificação de implementação:** a constraint no `init.sql` e no banco ativo se chama `uq_agenda_horario`. O controller agora reconhece esse nome e apresenta a mensagem de horário ocupado para a violação UNIQUE (`SQLSTATE 23000`, código MySQL `1062`). Ainda é necessário executar e registrar um teste de colisão concorrente antes de declarar esse cenário aprovado.
 
 ## 7. Funcionalidades, datas e texto de apresentação
 
@@ -149,7 +149,7 @@ Não invente contribuições individuais, diário de bordo, links, resultados, d
 - [ ] Casos de uso incluem autenticação, serviços, histórico e alteração rápida de status.
 - [ ] Diagramas PlantUML, SVGs e imagens inseridas no Word foram sincronizados.
 - [ ] Diagrama de sequência identifica a classe `Agendamento` e representa a verificação prévia e a restrição UNIQUE.
-- [ ] Conflito entre nome da constraint e tratamento de exceção foi corrigido ou descrito sem promessa de mensagem não verificada.
+- [x] Conflito entre nome da constraint e tratamento de exceção foi corrigido no controller.
 - [ ] Datas, resultados de testes, contribuições, capturas e anexos refletem evidências reais.
 - [ ] Campos pendentes do contrato estão resolvidos ou o documento está claramente identificado como modelo acadêmico.
 - [ ] Referências, links e dados comparativos foram verificados.

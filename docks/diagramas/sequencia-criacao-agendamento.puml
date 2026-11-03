@@ -11,11 +11,11 @@ skinparam sequence {
 }
 hide footbox
 
-actor "Funcionário" as F
+actor "Funcionário autenticado" as F
 boundary "Navegador" as UI
 control "Router" as R
 control "AgendamentoController" as C
-entity "AgendamentoModel" as M
+entity "Agendamento" as M
 database "MySQL" as DB
 
 F -> UI: Abre formulário de agendamento
@@ -27,20 +27,31 @@ F -> UI: Preenche e envia os dados
 UI -> R: POST /agendamentos
 R -> C: store()
 
-C -> C: Valida os campos
-C -> M: Verifica disponibilidade do horário
-M -> DB: Consulta agendamentos da data e hora
-DB --> M: Resultado da consulta
-M --> C: Disponibilidade
+C -> C: Valida cachorro, serviço, data e hora
 
-alt Horário ocupado ou dados inválidos
-  C --> UI: Exibe mensagem de erro
-else Horário disponível e dados válidos
-  C -> M: Cria agendamento
-  M -> DB: INSERT INTO agendamentos
-  DB --> M: Confirma gravação
-  M --> C: Retorna resultado
-  C --> UI: Redireciona para a agenda
+alt Dados inválidos
+  C --> UI: Reexibe formulário com erro
+else Dados válidos
+  C -> M: horarioOcupado(data, hora)
+  M -> DB: SELECT por data e hora
+  DB --> M: Resultado da consulta
+  M --> C: Disponibilidade
+
+  alt Horário já ocupado
+    C --> UI: Reexibe formulário com mensagem
+  else Horário disponível
+    C -> M: create(...)
+    M -> DB: INSERT em agendamentos
+    alt Restrição UNIQUE aceita
+      DB --> M: Registro criado
+      M --> C: id criado
+      C --> UI: Redireciona para /agendamentos
+    else Conflito concorrente (uq_agenda_horario)
+      DB --> M: Erro de chave duplicada
+      M --> C: PDOException
+      C --> UI: Reexibe formulário com erro de horário
+    end
+  end
 end
 
 @enduml

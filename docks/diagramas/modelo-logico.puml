@@ -31,7 +31,7 @@ entity cachorros {
   * proprietario_id : INT UNSIGNED <<FK>>
   * nome : VARCHAR(80)
   raca : VARCHAR(80) NULL
-  porte : ENUM NULL
+  porte : ENUM('pequeno', 'medio', 'grande') NULL
   pelagem : VARCHAR(80) NULL
   observacoes : TEXT NULL
   * criado_em : TIMESTAMP
@@ -56,7 +56,7 @@ entity agendamentos {
   * servico_id : INT UNSIGNED <<FK>>
   * data : DATE
   * hora : TIME
-  * status : ENUM
+  * status : ENUM('agendado', 'andamento', 'concluido', 'cancelado') DEFAULT 'agendado'
   observacoes : TEXT NULL
   * criado_em : TIMESTAMP
   * atualizado_em : TIMESTAMP
@@ -68,8 +68,8 @@ entity historico_agendamentos {
   * id : INT UNSIGNED <<PK>>
   --
   * agendamento_id : INT UNSIGNED <<FK>>
-  * status_anterior : ENUM
-  * status_novo : ENUM
+  * status_anterior : ENUM('agendado', 'andamento', 'concluido', 'cancelado')
+  * status_novo : ENUM('agendado', 'andamento', 'concluido', 'cancelado')
   * alterado_em : TIMESTAMP
 }
 
@@ -91,12 +91,13 @@ entity login_tentativas {
   INDEX(login, ip, criado_em)
 }
 
-proprietarios ||--o{ cachorros : possui
-cachorros ||--o{ agendamentos : recebe
-servicos ||--o{ agendamentos : vinculado a
-agendamentos ||--o{ historico_agendamentos : registra
+proprietarios ||--o{ cachorros : possui (ON DELETE CASCADE)
+cachorros ||--o{ agendamentos : recebe (ON DELETE CASCADE)
+servicos ||--o{ agendamentos : vinculado a (ON DELETE RESTRICT)
+agendamentos ||--o{ historico_agendamentos : registra (ON DELETE CASCADE)
 
 note bottom of agendamentos
+  Status padrão: agendado
   Restrição: UNIQUE(data, hora)
 end note
 
