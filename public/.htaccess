@@ -1,6 +1,16 @@
 RewriteEngine On
 
-# Envia tudo para o front controller, exceto arquivos/pastas que existem
+# Bloquear arquivos e diretórios ocultos
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Bloquear arquivos sensíveis e backups
+<FilesMatch "\.(env|ini|log|sql|bak|old|dist|conf)$">
+    Require all denied
+</FilesMatch>
+
+# Front Controller
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.php [QSA,L]
