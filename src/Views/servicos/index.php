@@ -5,15 +5,19 @@ $totalServicos = count($servicos ?? []);
 $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
 ?>
 <div class="clientes-page servicos-page">
-    <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
+    <div class="servicos-intro">
+        <div>
+            <p class="servicos-eyebrow">Catálogo de serviços</p>
+            <h2>Serviços oferecidos</h2>
+            <p class="servicos-description">Organize os cuidados disponíveis para os pets dos seus clientes.</p>
+        </div>
         <div class="clientes-quantidade" aria-live="polite">
             <span class="clientes-quantidade-icon" aria-hidden="true">
                 <i data-lucide="scissors"></i>
             </span>
-            <span><?= $totalServicos ?></span>
-            <span><?= $labelServicos ?></span>
+            <strong><?= $totalServicos ?></strong>
+            <span><?= $labelServicos ?> cadastrados</span>
         </div>
-
     </div>
 
     <?php if ($aviso !== null): ?>
@@ -25,55 +29,66 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
             <p>Nenhum serviço cadastrado.</p>
         </div>
     <?php else: ?>
-        <table class="table table-hover align-middle mb-0">
-            <thead>
-                <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Descrição</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Situação</th>
-                    <th scope="col" class="text-end">Ações</th>
-                </tr>
-            </thead>
-        <tbody>
-                <?php foreach ($servicos as $s): ?>
-                    <tr>
-                        <td><?= \Core\e($s['nome']) ?></td>
-                        <td class="text-secondary"><?= \Core\e(trim((string) ($s['descricao'] ?? '')) !== '' ? (string) $s['descricao'] : 'Sem descrição') ?></td>
-                        <td><strong>R$ <?= number_format((float) $s['preco'], 2, ',', '.') ?></strong></td>
-                        <td>
-                            <?php if ((int) $s['ativo'] === 1): ?>
-                                <span class="badge text-bg-success">Ativo</span>
-                            <?php else: ?>
-                                <span class="badge text-bg-secondary">Inativo</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-end">
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-primary"
-                                data-servico-editar
-                                data-id="<?= (int) $s['id'] ?>"
-                                data-nome="<?= \Core\e($s['nome']) ?>"
-                                data-preco="<?= number_format((float) $s['preco'], 2, ',', '.') ?>"
-                                data-descricao="<?= \Core\e((string) ($s['descricao'] ?? '')) ?>"
-                                data-ativo="<?= (int) ($s['ativo'] ?? 1) ?>"
-                            >
-                                Editar
-                            </button>
+        <div class="servicos-list" role="list">
+            <div class="servicos-list__header" aria-hidden="true">
+                <span>Serviço</span>
+                <span>Valor</span>
+                <span>Situação</span>
+                <span>Ações</span>
+            </div>
+            <?php foreach ($servicos as $s): ?>
+                <article class="servico-row" role="listitem">
+                    <div class="servico-row__identity">
+                        <div class="servico-card__icon" aria-hidden="true">
+                            <i data-lucide="scissors"></i>
+                        </div>
+                        <div class="servico-row__name">
+                            <h3><?= \Core\e($s['nome']) ?></h3>
+                            <p><?= \Core\e(trim((string) ($s['descricao'] ?? '')) !== '' ? (string) $s['descricao'] : 'Sem descrição' ) ?></p>
+                        </div>
+                    </div>
 
-                            <form method="post"
-                                  action="/servicos/<?= (int) $s['id'] ?>/excluir"
-                                  class="d-inline"
-                                  data-confirm="<?= \Core\e('Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.') ?>">
-                                <?= \Core\Csrf::campo() ?>
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Excluir</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                    <div class="servico-row__price">
+                        <span>Valor</span>
+                        <strong>R$ <?= number_format((float) $s['preco'], 2, ',', '.') ?></strong>
+                    </div>
+
+                    <div class="servico-row__status">
+                        <?php if ((int) $s['ativo'] === 1): ?>
+                            <span class="servico-status servico-status--ativo">Ativo</span>
+                        <?php else: ?>
+                            <span class="servico-status servico-status--inativo">Inativo</span>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="servico-card__actions">
+                        <button
+                            type="button"
+                            class="servico-card__action servico-card__action--edit"
+                            data-servico-editar
+                            data-id="<?= (int) $s['id'] ?>"
+                            data-nome="<?= \Core\e($s['nome']) ?>"
+                            data-preco="<?= number_format((float) $s['preco'], 2, ',', '.') ?>"
+                            data-descricao="<?= \Core\e((string) ($s['descricao'] ?? '')) ?>"
+                            data-ativo="<?= (int) ($s['ativo'] ?? 1) ?>"
+                            aria-label="Editar serviço <?= \Core\e($s['nome']) ?>"
+                        >
+                            <i data-lucide="pencil"></i>
+                        </button>
+
+                        <form method="post"
+                              action="/servicos/<?= (int) $s['id'] ?>/excluir"
+                              class="d-inline"
+                              data-confirm="<?= \Core\e('Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.') ?>">
+                            <?= \Core\Csrf::campo() ?>
+                            <button type="submit" class="servico-card__action servico-card__action--delete" aria-label="Excluir serviço <?= \Core\e($s['nome']) ?>">
+                                <i data-lucide="trash-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
     <?php endif; ?>
 </div>
 

@@ -878,6 +878,314 @@ main button {
     padding: 24px 30px 36px;
 }
 
+.servicos-page {
+    max-width: 1240px;
+}
+
+.servicos-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 26px;
+}
+
+.servicos-eyebrow {
+    margin: 0 0 6px;
+    color: #c74678;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.servicos-intro h2 {
+    margin: 0;
+    color: #241b20;
+    font-size: clamp(24px, 3vw, 32px);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.servicos-description {
+    margin: 8px 0 0;
+    color: #806f76;
+    font-size: 14px;
+}
+
+.servicos-intro .clientes-quantidade {
+    min-height: 58px;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.servicos-intro .clientes-quantidade strong {
+    color: #c74678;
+    font-size: 22px;
+    line-height: 1;
+}
+
+.servicos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.servico-card {
+    display: flex;
+    min-height: 250px;
+    flex-direction: column;
+    padding: 20px;
+    border: 1px solid #eee1e6;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 12px 28px rgba(86, 59, 66, 0.06);
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.servico-card:hover {
+    border-color: #e7c7d4;
+    box-shadow: 0 16px 32px rgba(86, 59, 66, 0.1);
+    transform: translateY(-2px);
+}
+
+.servico-card__top,
+.servico-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.servico-card__icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 14px;
+    background: #fff0f5;
+    color: #c74678;
+}
+
+.servico-card__icon svg {
+    width: 21px;
+    height: 21px;
+    stroke-width: 2.2;
+}
+
+.servico-status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.servico-status--ativo {
+    background: #eaf8ef;
+    color: #27864a;
+}
+
+.servico-status--inativo {
+    background: #f0edef;
+    color: #756871;
+}
+
+.servico-card__body {
+    flex: 1;
+    padding: 22px 0 20px;
+}
+
+.servico-card__body h3 {
+    margin: 0 0 8px;
+    color: #2e2328;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.servico-card__body p {
+    margin: 0;
+    color: #806f76;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.servico-card__footer {
+    align-items: flex-end;
+    padding-top: 15px;
+    border-top: 1px solid #f1e8eb;
+}
+
+.servico-card__price-label {
+    display: block;
+    margin-bottom: 3px;
+    color: #9a878f;
+    font-size: 11px;
+}
+
+.servico-card__price {
+    color: #2ca05c;
+    font-size: 21px;
+    line-height: 1.1;
+}
+
+.servico-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.servico-card__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid #eadfe3;
+    border-radius: 10px;
+    background: #fff;
+    color: #6d5b62;
+    cursor: pointer;
+    transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.servico-card__action:hover {
+    transform: translateY(-1px);
+}
+
+.servico-card__action--edit:hover {
+    border-color: #e4b7c9;
+    background: #fff4f8;
+    color: #c74678;
+}
+
+.servico-card__action--delete:hover {
+    border-color: #efcaca;
+    background: #fff5f5;
+    color: #c34242;
+}
+
+.servico-card__action svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 2.2;
+}
+
+.servicos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.servicos-list__header {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.7fr) minmax(120px, 0.7fr) 100px auto;
+    gap: 20px;
+    padding: 0 18px 4px;
+    color: #9a878f;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.servicos-list__header span:last-child {
+    text-align: right;
+}
+
+.servico-row {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.7fr) minmax(120px, 0.7fr) 100px auto;
+    align-items: center;
+    gap: 20px;
+    min-height: 84px;
+    padding: 14px 18px;
+    border: 1px solid #eee1e6;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 16px rgba(86, 59, 66, 0.04);
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.servico-row:hover {
+    border-color: #e7c7d4;
+    box-shadow: 0 10px 22px rgba(86, 59, 66, 0.08);
+    transform: translateY(-1px);
+}
+
+.servico-row__identity {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    gap: 14px;
+}
+
+.servico-row .servico-card__icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 12px;
+}
+
+.servico-row__name {
+    min-width: 0;
+}
+
+.servico-row__name h3 {
+    overflow: hidden;
+    margin: 0 0 3px;
+    color: #2e2328;
+    font-size: 15px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.servico-row__name p {
+    overflow: hidden;
+    margin: 0;
+    color: #806f76;
+    font-size: 13px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.servico-row__price {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.servico-row__price span {
+    color: #9a878f;
+    font-size: 11px;
+}
+
+.servico-row__price strong {
+    color: #2ca05c;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.servico-row__status {
+    justify-self: start;
+}
+
+.servico-row .servico-card__actions {
+    justify-content: flex-end;
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+    .servicos-list__header {
+        grid-template-columns: minmax(220px, 1.5fr) minmax(110px, 0.7fr) 90px auto;
+    }
+
+    .servico-row {
+        grid-template-columns: minmax(220px, 1.5fr) minmax(110px, 0.7fr) 90px auto;
+    }
+}
+
 .agendamentos-page {
     padding-top: 18px;
 }
@@ -2856,6 +3164,47 @@ main button {
 
     .clientes-new-btn {
         justify-content: center;
+    }
+
+    .servicos-intro {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .servicos-intro .clientes-quantidade {
+        align-self: flex-start;
+    }
+
+    .servicos-list__header {
+        display: none;
+    }
+
+    .servico-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .servico-row__identity {
+        grid-column: 1 / -1;
+    }
+
+    .servico-row__price {
+        grid-column: 1;
+    }
+
+    .servico-row__status {
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
+    }
+
+    .servico-row .servico-card__actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+        padding-top: 12px;
+        border-top: 1px solid #f1e8eb;
     }
 }
 
