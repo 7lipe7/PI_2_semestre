@@ -1117,14 +1117,6 @@ main button {
     display: flex;
     align-items: center;
     min-width: 0;
-    gap: 14px;
-}
-
-.servico-row .servico-card__icon {
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
-    border-radius: 12px;
 }
 
 .servico-row__name {

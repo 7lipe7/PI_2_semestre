@@ -39,9 +39,6 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
             <?php foreach ($servicos as $s): ?>
                 <article class="servico-row" role="listitem">
                     <div class="servico-row__identity">
-                        <div class="servico-card__icon" aria-hidden="true">
-                            <i data-lucide="scissors"></i>
-                        </div>
                         <div class="servico-row__name">
                             <h3><?= \Core\e($s['nome']) ?></h3>
                             <p><?= \Core\e(trim((string) ($s['descricao'] ?? '')) !== '' ? (string) $s['descricao'] : 'Sem descrição' ) ?></p>
