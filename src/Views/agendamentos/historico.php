@@ -51,7 +51,7 @@ $statusClasses = [
     <!-- Histórico -->
     <?php else: ?>
 
-        <div class="row g-3 align-items-start">
+        <div class="row g-3 align-items-start historico-agendamentos-grid">
 
             <?php foreach ($historico as $item): ?>
 
@@ -76,7 +76,7 @@ $statusClasses = [
 
                 <div class="col-12 col-lg-6">
 
-                    <article class="agendamento-card h-auto">
+                    <article class="agendamento-card agendamento-card--historico h-auto">
 
                         <!-- Cabeçalho do card -->
                         <div class="agendamento-card__header">
@@ -108,7 +108,7 @@ $statusClasses = [
                         <div class="agendamento-card__info">
 
                             <!-- Serviço -->
-                            <div class="agendamento-card__line">
+                            <div class="agendamento-card__line agendamento-card__line--historico">
 
                                 <span
                                     class="cliente-card__icon"
@@ -117,15 +117,16 @@ $statusClasses = [
                                     <i data-lucide="scissors"></i>
                                 </span>
 
-                                <span>
-                                    <?= \Core\e($item['servico']) ?>
-                                </span>
+                                <div class="agendamento-card__field">
+                                    <small>Serviço</small>
+                                    <strong><?= \Core\e($item['servico']) ?></strong>
+                                </div>
 
                             </div>
 
 
                             <!-- Mudança de status -->
-                            <div class="agendamento-card__line">
+                            <div class="agendamento-card__line agendamento-card__line--historico">
 
                                 <span
                                     class="cliente-card__icon"
@@ -135,7 +136,9 @@ $statusClasses = [
                                 </span>
 
 
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="agendamento-card__field agendamento-card__field--status">
+                                    <small>Alteração de status</small>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
 
                                     <!-- Status anterior -->
                                     <span
@@ -159,13 +162,14 @@ $statusClasses = [
                                         <?= \Core\e($novo) ?>
                                     </span>
 
+                                    </div>
                                 </div>
 
                             </div>
 
 
                             <!-- Data da alteração -->
-                            <div class="agendamento-card__line">
+                            <div class="agendamento-card__line agendamento-card__line--historico agendamento-card__line--date">
 
                                 <span
                                     class="cliente-card__icon"
@@ -174,12 +178,13 @@ $statusClasses = [
                                     <i data-lucide="clock"></i>
                                 </span>
 
-                                <span>
-                                    <?= date(
+                                <div class="agendamento-card__field">
+                                    <small>Registrado em</small>
+                                    <strong><?= date(
                                         'd/m/Y H:i',
                                         strtotime($item['alterado_em'])
-                                    ) ?>
-                                </span>
+                                    ) ?></strong>
+                                </div>
 
                             </div>
 

@@ -1179,6 +1179,7 @@ main button {
 }
 
 .agendamentos-page {
+    max-width: none;
     padding-top: 18px;
 }
 
@@ -1271,7 +1272,8 @@ main button {
 
 .agendamentos-grid {
     display: grid;
-    grid-template-columns: repeat(3, 379px);
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, 379px);
     grid-auto-rows: 368px;
     gap: 18px;
     align-items: stretch;
@@ -1572,6 +1574,136 @@ main button {
     word-break: break-word;
 }
 
+.historico-agendamentos-grid {
+    --bs-gutter-y: 1.25rem;
+    align-items: stretch;
+}
+
+.historico-agendamentos-grid > [class*="col-"] {
+    display: flex;
+}
+
+.historico-agendamentos-grid .agendamento-card--historico {
+    height: 100%;
+}
+
+.agendamento-card--historico {
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    border-color: #eadfe3;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 8px 22px rgba(87, 62, 71, 0.06);
+    transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.agendamento-card--historico:hover {
+    border-color: #e2bfd0;
+    box-shadow: 0 14px 28px rgba(87, 62, 71, 0.1);
+    transform: translateY(-2px);
+}
+
+.agendamento-card--historico .agendamento-card__header {
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 0;
+    background: linear-gradient(135deg, #fff8fb, #fff);
+}
+
+.agendamento-card--historico .agendamento-card__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+    background: #fff0f5;
+    color: #c74678;
+}
+
+.agendamento-card--historico .agendamento-card__title-wrap h2 {
+    font-size: 17px;
+}
+
+.agendamento-card--historico .agendamento-card__title-wrap p {
+    margin-top: 3px;
+    color: #8a7a81;
+}
+
+.agendamento-card--historico .agendamento-card__info {
+    display: grid;
+    gap: 0;
+    padding: 0 20px 18px;
+}
+
+.agendamento-card--historico .agendamento-card__line--historico {
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 58px;
+    padding: 12px 0;
+    border-top: 1px solid #f3eaee;
+}
+
+.agendamento-card--historico .agendamento-card__line--date {
+    min-height: 0;
+    padding-bottom: 0;
+}
+
+.agendamento-card--historico .cliente-card__icon {
+    flex: 0 0 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: #faf2f5;
+    color: #b73870;
+}
+
+.agendamento-card--historico .cliente-card__icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.agendamento-card__field {
+    display: grid;
+    gap: 3px;
+    min-width: 0;
+    padding-top: 1px;
+}
+
+.agendamento-card__field small {
+    color: #9a8b91;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.agendamento-card__field strong {
+    overflow: hidden;
+    color: #352a2f;
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agendamento-card__field--status {
+    width: 100%;
+}
+
+.agendamento-card--historico .badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.agendamento-card--historico .agendamento-card__field--status > div {
+    min-height: 28px;
+}
+
+.agendamento-card--historico .agendamento-card__field--status > div > svg {
+    color: #b6a8ae;
+}
+
 .agendamento-card__footer {
     display: flex;
     justify-content: space-between;
@@ -1845,6 +1977,14 @@ main button {
     outline: none;
 }
 
+.agendamentos-page .clientes-search-wrap {
+    max-width: none;
+}
+
+.agendamentos-page #agendamentosContagem {
+    width: 100%;
+}
+
 .clientes-search-icon {
     position: absolute;
     left: 16px;
@@ -1959,8 +2099,8 @@ main button {
 
 /* Grid e cards de clientes */
 .clientes-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
     gap: 10px;
     align-items: stretch;
 }
@@ -1968,16 +2108,15 @@ main button {
 .cliente-card {
     display: flex;
     flex-direction: column;
-    width: min(370px, 100%);
+    width: 100%;
     min-width: 0;
-    max-width: 370px;
+    max-width: none;
     min-height: 270px;
     padding: 16px 16px 14px;
     border: 1px solid #eadfe3;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 8px 20px rgba(86, 59, 66, 0.04);
-    flex: 1 1 320px;
 }
 
 .cliente-card__header {
@@ -2703,6 +2842,10 @@ main button {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
     margin: 18px 0 20px;
+}
+
+.agenda-page {
+    max-width: none;
 }
 
 .agenda-resumo__card {
