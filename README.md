@@ -320,20 +320,7 @@ docker compose exec php php /var/www/src/bin/criar-usuario.php "Maria" maria
 
 Rodar o script com um login já existente **redefine a senha** daquele usuário.
 
-## Limitações e próximos passos
 
-Pontos conscientes do escopo atual, registrados para evolução do projeto:
-
-* **Perfis de acesso** — o login existe e todas as telas exigem sessão, mas há um
-  único tipo de usuário: qualquer conta logada tem as mesmas permissões (não há
-  papéis como *admin* e *atendente*, nem telas restritas por perfil);
-* **Cadastro e recuperação de senha** — não há tela de cadastro, "esqueci minha
-  senha" nem troca de senha pelo próprio usuário; a senha é definida/redefinida
-  apenas pelo script `src/bin/criar-usuario.php`;
-* **Fuso horário** — datas e horas são gravadas como estão no formulário (sem conversão de fuso);
-* **Índices** — as buscas (nome do pet/dono, data) usam `LIKE` e filtros sem índice dedicado em todos os casos; os índices criados em `004_indices_busca.sql` cobrem os filtros principais, mas a base atual é pequena;
-* **Validação de negócio** — a validação é feita no servidor (campos, formato de data/hora, horário ocupado), sem as mensagens inline do front-end;
-* **Migrations** — ainda são aplicadas manualmente (não há ferramenta de versionamento de schema, como Phinx ou Doctrine Migrations).
 
 ## Docker
 
