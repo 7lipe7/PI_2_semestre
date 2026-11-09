@@ -41,7 +41,7 @@ $modalAgendamento = !empty($modalAgendamento);
                         </div>
                     </div>
 
-                    <?php if ($erro !== null): ?>
+                    <?php if ($erro !== null && !$modalAgendamento): ?>
                         <p class="form-erro"><strong><?= \Core\e($erro) ?></strong></p>
                     <?php endif; ?>
 
@@ -163,6 +163,12 @@ $modalAgendamento = !empty($modalAgendamento);
         <?php else: ?>
         </div>
     </div>
+<?php endif; ?>
+
+<?php if ($modalAgendamento && $erro !== null): ?>
+    <p class="agenda-aviso agenda-aviso--erro agendamento-toast" id="agendamentoErroAviso" role="alert" aria-atomic="true">
+        <?= \Core\e($erro) ?>
+    </p>
 <?php endif; ?>
 
 <?php

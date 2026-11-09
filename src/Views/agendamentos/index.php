@@ -338,6 +338,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
             const backdrop = document.getElementById('agendamentoModalBackdrop');
             const closeButton = document.getElementById('agendamentoModalClose');
             const cancelButton = document.getElementById('agendamentoModalCancel');
+            const errorNotice = document.getElementById('agendamentoErroAviso');
 
             if (!backdrop) return;
 
@@ -354,7 +355,13 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
             document.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') closeModal();
             });
+
+            if (errorNotice) {
+                window.setTimeout(() => {
+                    errorNotice.classList.add('agenda-aviso--saindo');
+                    window.setTimeout(() => errorNotice.remove(), 180);
+                }, 3000);
+            }
         });
     </script>
 <?php endif; ?>
-

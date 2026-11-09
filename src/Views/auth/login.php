@@ -42,8 +42,8 @@
         <img src="/assets/img/amora.webp" alt="Logo Amora">
         </div>
 
-        <h1 class="login-title">amora banho e tosa Admin</h1>
-        <p class="login-subtitle">Entre para gerenciar o pet shop</p>
+        <h1 class="login-title">Amora Banho e Tosa</h1>
+        <p class="login-subtitle">Painel administrativo · Gestão do Banho e Tosa</p>
 
         <?php if (($erro ?? null) !== null): ?>
             <div class="login-erro" role="alert">
@@ -76,6 +76,10 @@
         </form>
       
     </main>
+
+    <footer class="login-footer">
+        &copy; 2026 Amora Banho e Tosa &middot; Todos os direitos reservados
+    </footer>
 
     <!-- Lucide Icons (SRI) -->
     <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"
