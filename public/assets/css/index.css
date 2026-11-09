@@ -874,7 +874,6 @@ main button {
 /* Area de clientes */
 .clientes-page {
     width: 100%;
-    max-width: 1440px;
     padding: 24px 30px 36px;
 }
 
