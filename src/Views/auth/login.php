@@ -45,13 +45,6 @@
         <h1 class="login-title">Amora Banho e Tosa</h1>
         <p class="login-subtitle">Painel administrativo · Gestão do Banho e Tosa</p>
 
-        <?php if (($erro ?? null) !== null): ?>
-            <div class="login-erro" role="alert">
-                <i data-lucide="circle-alert" aria-hidden="true"></i>
-                <span><?= \Core\e($erro) ?></span>
-            </div>
-        <?php endif; ?>
-
         <form method="post" action="/login" class="login-form">
             <?= \Core\Csrf::campo() ?>
 
@@ -64,9 +57,14 @@
 
             <div class="login-campo">
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" class="form-control"
-                maxlength="60"
-                       autocomplete="current-password" required>
+                <div class="login-senha">
+                    <input type="password" id="senha" name="senha" class="form-control"
+                           maxlength="60" autocomplete="current-password" required>
+                    <button type="button" class="login-senha__toggle" id="loginSenhaToggle"
+                            aria-label="Mostrar senha" aria-pressed="false">
+                        <i data-lucide="eye" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="login-btn">
@@ -74,8 +72,15 @@
                 <span>Entrar</span>
             </button>
         </form>
-      
+
     </main>
+
+    <?php if (($erro ?? null) !== null): ?>
+        <div class="login-erro" id="loginErro" role="alert" aria-atomic="true">
+            <i data-lucide="circle-alert" aria-hidden="true"></i>
+            <span><?= \Core\e($erro) ?></span>
+        </div>
+    <?php endif; ?>
 
     <footer class="login-footer">
         &copy; 2026 Amora Banho e Tosa &middot; Todos os direitos reservados
@@ -86,6 +91,27 @@
             integrity="sha384-Hh7C333mXel+qppGoFs4qAOXp7h67eur4XsQVF2bvHAM3MQ4DX4cQI7oRCzb98J4"></script>
     <script nonce="<?= \Core\Csp::nonce() ?>">
         lucide.createIcons();
+
+        const passwordInput = document.getElementById('senha');
+        const passwordToggle = document.getElementById('loginSenhaToggle');
+        if (passwordInput && passwordToggle) {
+            passwordToggle.addEventListener('click', () => {
+                const mostrarSenha = passwordInput.type === 'password';
+                passwordInput.type = mostrarSenha ? 'text' : 'password';
+                passwordToggle.setAttribute('aria-label', mostrarSenha ? 'Ocultar senha' : 'Mostrar senha');
+                passwordToggle.setAttribute('aria-pressed', String(mostrarSenha));
+                passwordToggle.innerHTML = `<i data-lucide="${mostrarSenha ? 'eye-off' : 'eye'}" aria-hidden="true"></i>`;
+                lucide.createIcons();
+            });
+        }
+
+        const loginError = document.getElementById('loginErro');
+        if (loginError) {
+            window.setTimeout(() => {
+                loginError.classList.add('login-erro--saindo');
+                window.setTimeout(() => loginError.remove(), 180);
+            }, 4500);
+        }
     </script>
 
 </body>
