@@ -39,7 +39,7 @@
     <main class="login-card">
 
         <div class="login-logo" aria-hidden="true">
-        <img src="/assets/img/amora.webp" alt="Logo Amora">
+            <i data-lucide="user-round"></i>
         </div>
 
         <h1 class="login-title">Amora Banho e Tosa</h1>
@@ -52,14 +52,14 @@
                 <label for="login">Usuário</label>
                 <input type="text" id="login" name="login" class="form-control" 
                        maxlength="60"  value="<?= \Core\e($usuario ?? '') ?>"
-                       autocomplete="username" required autofocus>
+                       autocomplete="username"  placeholder="Digite seu usuário" required autofocus>
             </div>
 
             <div class="login-campo">
                 <label for="senha">Senha</label>
                 <div class="login-senha">
                     <input type="password" id="senha" name="senha" class="form-control"
-                           maxlength="60" autocomplete="current-password" required>
+                           maxlength="60" autocomplete="current-password" placeholder="Digite sua senha" required>
                     <button type="button" class="login-senha__toggle" id="loginSenhaToggle"
                             aria-label="Mostrar senha" aria-pressed="false">
                         <i data-lucide="eye" aria-hidden="true"></i>

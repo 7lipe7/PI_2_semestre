@@ -78,17 +78,13 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 
                 $servicoNome = strtolower((string) ($a['servico_nome'] ?? ''));
                 $servicoClass = 'agendamento-card__icon--default';
-                $servicoIcon = 'scissors';
 
                 if (strpos($servicoNome, 'banho') !== false) {
                     $servicoClass = 'agendamento-card__icon--banho';
-                    $servicoIcon = 'sparkles';
                 } elseif (strpos($servicoNome, 'tosa') !== false) {
                     $servicoClass = 'agendamento-card__icon--tosa';
-                    $servicoIcon = 'brush-cleaning';
                 } elseif (strpos($servicoNome, 'higiene') !== false) {
                     $servicoClass = 'agendamento-card__icon--higiene';
-                    $servicoIcon = 'shield-check';
                 }
                 ?>
                 <article
@@ -99,7 +95,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                 >
                     <div class="agendamento-card__header">
                         <div class="agendamento-card__icon <?= $servicoClass ?>" aria-hidden="true">
-                            <i data-lucide="<?= $servicoIcon ?>"></i>
+                            <i data-lucide="dog"></i>
                         </div>
 
                         <div class="agendamento-card__title-wrap">
@@ -108,7 +104,7 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                                 <i data-status-icon data-lucide="<?= $statusIcon ?>"></i>
                                 <span data-status-rotulo><?= \Core\e($statusLabel) ?></span>
                             </span>
-                            <p><?= \Core\e($a['proprietario_nome']) ?></p>
+                            <p>Tutor: <?= \Core\e($a['proprietario_nome']) ?></p>
                         </div>
 
                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/status" class="agendamento-card__status-form">
@@ -128,28 +124,26 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
                     </div>
 
                     <div class="agendamento-card__info">
-                        <div class="agendamento-card__line">
+                        <div class="agendamento-card__line agendamento-card__line--date">
                             <span class="cliente-card__icon" aria-hidden="true">
                                 <i data-lucide="calendar-range"></i>
                             </span>
                             <span><?= date('d/m/Y', strtotime($a['data'])) ?></span>
                         </div>
 
-                        <div class="agendamento-card__line">
+                        <div class="agendamento-card__line agendamento-card__line--time">
                             <span class="cliente-card__icon" aria-hidden="true">
                                 <i data-lucide="clock-3"></i>
                             </span>
                             <span><?= date('H:i', strtotime($a['hora'])) ?></span>
                         </div>
 
-                        <div class="agendamento-card__line">
+                        <div class="agendamento-card__line agendamento-card__line--service">
                             <span class="cliente-card__icon" aria-hidden="true">
                                 <i data-lucide="scissors"></i>
                             </span>
-                            <span>
-                                <?= \Core\e($a['servico_nome']) ?>
-                                — R$ <?= number_format((float) ($a['servico_preco'] ?? 0), 2, ',', '.') ?>
-                            </span>
+                            <span class="agendamento-card__service-name"><?= \Core\e($a['servico_nome']) ?></span>
+                            <strong class="agendamento-card__service-price">R$ <?= number_format((float) ($a['servico_preco'] ?? 0), 2, ',', '.') ?></strong>
                         </div>
 
                         <div class="agendamento-card__description">

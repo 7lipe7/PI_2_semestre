@@ -1272,21 +1272,26 @@ main button {
 .agendamentos-grid {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 379px), 379px));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 520px));
     gap: 18px;
     align-items: stretch;
 }
 
 .agendamento-card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto auto auto;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 5px;
     width: 100%;
-    height: 368px;
-    min-height: 368px;
-    padding: 18px 18px 16px;
+    height: 180px;
+    min-height: 180px;
+    padding: 12px 16px;
     border: 1px solid #eadfe3;
-    border-radius: 14px;
+    border-radius: 10px;
     background: #fff;
+    color: #241b20;
     box-shadow: 0 8px 22px rgba(87, 62, 71, 0.06);
     transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
@@ -1298,18 +1303,21 @@ main button {
 }
 
 .agendamento-card__header {
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 14px;
+    gap: 10px;
+    min-width: 0;
+    padding-bottom: 9px;
     border-bottom: 1px solid #f0e7ea;
 }
 
 .agendamento-card__icon {
     display: grid;
     place-items: center;
-    width: 46px;
-    height: 46px;
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
     border-radius: 50%;
     background: rgba(199, 70, 120, 0.12);
     color: #b73870;
@@ -1343,9 +1351,13 @@ main button {
 
 .agendamento-card__title-wrap h2 {
     margin: 0;
-    font-size: 18px;
-    font-weight: 700;
+    overflow: hidden;
     color: #241b20;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .agendamento-card__status-badge {
@@ -1354,11 +1366,15 @@ main button {
     gap: 5px;
     width: fit-content;
     margin-top: 5px;
-    padding: 5px 9px;
+    padding: 4px 8px;
     border-radius: 999px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     line-height: 1;
+}
+
+.agendamento-card__title-wrap .agendamento-card__status-badge {
+    display: none;
 }
 
 .agendamento-card__status-badge svg {
@@ -1369,7 +1385,7 @@ main button {
 
 .agendamento-card__status-badge.agendamento-card__badge--agendado {
     background: #caf0f8;
-    color: #00b4d8;
+    color: #087c9d;
 }
 
 .agendamento-card__status-badge.agendamento-card__badge--andamento {
@@ -1388,9 +1404,12 @@ main button {
 }
 
 .agendamento-card__title-wrap p {
-    margin: 4px 0 0;
+    overflow: hidden;
+    margin: 2px 0 0;
     color: #6d5861;
-    font-size: 13px;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .agendamento-card__badge {
@@ -1461,16 +1480,47 @@ main button {
 }
 
 .agendamento-card__header .agendamento-card__status-select {
-    width: 120px;
-    min-width: 120px;
-    height: 32px;
-    padding: 0 28px 0 10px;
-    border-radius: 4px;
-    background-position: right 9px center;
-    background-size: 13px;
-    font-size: 11px;
+    width: 92px;
+    min-width: 92px;
+    height: 24px;
+    padding: 0 8px;
+    border: 0;
+    border-radius: 10px;
+    background-image: none;
+    font-size: 9px;
     font-weight: 700;
+    text-align: center;
     box-shadow: none;
+}
+
+.agendamento-card__status-select option {
+    background: #fff;
+    color: #241b20;
+}
+
+.agendamentos-grid .agendamento-card__status-select:focus-visible {
+    outline: 2px solid #c74678;
+    outline-offset: 2px;
+}
+
+.agendamento-card[data-agendamento-status="agendado"] .agendamento-card__status-select {
+    background-color: #caf0f8;
+    color: #087c9d;
+}
+
+.agendamento-card[data-agendamento-status="andamento"] .agendamento-card__status-select {
+    background-color: #ffedd5;
+    color: #c2410c;
+}
+
+.agendamento-card[data-agendamento-status="concluido"] .agendamento-card__status-select {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.agendamento-card[data-agendamento-status="cancelado"] .agendamento-card__status-select {
+    background-color: #fbe4e6;
+    color: #b13741;
 }
 
 .agendamento-card__badge--agendado {
@@ -1553,28 +1603,43 @@ main button {
 .agendamento-card__line {
     display: flex;
     align-items: center;
-    gap: 10px;
+    min-width: 0;
+    gap: 7px;
     color: #43393d;
-    font-size: 14px;
+    font-size: 11px;
+    line-height: 1.25;
+}
+
+.agendamento-card__line--date {
+    grid-column: 1;
+}
+
+.agendamento-card__line--time {
+    grid-column: 2;
+    justify-self: end;
+}
+
+.agendamento-card__line--service,
+.agendamento-card__description {
+    grid-column: 1 / -1;
 }
 
 .agendamento-card__description {
     display: flex;
     align-items: center;
-    gap: 8px;
+    min-width: 0;
+    gap: 7px;
+    margin: 0;
     color: #5a4d52;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-top: 2px;
-    margin-bottom: 10px;
+    font-size: 10px;
+    line-height: 1.3;
 }
 
 .agendamento-card__description > span:last-child {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    line-clamp: 2;
+    display: block;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     word-break: break-word;
 }
 
@@ -1738,6 +1803,103 @@ main button {
     transition: all 0.2s ease;
 }
 
+.agendamentos-grid .agendamento-card__info {
+    display: contents;
+}
+
+.agendamentos-grid .agendamento-card__info .cliente-card__icon,
+.agendamentos-grid .agendamento-card__description .cliente-card__description-icon {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    border-radius: 5px;
+    color: #C9437B;
+}
+
+.agendamentos-grid .agendamento-card__info .cliente-card__icon svg,
+.agendamentos-grid .agendamento-card__description .cliente-card__description-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.agendamentos-grid .agendamento-card__line--service {
+    gap: 7px;
+}
+
+.agendamentos-grid .agendamento-card__service-name {
+    overflow: hidden;
+    color: #43393d;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agendamentos-grid .agendamento-card__service-price {
+    margin-left: auto;
+    color: #8F174C;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.agendamentos-grid .agendamento-card__details-btn {
+    grid-column: 1;
+    grid-row: 5;
+    align-self: center;
+    margin: 0;
+    color: #8F174C;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.agendamentos-grid .agendamento-card__details-btn:hover {
+    color: #8F174C;
+}
+
+.agendamentos-grid .agendamento-card__footer {
+    grid-column: 2;
+    grid-row: 5;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.agendamentos-grid .agendamento-card__action,
+.agendamentos-grid .agendamento-card__delete-form button {
+    min-height: 20px;
+    gap: 4px;
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff1f5;
+    box-shadow: none;
+    color: #c74678;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.agendamentos-grid .agendamento-card__action:hover,
+.agendamentos-grid .agendamento-card__delete-form button:hover {
+    background: #ffeaf1;
+    color: #c54671;
+    transform: translateY(-1px);
+}
+
+.agendamentos-grid .agendamento-card__action--delete,
+.agendamentos-grid .agendamento-card__delete-form button {
+    background: #fff5f5;
+    color: #b33a45;
+}
+
+.agendamentos-grid .agendamento-card__action--delete:hover,
+.agendamentos-grid .agendamento-card__delete-form button:hover {
+    background: #fdeaea;
+    color: #9c2c37;
+}
+
 .agendamento-card__action:hover {
     text-decoration: none;
     transform: translateY(-1px);
@@ -1745,7 +1907,7 @@ main button {
 
 .agendamento-card__footer .agendamento-card__action.agendamento-card__action--edit {
     border: 1px solid rgba(199, 70, 120, 0.18);
-    border-radius: 10px;
+    border-radius: 5px;
     background: #fff1f5;
     color: #d3567a;
     box-shadow: 0 6px 14px rgba(211, 86, 122, 0.12);
@@ -1933,7 +2095,12 @@ main button {
 
     .agendamento-card {
         width: 100%;
-        max-width: 379px;
+        max-width: 520px;
+    }
+
+    .agendamentos-grid {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: center;
     }
 }
 
@@ -2211,7 +2378,7 @@ main button {
     padding: 0;
     border: 0;
     background: transparent;
-    color: #2f8b59;
+    color: #8694a9;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -3584,7 +3751,7 @@ main button {
     height: 62px;
     margin: 0 auto 18px;
     border-radius: 50%;
-    background: var(--sidebar-bg);
+    background: rgb(255, 193, 203);
     color: var(--pink);
 }
 
@@ -3732,6 +3899,7 @@ main button {
 .login-campo input:focus {
     border-color: var(--pink);
     outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(199, 70, 120, 0.18);
 }
 
 .login-btn {
@@ -3749,10 +3917,17 @@ main button {
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
+    transition: filter 180ms ease;
 }
 
 .login-btn:hover {
     filter: brightness(.94);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login-btn {
+        transition: none;
+    }
 }
 
 .login-btn i,
