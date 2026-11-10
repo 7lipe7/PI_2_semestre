@@ -5,6 +5,7 @@ $cliente = $cliente ?? [
     'nome' => '',
     'celular' => '',
     'observacoes' => '',
+    'endereco' => '',
 ];
 
 $erro = $erro ?? null;
@@ -45,6 +46,18 @@ $editando = $cliente !== null && !empty($cliente['id']);
                     name="celular"
                     value="<?= \Core\e($cliente['celular'] ?? '') ?>"
                     placeholder="(11) 99999-9999"
+                    required
+                >
+            </div>
+
+            <div class="campo campo--full">
+                <label for="endereco">Endereço <span class="campo-required">*</span></label>
+                <input
+                    id="endereco"
+                    type="text"
+                    name="endereco"
+                    value="<?= \\Core\\e($cliente['endereco'] ?? '') ?>"
+                    placeholder="Ex: Rua das Flores, 123"
                     required
                 >
             </div>

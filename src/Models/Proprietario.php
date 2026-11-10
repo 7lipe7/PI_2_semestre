@@ -76,19 +76,21 @@ class Proprietario
     public static function create(
         string $nome,
         string $celular,
-        ?string $observacoes = null
+        ?string $observacoes = null,
+        ?string $endereco = null
     ): int {
         $stmt = getConnection()->prepare(
             'INSERT INTO proprietarios
-                (nome, celular, observacoes)
+                (nome, celular, observacoes, endereco)
              VALUES
-                (:nome, :celular, :observacoes)'
+                (:nome, :celular, :observacoes, :endereco)'
         );
 
         $stmt->execute([
             ':nome'        => $nome,
             ':celular'     => $celular,
             ':observacoes' => $observacoes,
+            ':endereco'    => $endereco,
         ]);
 
         return (int) getConnection()->lastInsertId();
@@ -98,13 +100,15 @@ class Proprietario
         int $id,
         string $nome,
         string $celular,
-        ?string $observacoes
+        ?string $observacoes,
+        ?string $endereco
     ): void {
         $stmt = getConnection()->prepare(
             'UPDATE proprietarios
              SET nome = :nome,
                  celular = :celular,
-                 observacoes = :observacoes
+                 observacoes = :observacoes,
+                 endereco = :endereco
              WHERE id = :id'
         );
 
@@ -113,6 +117,7 @@ class Proprietario
             ':nome'        => $nome,
             ':celular'     => $celular,
             ':observacoes' => $observacoes,
+            ':endereco'    => $endereco,
         ]);
     }
 

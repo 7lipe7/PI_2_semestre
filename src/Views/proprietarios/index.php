@@ -4,7 +4,7 @@ $busca = trim((string) ($busca ?? ''));
 $totalClientes = count($clientes ?? []);
 $labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
 $editando = !empty($formCliente) && !empty($formCliente['id']);
-$clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'observacoes' => ''];
+$clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'observacoes' => '', 'endereco' => ''];
 ?>
 <div class="clientes-page">
     <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">

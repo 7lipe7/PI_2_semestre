@@ -37,21 +37,22 @@ class ProprietarioController extends Controller{
         $nome    = trim((string) ($_POST['nome'] ?? ''));
         $celular = trim((string) ($_POST['celular'] ?? ''));
         $obs     = trim((string) ($_POST['observacoes'] ?? ''));
+        $endereco = trim((string) ($_POST['endereco'] ?? ''));
 
-        if ($nome === '' || $celular === '') {
+        if ($nome === '' || $celular === '' || $endereco === '') {
             $this->render('proprietarios/index', [
                 'clientes'    => Proprietario::allWithVisitas(),
                 'busca'       => '',
-                'cliente'     => null,
-                'formCliente' => null,
-                'erro'        => 'Nome e celular são obrigatórios.',
+                'cliente'     => ['nome' => $nome, 'celular' => $celular, 'observacoes' => $obs, 'endereco' => $endereco],
+                'formCliente' => ['nome' => $nome, 'celular' => $celular, 'observacoes' => $obs, 'endereco' => $endereco],
+                'erro'        => 'Nome, celular e endereço são obrigatórios.',
                 'modalAberto' => true,
                 'navAtivo'    => 'clientes',
             ]);
             return;
         }
 
-        Proprietario::create($nome, $celular, $obs !== '' ? $obs : null);
+        Proprietario::create($nome, $celular, $obs !== '' ? $obs : null, $endereco);
 
         Session::setFlash('Cliente cadastrado com sucesso.');
         $this->redirect('/clientes');
@@ -84,21 +85,22 @@ class ProprietarioController extends Controller{
         $nome    = trim((string) ($_POST['nome'] ?? ''));
         $celular = trim((string) ($_POST['celular'] ?? ''));
         $obs     = trim((string) ($_POST['observacoes'] ?? ''));
+        $endereco = trim((string) ($_POST['endereco'] ?? ''));
 
-        if ($nome === '' || $celular === '') {
+        if ($nome === '' || $celular === '' || $endereco === '') {
             $this->render('proprietarios/index', [
                 'clientes'    => Proprietario::allWithVisitas(),
                 'busca'       => '',
-                'cliente'     => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs],
-                'formCliente' => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs],
-                'erro'        => 'Nome e celular são obrigatórios.',
+                'cliente'     => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs, 'endereco' => $endereco],
+                'formCliente' => ['id' => $id, 'nome' => $nome, 'celular' => $celular, 'observacoes' => $obs, 'endereco' => $endereco],
+                'erro'        => 'Nome, celular e endereço são obrigatórios.',
                 'modalAberto' => true,
                 'navAtivo'    => 'clientes',
             ]);
             return;
         }
 
-        Proprietario::update($id, $nome, $celular, $obs !== '' ? $obs : null);
+        Proprietario::update($id, $nome, $celular, $obs !== '' ? $obs : null, $endereco);
 
         Session::setFlash('Cliente atualizado com sucesso.');
         $this->redirect('/clientes');

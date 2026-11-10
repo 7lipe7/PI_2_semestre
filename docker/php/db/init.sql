@@ -5,11 +5,15 @@ SET NAMES utf8mb4;
 CREATE TABLE proprietarios (
     id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nome          VARCHAR(120) NOT NULL,
-    celular       VARCHAR(20)  NOT NULL,
+    celular       VARCHAR(20) NOT NULL,
+    endereco      VARCHAR(255) NOT NULL,
     observacoes   TEXT NULL,
     criado_em     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    atualizado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                  ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE cachorros (
     id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
