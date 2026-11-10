@@ -58,6 +58,76 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const deleteConfirmBackdrop = document.getElementById('deleteConfirmBackdrop');
+    const deleteConfirmTitle = document.getElementById('deleteConfirmTitle');
+    const deleteConfirmMessage = document.getElementById('deleteConfirmMessage');
+    const deleteConfirmCancel = document.getElementById('deleteConfirmCancel');
+    const deleteConfirmSubmit = document.getElementById('deleteConfirmSubmit');
+    let pendingDeleteForm = null;
+    let deleteSubmitter = null;
+
+    const closeDeleteConfirm = () => {
+        if (!deleteConfirmBackdrop) return;
+        deleteConfirmBackdrop.classList.add('hidden');
+        deleteConfirmBackdrop.setAttribute('aria-hidden', 'true');
+        body.style.overflow = previousBodyOverflow;
+        deleteSubmitter?.focus();
+        pendingDeleteForm = null;
+        deleteSubmitter = null;
+    };
+
+    if (
+        deleteConfirmBackdrop &&
+        deleteConfirmTitle &&
+        deleteConfirmMessage &&
+        deleteConfirmCancel &&
+        deleteConfirmSubmit
+    ) {
+        const approvedForms = new WeakSet();
+
+        document.addEventListener('submit', (event) => {
+            const form = event.target;
+
+            if (!(form instanceof HTMLFormElement) || !form.hasAttribute('data-confirm-title')) {
+                return;
+            }
+
+            if (approvedForms.delete(form)) {
+                return;
+            }
+
+            event.preventDefault();
+            pendingDeleteForm = form;
+            deleteSubmitter = event.submitter;
+            deleteConfirmTitle.textContent = form.dataset.confirmTitle || 'Você tem certeza que deseja deletar este item?';
+            deleteConfirmMessage.textContent = form.dataset.confirmMessage || 'Esta ação não poderá ser desfeita.';
+            deleteConfirmBackdrop.classList.remove('hidden');
+            deleteConfirmBackdrop.setAttribute('aria-hidden', 'false');
+            body.style.overflow = 'hidden';
+            deleteConfirmCancel.focus();
+        });
+
+        deleteConfirmCancel.addEventListener('click', closeDeleteConfirm);
+
+        deleteConfirmSubmit.addEventListener('click', () => {
+            if (!pendingDeleteForm) return;
+            const form = pendingDeleteForm;
+            approvedForms.add(form);
+            closeDeleteConfirm();
+            form.requestSubmit();
+        });
+
+        deleteConfirmBackdrop.addEventListener('click', (event) => {
+            if (event.target === deleteConfirmBackdrop) closeDeleteConfirm();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !deleteConfirmBackdrop.classList.contains('hidden')) {
+                closeDeleteConfirm();
+            }
+        });
+    }
+
     if (!sidebar || !toggle) return;
 
     const syncSidebarState = (isOpen) => {

@@ -183,7 +183,8 @@ $categorias = ['todos' => ['rotulo' => 'Todos', 'icone' => 'layout-grid']] + \Ag
 
                         <form method="post" action="/agendamentos/<?= (int) $a['id'] ?>/excluir"
                               class="agendamento-card__delete-form"
-                              data-confirm="Cancelar este agendamento?">
+                              data-confirm-title="Você tem certeza que deseja deletar este agendamento?"
+                              data-confirm-message="Esta ação não poderá ser desfeita.">
                             <?= \Core\Csrf::campo() ?>
                             <button type="submit" class="agendamento-card__action agendamento-card__action--delete">
                                 <i data-lucide="trash-2"></i>

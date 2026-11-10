@@ -76,7 +76,8 @@ $petEditAberto = !empty($petEditAberto);
 
                             <form method="post" action="/pets/<?= $p['id'] ?>/excluir"
                                 class="cliente-card__delete-form"
-                                data-confirm="Excluir <?= \Core\e($p['nome']) ?>? Os agendamentos dele também serão apagados!">
+                                data-confirm-title="<?= \Core\e('Você tem certeza que deseja deletar ' . $p['nome'] . '?') ?>"
+                                data-confirm-message="Os agendamentos deste pet também serão apagados.">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir pet">
                                     <i data-lucide="trash-2"></i>

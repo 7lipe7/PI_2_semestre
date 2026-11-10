@@ -137,6 +137,21 @@ $notificacaoSucesso = \Core\Session::getFlash();
         </section>
     </div>
 
+    <div class="cliente-modal-backdrop delete-confirm-backdrop hidden" id="deleteConfirmBackdrop" aria-hidden="true">
+        <section class="cliente-modal delete-confirm-modal" role="dialog" aria-modal="true" aria-labelledby="deleteConfirmTitle" aria-describedby="deleteConfirmMessage">
+            <div class="delete-confirm-modal__icon" aria-hidden="true">
+                <i data-lucide="trash-2"></i>
+            </div>
+            <h2 id="deleteConfirmTitle"></h2>
+            <p id="deleteConfirmMessage"></p>
+            <div class="logout-modal__divider"></div>
+            <div class="delete-confirm-modal__actions">
+                <button type="button" class="cliente-modal__cancel" id="deleteConfirmCancel">Cancelar</button>
+                <button type="button" class="delete-confirm-modal__delete" id="deleteConfirmSubmit">Deletar</button>
+            </div>
+        </section>
+    </div>
+
     <header class="page-header d-flex align-items-center">
         <button type="button" class="sidebar-toggle" aria-label="Abrir menu" aria-expanded="false">
             <i data-lucide="menu"></i>
@@ -191,15 +206,6 @@ $notificacaoSucesso = \Core\Session::getFlash();
     $adminJsVersion = is_file($adminJsPath) ? filemtime($adminJsPath) : '1';
     ?>
     <script src="/assets/js/admin.js?v=<?= $adminJsVersion ?>" defer></script>
-    <script nonce="<?= \Core\Csp::nonce() ?>">
-        document.querySelectorAll('form[data-confirm]').forEach((form) => {
-            form.addEventListener('submit', (event) => {
-                if (!window.confirm(form.dataset.confirm)) {
-                    event.preventDefault();
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>

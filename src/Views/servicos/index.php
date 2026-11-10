@@ -76,7 +76,8 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                         <form method="post"
                               action="/servicos/<?= (int) $s['id'] ?>/excluir"
                               class="d-inline"
-                              data-confirm="<?= \Core\e('Excluir o serviço ' . $s['nome'] . '? Se já tiver agendamento, será apenas inativado.') ?>">
+                              data-confirm-title="<?= \Core\e('Você tem certeza que deseja deletar ' . $s['nome'] . '?') ?>"
+                              data-confirm-message="Se este serviço já estiver vinculado a agendamentos, ele será apenas inativado.">
                             <?= \Core\Csrf::campo() ?>
                             <button type="submit" class="servico-card__action servico-card__action--delete" aria-label="Excluir serviço <?= \Core\e($s['nome']) ?>">
                                 <i data-lucide="trash-2"></i>

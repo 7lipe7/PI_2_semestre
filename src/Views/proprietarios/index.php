@@ -70,7 +70,8 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 
                             <form method="post" action="/clientes/<?= $c['id'] ?>/excluir"
                                   class="cliente-card__delete-form"
-                                  data-confirm="<?= \Core\e('Excluir ' . $c['nome'] . '? Esta ação removerá todos os cães e agendamentos vinculados a este cliente e não poderá ser desfeita.') ?>">
+                                  data-confirm-title="<?= \Core\e('Você tem certeza que deseja deletar ' . $c['nome'] . '?') ?>"
+                                  data-confirm-message="Esta ação também removerá os pets e agendamentos vinculados ao cliente e não poderá ser desfeita.">
                                 <?= \Core\Csrf::campo() ?>
                                 <button type="submit" class="cliente-card__action cliente-card__action--delete" aria-label="Excluir cliente">
                                     <i data-lucide="trash-2"></i>
@@ -142,9 +143,9 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
     <div class="cliente-modal-backdrop" aria-hidden="false">
         <div class="cliente-modal cliente-modal--service-style" role="dialog" aria-modal="true" aria-labelledby="clienteModalTitulo">
             <div class="agendamento-form-card">
-                <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="clienteModalClose" aria-label="Fechar modal">
+                <a href="/clientes" class="cliente-modal__close cliente-modal__close--inside" aria-label="Fechar modal">
                     <i data-lucide="x"></i>
-                </button>
+                </a>
 
                 <div class="agendamento-form-header">
                     <div class="agendamento-form-icon" aria-hidden="true">
@@ -203,7 +204,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                             <i data-lucide="save" aria-hidden="true"></i>
                             <span><?= $editando ? 'Atualizar cliente' : 'Cadastrar cliente' ?></span>
                         </button>
-                        <button type="button" class="btn btn-light agendamento-form__cancel cliente-modal__cancel" id="clienteModalCancel">Cancelar</button>
+                        <a href="/clientes" class="btn btn-light agendamento-form__cancel cliente-modal__cancel">Cancelar</a>
                     </div>
                 </form>
             </div>
@@ -255,27 +256,11 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
 <script nonce="<?= \Core\Csp::nonce() ?>">
     document.addEventListener('DOMContentLoaded', function () {
         const modalBackdrop = document.querySelector('.cliente-modal-backdrop');
-        const modalCloseBtn = document.getElementById('clienteModalClose');
-        const modalCancelBtn = document.getElementById('clienteModalCancel');
-
-        const closeClienteModal = () => {
-            if (!modalBackdrop) return;
-            modalBackdrop.classList.add('hidden');
-            modalBackdrop.setAttribute('aria-hidden', 'true');
-        };
-
-        if (modalCloseBtn) {
-            modalCloseBtn.addEventListener('click', closeClienteModal);
-        }
-
-        if (modalCancelBtn) {
-            modalCancelBtn.addEventListener('click', closeClienteModal);
-        }
 
         if (modalBackdrop) {
             modalBackdrop.addEventListener('click', (event) => {
                 if (event.target === modalBackdrop) {
-                    closeClienteModal();
+                    window.location.assign('/clientes');
                 }
             });
         }
