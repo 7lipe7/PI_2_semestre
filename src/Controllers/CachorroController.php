@@ -7,6 +7,7 @@ namespace Controllers;
 use Cachorro;
 use Proprietario;
 use Core\Controller;
+use Core\Session;
 
 class CachorroController extends Controller
 {
@@ -124,6 +125,7 @@ class CachorroController extends Controller
             $observacoes !== '' ? $observacoes : null
         );
 
+        Session::setFlash('Pet atualizado com sucesso.');
         $this->redirect('/pets');
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controllers;
 
 use Core\Controller;
+use Core\Session;
 use Proprietario;
 
 class ProprietarioController extends Controller{
@@ -52,6 +53,7 @@ class ProprietarioController extends Controller{
 
         Proprietario::create($nome, $celular, $obs !== '' ? $obs : null);
 
+        Session::setFlash('Cliente cadastrado com sucesso.');
         $this->redirect('/clientes');
     }
     
@@ -98,6 +100,7 @@ class ProprietarioController extends Controller{
 
         Proprietario::update($id, $nome, $celular, $obs !== '' ? $obs : null);
 
+        Session::setFlash('Cliente atualizado com sucesso.');
         $this->redirect('/clientes');
     }
     public function destroy(array $params): void

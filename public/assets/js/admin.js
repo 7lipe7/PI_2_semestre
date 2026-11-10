@@ -6,6 +6,18 @@ document.addEventListener('DOMContentLoaded', () => {
         window.lucide.createIcons();
     }
 
+    const appNotice = document.getElementById('appNotice');
+
+    if (appNotice) {
+        const dismissNotice = () => {
+            appNotice.classList.add('app-notice--leaving');
+            window.setTimeout(() => appNotice.remove(), 180);
+        };
+
+        appNotice.querySelector('.app-notice__close')?.addEventListener('click', dismissNotice);
+        window.setTimeout(dismissNotice, 4500);
+    }
+
     const sidebar = document.querySelector('.sidebar');
     const toggle = document.querySelector('.sidebar-toggle');
     const body = document.body;

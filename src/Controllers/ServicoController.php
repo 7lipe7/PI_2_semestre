@@ -6,6 +6,7 @@ namespace Controllers;
 
 use PDOException;
 use Core\Controller;
+use Core\Session;
 use Servico;
 
 class ServicoController extends Controller
@@ -100,6 +101,7 @@ class ServicoController extends Controller
             $form['ativo']
         );
 
+        Session::setFlash('Serviço atualizado com sucesso.');
         $this->redirect('/servicos');
     }
 

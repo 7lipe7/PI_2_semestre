@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Controllers;
 
 use Core\Controller;
+use Core\Session;
 use Agendamento;
 use Cachorro;
 use Servico;
@@ -148,6 +149,7 @@ class AgendamentoController extends Controller
                 $status
             );
 
+            Session::setFlash('Agendamento atualizado com sucesso.');
             $this->redirect('/agendamentos');
         } catch (PDOException $e) {
             $this->renderIndiceComModal([
@@ -199,6 +201,10 @@ class AgendamentoController extends Controller
             );
 
             return;
+        }
+
+        if (!str_contains((string) ($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json')) {
+            Session::setFlash('Status do agendamento atualizado com sucesso.');
         }
 
         $this->responderStatus(200, [

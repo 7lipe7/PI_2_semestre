@@ -19,6 +19,7 @@ $paginas = [
 ];
 
 [$titulo, $subtitulo] = $paginas[$navAtivo] ?? $paginas['home'];
+$notificacaoSucesso = \Core\Session::getFlash();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -41,6 +42,15 @@ $paginas = [
 </head>
 
 <body class="admin-body">
+    <?php if ($notificacaoSucesso !== null): ?>
+        <div class="app-notice" id="appNotice" role="status" aria-live="polite">
+            <i data-lucide="circle-check" aria-hidden="true"></i>
+            <span><?= \Core\e($notificacaoSucesso) ?></span>
+            <button type="button" class="app-notice__close" aria-label="Fechar notificação">
+                <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+        </div>
+    <?php endif; ?>
 
     <aside class="sidebar d-flex flex-column min-vh-100 position-fixed top-0 start-0 p-3" aria-label="Navegação principal">
 
