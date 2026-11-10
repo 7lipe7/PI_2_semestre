@@ -75,6 +75,7 @@ class AgendamentoController extends Controller
                 $observacoes !== '' ? $observacoes : null
             );
 
+            Session::setFlash('Agendamento marcado com sucesso.');
             $this->redirect('/agendamentos');
         } catch (PDOException $e) {
             $this->renderIndiceComModal([
@@ -204,7 +205,7 @@ class AgendamentoController extends Controller
         }
 
         if (!str_contains((string) ($_SERVER['HTTP_ACCEPT'] ?? ''), 'application/json')) {
-            Session::setFlash('Status do agendamento atualizado com sucesso.');
+            Session::setFlash('Status alterado para ' . Agendamento::rotulo($status) . '.');
         }
 
         $this->responderStatus(200, [
