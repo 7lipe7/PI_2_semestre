@@ -33,14 +33,16 @@ class ServicoController extends Controller
         $form = $this->lerFormulario();
 
         if ($form['erro'] !== null) {
-            $this->render('servicos/form', [
-                'servico'  => [
+            $this->render('servicos/index', [
+                'servicos' => Servico::all(),
+                'servicoForm' => [
                     'nome'      => $form['nome'],
                     'descricao' => $form['descricao'],
                     'preco'     => $_POST['preco'] ?? '',
                     'ativo'     => $form['ativo'],
                 ],
-                'erro'     => $form['erro'],
+                'erro' => $form['erro'],
+                'servicoModalAberto' => true,
                 'navAtivo' => 'servicos',
             ]);
             return;
@@ -53,6 +55,7 @@ class ServicoController extends Controller
             $form['ativo']
         );
 
+        Session::setFlash('Serviço cadastrado com sucesso.');
         $this->redirect('/servicos');
     }
 

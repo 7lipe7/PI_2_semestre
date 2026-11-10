@@ -96,6 +96,7 @@ class AuthController extends Controller
         Session::put('usuario_nome', (string) $usuario['nome']);
         Session::marcarAtividade();
 
+        Session::setFlash("Login efetuado com sucesso.\nSeja Bem-vindo(a)!");
         $this->redirect('/');
     }
 

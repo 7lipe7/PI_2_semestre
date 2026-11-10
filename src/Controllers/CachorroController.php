@@ -67,6 +67,7 @@ class CachorroController extends Controller
             $observacoes !== '' ? $observacoes : null
         );
 
+        Session::setFlash('Pet cadastrado com sucesso.');
         $this->redirect('/pets');
 
     }

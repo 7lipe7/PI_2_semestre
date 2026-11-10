@@ -99,6 +99,7 @@ body.admin-body {
     font-size: 14px;
     font-weight: 600;
     line-height: 1.4;
+    white-space: pre-line;
     opacity: 1;
     transform: translateY(0);
     transition: opacity 180ms ease, transform 180ms ease;
@@ -108,6 +109,21 @@ body.admin-body {
     width: 20px;
     height: 20px;
     flex: 0 0 auto;
+}
+
+.app-notice--error {
+    border-color: #f5c2c7;
+    border-left-color: #b02a37;
+    color: #b02a37;
+}
+
+.app-notice--error .app-notice__close {
+    color: #8f2731;
+}
+
+.app-notice--error .app-notice__close:hover {
+    background: #fff0f1;
+    color: #842029;
 }
 
 .app-notice--leaving {

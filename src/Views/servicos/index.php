@@ -1,6 +1,9 @@
 <?php
 /** Catálogo de serviços. Variáveis: $servicos, $aviso (opcional) */
 $aviso = $aviso ?? null;
+$erro = $erro ?? null;
+$servicoForm = $servicoForm ?? [];
+$servicoModalAberto = $servicoModalAberto ?? false;
 $totalServicos = count($servicos ?? []);
 $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
 ?>
@@ -90,7 +93,17 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
     <?php endif; ?>
 </div>
 
-<div class="cliente-modal-backdrop hidden" id="servicoModalBackdrop" aria-hidden="true">
+<?php if ($erro !== null): ?>
+    <div class="app-notice app-notice--error" id="appNotice" role="alert" aria-live="assertive">
+        <i data-lucide="circle-alert" aria-hidden="true"></i>
+        <span><?= \Core\e($erro) ?></span>
+        <button type="button" class="app-notice__close" aria-label="Fechar notificação">
+            <i data-lucide="x" aria-hidden="true"></i>
+        </button>
+    </div>
+<?php endif; ?>
+
+<div class="cliente-modal-backdrop <?= $servicoModalAberto ? '' : 'hidden' ?>" id="servicoModalBackdrop" aria-hidden="<?= $servicoModalAberto ? 'false' : 'true' ?>">
     <div class="cliente-modal servico-modal" role="dialog" aria-modal="true" aria-labelledby="servicoModalTitulo">
         <div class="agendamento-form-card">
             <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="servicoModalClose" aria-label="Fechar modal">&times;</button>
@@ -109,24 +122,24 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                 <?= \Core\Csrf::campo() ?>
                 <div class="campo">
                     <label for="servicoNome">Nome</label>
-                    <input id="servicoNome" type="text" name="nome" value="" placeholder="Ex.: Banho com hidratação" required>
+                    <input id="servicoNome" type="text" name="nome" value="<?= \Core\e($servicoForm['nome'] ?? '') ?>" placeholder="Ex.: Banho com hidratação" required>
                 </div>
 
                 <div class="campo">
                     <label for="servicoPreco">Valor (R$)</label>
-                    <input id="servicoPreco" type="text" name="preco" inputmode="decimal" value="" placeholder="Ex.: 45,00" required>
+                    <input id="servicoPreco" type="text" name="preco" inputmode="decimal" value="<?= \Core\e($servicoForm['preco'] ?? '') ?>" placeholder="Ex.: 45,00" required>
                 </div>
 
                 <div class="campo campo--full">
                     <label for="servicoDescricao">Descrição</label>
-                    <textarea id="servicoDescricao" name="descricao" rows="3" placeholder="O que está incluído no serviço..."></textarea>
+                    <textarea id="servicoDescricao" name="descricao" rows="3" placeholder="O que está incluído no serviço..."><?= \Core\e($servicoForm['descricao'] ?? '') ?></textarea>
                 </div>
 
                 <div class="campo">
                     <label for="servicoAtivo">Situação</label>
                     <select id="servicoAtivo" name="ativo">
-                        <option value="1" selected>Ativo (aparece na marcação)</option>
-                        <option value="0">Inativo</option>
+                        <option value="1" <?= (int) ($servicoForm['ativo'] ?? 1) === 1 ? 'selected' : '' ?>>Ativo (aparece na marcação)</option>
+                        <option value="0" <?= (int) ($servicoForm['ativo'] ?? 1) === 0 ? 'selected' : '' ?>>Inativo</option>
                     </select>
                 </div>
 
@@ -224,6 +237,9 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
             const serviceForm = document.getElementById('servicoForm');
             if (serviceForm) {
                 serviceForm.reset();
+                serviceForm.querySelectorAll('input:not([type="hidden"]), textarea').forEach((field) => {
+                    field.value = '';
+                });
                 const ativo = document.getElementById('servicoAtivo');
                 if (ativo) {
                     ativo.value = '1';
