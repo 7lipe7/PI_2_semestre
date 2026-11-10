@@ -82,9 +82,9 @@ $paginas = [
                 <span>Clientes</span>
             </a>
 
-            <form method="post" action="/logout">
+            <form method="post" action="/logout" id="logoutForm">
                 <?= \Core\Csrf::campo() ?>
-                <button type="submit" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent">
+                <button type="button" class="nav-item d-flex align-items-center gap-3 text-decoration-none w-100 border-0 bg-transparent" id="logoutModalOpen">
                     <i class="nav-icon" data-lucide="log-out" aria-hidden="true"></i>
                     <span>Sair</span>
                 </button>
@@ -101,6 +101,31 @@ $paginas = [
         </div>
 
     </aside>
+
+    <div class="cliente-modal-backdrop logout-modal-backdrop hidden" id="logoutModalBackdrop" aria-hidden="true">
+        <section class="cliente-modal logout-modal" role="dialog" aria-modal="true" aria-labelledby="logoutModalMessage">
+            <button type="button" class="logout-modal__close" id="logoutModalClose" aria-label="Fechar confirmação">
+                <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+            <i class="logout-modal__decoration logout-modal__decoration--top" data-lucide="paw-print" aria-hidden="true"></i>
+            <div class="logout-modal__icon" aria-hidden="true">
+                <i data-lucide="paw-print"></i>
+            </div>
+            <h2 id="logoutModalMessage">Você tem certeza que deseja sair?</h2>
+            <p class="logout-modal__subtitle">Suas alterações não serão salvas.</p>
+            <div class="logout-modal__divider"></div>
+            <div class="logout-modal__actions">
+                <button type="button" class="logout-modal__cancel" id="logoutModalCancel">
+                    <i data-lucide="log-in" aria-hidden="true"></i>
+                    <span>Cancelar</span>
+                </button>
+                <button type="submit" class="logout-modal__confirm" form="logoutForm">
+                    <i data-lucide="log-out" aria-hidden="true"></i>
+                    <span>Sair</span>
+                </button>
+            </div>
+        </section>
+    </div>
 
     <header class="page-header d-flex align-items-center">
         <button type="button" class="sidebar-toggle" aria-label="Abrir menu" aria-expanded="false">
@@ -151,9 +176,11 @@ $paginas = [
     <!-- Lucide Icons (SRI) -->
     <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" crossorigin="anonymous"
         integrity="sha384-Hh7C333mXel+qppGoFs4qAOXp7h67eur4XsQVF2bvHAM3MQ4DX4cQI7oRCzb98J4"></script>
-    <script
-        src="/assets/js/admin.js"
-        defer></script>
+    <?php
+    $adminJsPath = ($_SERVER['DOCUMENT_ROOT'] ?? '') . '/assets/js/admin.js';
+    $adminJsVersion = is_file($adminJsPath) ? filemtime($adminJsPath) : '1';
+    ?>
+    <script src="/assets/js/admin.js?v=<?= $adminJsVersion ?>" defer></script>
     <script nonce="<?= \Core\Csp::nonce() ?>">
         document.querySelectorAll('form[data-confirm]').forEach((form) => {
             form.addEventListener('submit', (event) => {
