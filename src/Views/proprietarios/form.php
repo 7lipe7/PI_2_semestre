@@ -56,7 +56,7 @@ $editando = $cliente !== null && !empty($cliente['id']);
                     id="endereco"
                     type="text"
                     name="endereco"
-                    value="<?= \\Core\\e($cliente['endereco'] ?? '') ?>"
+                    value="<?= \Core\e($cliente['endereco'] ?? '') ?>"
                     placeholder="Ex: Rua das Flores, 123"
                     required
                 >

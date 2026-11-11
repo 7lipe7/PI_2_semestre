@@ -8,6 +8,7 @@ Arquivos numerados para atualizar bancos que **já existem**. O `init.sql` (past
 | `002_historico_fk_cascade.sql` | `fk_historico_agendamento` passa de `RESTRICT` para `CASCADE` (excluir agendamento apaga o histórico dele) |
 | `003_login_tentativas.sql` | Cria `login_tentativas`, o contador de tentativas para o bloqueio de força bruta do login |
 | `004_indices_busca.sql` | Cria os índices de busca por nome e de filtro por status/data nas listagens |
+| `005_endereco_proprietarios.sql` | Adiciona `endereco` aos proprietários e mantém registros existentes com endereço vazio |
 
 ## Regra
 

@@ -150,9 +150,9 @@ INNER JOIN servicos s
     ON a.servico_id = s.id;
 
  
-INSERT INTO proprietarios (nome, celular) VALUES
-    ('João Silva', '(19) 99999-9999'),
-    ('Maria Souza', '(19) 98888-8888');
+INSERT INTO proprietarios (nome, celular, endereco) VALUES
+    ('João Silva', '(19) 99999-9999', ''),
+    ('Maria Souza', '(19) 98888-8888', '');
 
 INSERT INTO cachorros (proprietario_id, nome, raca, porte, pelagem) VALUES
     (1, 'Thor', 'Golden Retriever', 'grande', 'longa'),

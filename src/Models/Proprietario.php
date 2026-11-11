@@ -47,7 +47,8 @@ class Proprietario
                 p.id,
                 p.nome,
                 p.celular,
-                p.observacoes
+                p.observacoes,
+                p.endereco
             ORDER BY p.nome';
 
         $stmt = getConnection()->prepare($sql);
