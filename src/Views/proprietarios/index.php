@@ -4,7 +4,7 @@ $busca = trim((string) ($busca ?? ''));
 $totalClientes = count($clientes ?? []);
 $labelClientes = $totalClientes === 1 ? 'cliente' : 'clientes';
 $editando = !empty($formCliente) && !empty($formCliente['id']);
-$clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'observacoes' => ''];
+$clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'observacoes' => '', 'endereco' => ''];
 ?>
 <div class="clientes-page">
     <div class="clientes-toolbar d-flex align-items-center justify-content-start gap-3 flex-wrap" style="margin-left: 0; padding-left: 0;">
@@ -190,6 +190,18 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
                     </div>
 
                     <div class="campo campo--full">
+                        <label for="endereco">Endereço <span class="campo-required">*</span></label>
+                        <input
+                            id="endereco"
+                            type="text"
+                            name="endereco"
+                            value="<?= \Core\e($clienteForm['endereco'] ?? '') ?>"
+                            placeholder="Ex: Rua das Flores, 123"
+                            required
+                        >
+                    </div>
+
+                    <div class="campo campo--full">
                         <label for="observacoes">Descrição</label>
                         <textarea
                             id="observacoes"
@@ -271,6 +283,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
         if (form && submitBtn) {
             const nomeInput = document.getElementById('nome');
             const celularInput = document.getElementById('celular');
+            const enderecoInput = document.getElementById('endereco');
 
             const formatarTelefone = (valor) => {
                 const apenasDigitos = valor.replace(/\D/g, '').slice(0, 11);
@@ -293,7 +306,8 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             const validarFormulario = () => {
                 const nomeOk = nomeInput.value.trim() !== '';
                 const celularOk = celularInput.value.trim() !== '';
-                submitBtn.disabled = !(nomeOk && celularOk);
+                const enderecoOk = enderecoInput.value.trim() !== '';
+                submitBtn.disabled = !(nomeOk && celularOk && enderecoOk);
             };
 
             celularInput.addEventListener('input', function () {
@@ -302,6 +316,7 @@ $clienteForm = $formCliente ?? ['id' => null, 'nome' => '', 'celular' => '', 'ob
             });
 
             nomeInput.addEventListener('input', validarFormulario);
+            enderecoInput.addEventListener('input', validarFormulario);
             validarFormulario();
         }
 
