@@ -47,8 +47,14 @@ docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MY
 docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
   < docker/php/db/migrations/003_login_tentativas.sql
 
-conferir se pegou (tem que aparecer andamento no enum, CASCADE na fk e a tabela
-de tentativas de login):
+docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
+  < docker/php/db/migrations/004_indices_busca.sql
+
+docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE"' \
+  < docker/php/db/migrations/005_endereco_proprietarios.sql
+
+conferir se pegou (tem que aparecer andamento no enum, CASCADE na fk, a tabela
+de tentativas de login e a coluna endereco em proprietarios):
 
 docker compose exec -T db sh -c 'exec mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$MYSQL_DATABASE" -e "
   SELECT COLUMN_NAME, COLUMN_TYPE FROM information_schema.COLUMNS

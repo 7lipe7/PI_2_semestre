@@ -228,6 +228,20 @@ docker compose exec db mysql -u root -p
 
 A conexão do PHP com o banco é feita por **PDO** (extensões `pdo_mysql`), configurada em `src/config/database.php`.
 
+### Estrutura da tabela `proprietarios`
+
+| Coluna | Tipo | Nulo | Descrição |
+|--------|------|------|-----------|
+| `id` | INT UNSIGNED | NÃO | Chave primária, auto-incremento |
+| `nome` | VARCHAR(120) | NÃO | Nome completo do cliente/tutor |
+| `celular` | VARCHAR(20) | NÃO | Telefone / WhatsApp com DDD |
+| `endereco` | VARCHAR(255) | NÃO | Endereço completo (rua, número, bairro, cidade) |
+| `observacoes` | TEXT | SIM | Observações adicionais sobre o cliente |
+| `criado_em` | TIMESTAMP | NÃO | Data/hora de criação do registro |
+| `atualizado_em` | TIMESTAMP | NÃO | Data/hora da última atualização |
+
+O campo `endereco` é obrigatório (`NOT NULL`). Tanto o backend (`ProprietarioController`) quanto o frontend validam que o campo não esteja vazio antes de salvar. Registros antigos que não tinham endereço são mantidos com valor vazio (`''`) pela migration `005_endereco_proprietarios.sql`.
+
 ### Fluxo de status dos agendamentos
 
 ```text
@@ -264,6 +278,7 @@ docker/php/db/migrations/005_minha_mudanca.sql
 | `002_historico_fk_cascade.sql` | `fk_historico_agendamento` passa de `RESTRICT` para `CASCADE` (excluir agendamento apaga o histórico dele) |
 | `003_login_tentativas.sql` | Cria `login_tentativas`, o contador de tentativas para o bloqueio de força bruta do login |
 | `004_indices_busca.sql` | Cria os índices de busca por nome e de filtro por status/data nas listagens |
+| `005_endereco_proprietarios.sql` | Adiciona `endereco` aos proprietários e mantém registros existentes com endereço vazio |
 
 Aplicar manualmente em um banco que já existe — **sempre na ordem numérica**:
 
