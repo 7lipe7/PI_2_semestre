@@ -233,6 +233,7 @@ A conexão do PHP com o banco é feita por **PDO** (extensões `pdo_mysql`), con
 | Coluna | Tipo | Nulo | Descrição |
 |--------|------|------|-----------|
 | `id` | INT UNSIGNED | NÃO | Chave primária, auto-incremento |
+| `endereco`| VARCHAR(255) | nao 
 | `nome` | VARCHAR(120) | NÃO | Nome completo do cliente/tutor |
 | `celular` | VARCHAR(20) | NÃO | Telefone / WhatsApp com DDD |
 | `endereco` | VARCHAR(255) | NÃO | Endereço completo (rua, número, bairro, cidade) |
