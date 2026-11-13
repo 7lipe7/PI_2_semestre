@@ -3,7 +3,9 @@
 $aviso = $aviso ?? null;
 $erro = $erro ?? null;
 $servicoForm = $servicoForm ?? [];
+$servicoEditForm = $servicoEditForm ?? [];
 $servicoModalAberto = $servicoModalAberto ?? false;
+$servicoEditModalAberto = $servicoEditModalAberto ?? false;
 $totalServicos = count($servicos ?? []);
 $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
 ?>
@@ -94,7 +96,7 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
 </div>
 
 <?php if ($erro !== null): ?>
-    <div class="app-notice app-notice--error" id="appNotice" role="alert" aria-live="assertive">
+    <div class="app-notice app-notice--error app-notice--modal-error" id="appNotice" role="alert" aria-live="assertive">
         <i data-lucide="circle-alert" aria-hidden="true"></i>
         <span><?= \Core\e($erro) ?></span>
         <button type="button" class="app-notice__close" aria-label="Fechar notificação">
@@ -155,7 +157,7 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
     </div>
 </div>
 
-<div class="cliente-modal-backdrop hidden" id="servicoEditModalBackdrop" aria-hidden="true">
+<div class="cliente-modal-backdrop <?= $servicoEditModalAberto ? '' : 'hidden' ?>" id="servicoEditModalBackdrop" aria-hidden="<?= $servicoEditModalAberto ? 'false' : 'true' ?>">
     <div class="cliente-modal servico-modal" role="dialog" aria-modal="true" aria-labelledby="servicoEditModalTitulo">
         <div class="agendamento-form-card">
             <button type="button" class="cliente-modal__close cliente-modal__close--inside" id="servicoEditModalClose" aria-label="Fechar modal">&times;</button>
@@ -170,28 +172,28 @@ $labelServicos = $totalServicos === 1 ? 'serviço' : 'serviços';
                 </div>
             </div>
 
-            <form method="post" action="/servicos" class="agendamento-form" id="servicoEditForm">
+            <form method="post" action="/servicos/<?= (int) ($servicoEditForm['id'] ?? 0) ?>" class="agendamento-form" id="servicoEditForm">
                 <?= \Core\Csrf::campo() ?>
                 <div class="campo">
                     <label for="servicoEditNome">Nome</label>
-                    <input id="servicoEditNome" type="text" name="nome" value="" placeholder="Ex.: Banho com hidratação" required>
+                    <input id="servicoEditNome" type="text" name="nome" value="<?= \Core\e($servicoEditForm['nome'] ?? '') ?>" placeholder="Ex.: Banho com hidratação" required>
                 </div>
 
                 <div class="campo">
                     <label for="servicoEditPreco">Valor (R$)</label>
-                    <input id="servicoEditPreco" type="text" name="preco" inputmode="decimal" value="" placeholder="Ex.: 45,00" required>
+                    <input id="servicoEditPreco" type="text" name="preco" inputmode="decimal" value="<?= \Core\e($servicoEditForm['preco'] ?? '') ?>" placeholder="Ex.: 45,00" required>
                 </div>
 
                 <div class="campo campo--full">
                     <label for="servicoEditDescricao">Descrição</label>
-                    <textarea id="servicoEditDescricao" name="descricao" rows="3" placeholder="O que está incluído no serviço..."></textarea>
+                    <textarea id="servicoEditDescricao" name="descricao" rows="3" placeholder="O que está incluído no serviço..."><?= \Core\e($servicoEditForm['descricao'] ?? '') ?></textarea>
                 </div>
 
                 <div class="campo">
                     <label for="servicoEditAtivo">Situação</label>
                     <select id="servicoEditAtivo" name="ativo">
-                        <option value="1">Ativo (aparece na marcação)</option>
-                        <option value="0">Inativo</option>
+                        <option value="1" <?= (int) ($servicoEditForm['ativo'] ?? 1) === 1 ? 'selected' : '' ?>>Ativo (aparece na marcação)</option>
+                        <option value="0" <?= (int) ($servicoEditForm['ativo'] ?? 1) === 0 ? 'selected' : '' ?>>Inativo</option>
                     </select>
                 </div>
 

@@ -126,6 +126,20 @@ body.admin-body {
     color: #842029;
 }
 
+.app-notice.app-notice--modal-error {
+    top: 24px;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    width: max-content;
+    max-width: min(440px, calc(100vw - 32px));
+    transform: translateX(-50%);
+}
+
+.app-notice--modal-error.app-notice--leaving {
+    transform: translate(-50%, -8px);
+}
+
 .app-notice--leaving {
     opacity: 0;
     transform: translateY(8px);
