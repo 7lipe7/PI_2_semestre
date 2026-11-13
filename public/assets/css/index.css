@@ -82,8 +82,8 @@ body.admin-body {
 
 .app-notice {
     position: fixed;
-    top: 20px;
     right: 24px;
+    bottom: 20px;
     z-index: 1300;
     display: flex;
     align-items: center;
@@ -128,7 +128,7 @@ body.admin-body {
 
 .app-notice--leaving {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(8px);
     pointer-events: none;
 }
 
@@ -158,8 +158,8 @@ body.admin-body {
 
 @media (max-width: 767.98px) {
     .app-notice {
-        top: 12px;
         right: 12px;
+        bottom: 12px;
         left: 12px;
         max-width: none;
     }
