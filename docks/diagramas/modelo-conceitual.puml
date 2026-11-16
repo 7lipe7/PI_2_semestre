@@ -18,6 +18,7 @@ class Proprietario {
   id
   nome
   celular
+  endereco
   observacoes
 }
 
